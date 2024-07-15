@@ -1,8 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import SearchBar from "../../components/SeacrhBar/SearchBar";
+import ExploreButton from "../../components/buttons/Verify";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import TimePicker from "react-time-picker";
+import "react-time-picker/dist/TimePicker.css";
 
 const Home = () => {
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
   return (
     <div className="flex flex-col items-center mt-16 px-4">
       <div className="flex flex-col lg:flex-row items-center lg:items-start w-full max-w-screen-2xl">
@@ -24,9 +31,7 @@ const Home = () => {
             <br />
             habitant arcu eget. Et integer facilisi eget diam.
           </p>
-          <button className="bg-custom-gradient text-white py-3 px-16 rounded-full">
-            Explore
-          </button>
+          <ExploreButton text="Explore" />
         </div>
         <div className="flex items-end justify-end lg:w-1/2 p-4">
           <img src="/Home/star.png" alt="Star" />
@@ -70,8 +75,42 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <div className="relative mb-64 mt-16 w-1/2">
+      <div className="mb-64 mt-16 w-1/2 items-center">
         <SearchBar />
+        <div className="flex space-x-4 ml-8 mt-10 items-center">
+          <div className="relative bg-gray-200 border p-2 border-gray-400 rounded-md flex items-center justify-center">
+            <img
+              src="/Home/basketball.png"
+              alt="basketball"
+              className="w-12 h-10"
+            />
+            <img
+              src="/Home/tick.png"
+              className="absolute -top-1 -right-1 w-4 h-4 bg-custom-blue rounded-sm"
+            />
+          </div>
+          <div className="bg-white border p-2 border-gray-400 rounded-md flex items-center justify-center">
+            <img
+              src="/Home/football.png"
+              alt="football"
+              className="w-12 h-10"
+            />
+          </div>
+          <div>
+            <DatePicker
+              selected={selectedDate}
+              onChange={(date) => setSelectedDate(date)}
+              className="border p-2 rounded-md bg-navbar-gray pl-4"
+            />
+          </div>
+          <div>
+            <TimePicker
+              onChange={setSelectedTime}
+              value={selectedTime}
+              className="border p-2 rounded-md"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
