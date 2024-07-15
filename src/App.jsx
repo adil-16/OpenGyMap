@@ -13,6 +13,8 @@ import Signup from "./pages/Auth/Signup/Signup";
 import Otp from "./pages/Auth/OtpVerification/Otp";
 import Home from "./pages/Home/Home";
 import HomeLayout from "./layouts/HomeLayout/HomeLayout";
+import Requests from "./pages/Requests/Requests";
+import Privacypolicy from "./pages/Privacypolicy/Privacypolicy";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +38,14 @@ const router = createBrowserRouter([
           {
             path: "/homepage",
             element: <PublicRoutes Component={Home} />,
+          },
+          {
+            path: "/requests",
+            element: <PublicRoutes Component={Requests} />,
+          },
+          {
+            path: "/privacypolicy",
+            element: <PublicRoutes Component={Privacypolicy} />,
           },
         ],
       },
