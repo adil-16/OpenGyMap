@@ -3,7 +3,7 @@ import React from "react";
 const Privacypolicy = () => {
   return (
     <div className="">
-      <div className="flex justify-center items-center font-poppins py-3 font-semibold text-4xl   ">
+      <div className="flex justify-center items-center font-poppins py-8 font-semibold text-4xl   ">
         Privacy Policy
       </div>
 
@@ -49,7 +49,7 @@ const Privacypolicy = () => {
         </div>
         <div className="flex-1  px-8  ">
           <img
-            className="h-32 w-32 sm:h-48 sm:w-48 md:h-64 md:w-64 lg:h-80 lg:w-80"
+            className="hidden lg:block md:block md:h-52 md:w-52 lg:h-80 lg:w-80"
             src="/Privacypolicy/Privacypolicylogo.png"
             alt="Privacy Policy Image"
           />
