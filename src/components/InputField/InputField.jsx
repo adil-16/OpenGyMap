@@ -1,0 +1,20 @@
+import React from "react";
+
+const InputField = ({ type, placeholder, value, onChange, iconSrc }) => {
+  return (
+    <div className="flex items-center border-b-2 border-gray-300 py-2 mb-6 w-96">
+      {iconSrc && (
+        <img src={iconSrc} alt={`${placeholder} Icon`} className="mr-6" />
+      )}
+      <input
+        type={type}
+        placeholder={placeholder}
+        onChange={onChange}
+        value={value}
+        className="appearance-none bg-transparent border-none w-full text-gray-700 py-1 px-2 leading-tight focus:outline-none"
+      />
+    </div>
+  );
+};
+
+export default InputField;
