@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { Link } from "react-router-dom";
-
+import Notification from "../Notification/Notification";
 const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
+  };
+  const toggleNotification = () => {
+    setShowNotification(!showNotification);
   };
 
   return (
@@ -57,7 +61,10 @@ const Navbar = () => {
 
         <div className="flex items-center md:order-2 space-x-3 md:space-x-5 gap-1 mr-8">
           <div className="relative">
-            <IoMdNotificationsOutline className="w-8 h-8" />
+            <IoMdNotificationsOutline
+              className="w-8 h-8 cursor-pointer"
+              onClick={toggleNotification}
+            />
             <span className="absolute top-0 right-0 w-2 h-2 bg-custom-blue rounded-full"></span>
           </div>
 
@@ -105,6 +112,12 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+
+      {showNotification && (
+        <div className=" absolute right-10 top-24 z-50 bg-white h-[85%] overflow-auto ">
+          <Notification />
+        </div>
+      )}
     </nav>
   );
 };
