@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import SearchBar from "../../components/SeacrhBar/SearchBar";
 import ExploreButton from "../../components/buttons/Verify";
-import CustomDateInput from "./Components/CustomDateInput";
-import CustomTimeInput from "./Components/CustomTimeInput";
+import CustomDateInput from "../../components/DateAndTime/CustomDateInput";
+import CustomTimeInput from "../../components/DateAndTime/CustomTimeInput";
 import SearchButton from "../../components/buttons/Verify";
 import Card from "../../components/Card/Card";
 import CardsData from "../../utils/CardsData/CardsData";
@@ -124,7 +124,7 @@ const Home = () => {
           <SearchButton text="Search" />
         </div>
       </div>
-      <div className="mt-16 flex flex-col items-center">
+      <div className="mt-20 flex flex-col items-center">
         <h1 className="text-custom-black text-4xl font-bold text-center mb-16">
           Popular Basketball Gyms
         </h1>
@@ -160,7 +160,7 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="absolute bottom-0 right-64 bg-custom-gradient rounded-full p-4">
+      <div className="absolute bottom-0 right-48 bg-custom-gradient rounded-full p-4">
         <FaQuestion className="text-white w-8 h-8" />
       </div>
     </div>
