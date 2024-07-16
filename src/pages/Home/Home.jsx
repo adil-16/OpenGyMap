@@ -160,7 +160,7 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="absolute bottom-0 right-48 bg-custom-gradient rounded-full p-4">
+      <div className="absolute bottom-0 mb-6 right-48 bg-custom-gradient rounded-full p-4">
         <FaQuestion className="text-white w-8 h-8" />
       </div>
     </div>

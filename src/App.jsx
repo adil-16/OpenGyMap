@@ -14,6 +14,10 @@ import Otp from "./pages/Auth/OtpVerification/Otp";
 import Home from "./pages/Home/Home";
 import HomeLayout from "./layouts/HomeLayout/HomeLayout";
 import Explore from "./pages/Explore/Explore";
+import NotificationProvider from "./Context/NotificationContext/NotificationContext";
+import Requests from "./pages/Requests/Requests";
+import Privacypolicy from "./pages/Privacypolicy/Privacypolicy";
+
 
 const router = createBrowserRouter([
   {
@@ -41,6 +45,15 @@ const router = createBrowserRouter([
           {
             path: "/explore",
             element: <PublicRoutes Component={Explore} />,
+          },
+
+          {
+            path: "/requests",
+            element: <PublicRoutes Component={Requests} />,
+          },
+          {
+            path: "/privacypolicy",
+            element: <PublicRoutes Component={Privacypolicy} />,
           },
         ],
       },

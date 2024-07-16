@@ -80,8 +80,8 @@ const Explore = () => {
           ))}
         </div>
       </div>
-      <div className="flex justify-center mt-24">
-        <div className="absolute right-48 bg-custom-gradient rounded-full p-4">
+      <div className="flex justify-center py-24">
+        <div className="absolute right-48  bg-custom-gradient rounded-full p-4">
           <FaQuestion className="text-white w-8 h-8" />
         </div>
       </div>
