@@ -22,7 +22,7 @@ const CustomTimeInput = ({ selectedTime, onChange }) => {
       <input
         type="time"
         id="time"
-        className="bg-navbar-gray border leading-none text-custom-black text-sm rounded-lg block w-full p-2.5 dark:bg-navbar-gray dark:placeholder-custom-black"
+        className="bg-navbar-gray border leading-none font-semibold text-custom-black text-sm rounded-lg block w-full p-2.5 dark:bg-navbar-gray dark:placeholder-custom-black"
         min="09:00"
         max="18:00"
         value={selectedTime}
