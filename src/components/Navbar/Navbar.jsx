@@ -114,7 +114,7 @@ const Navbar = () => {
       </div>
 
       {showNotification && (
-        <div className=" absolute right-16 top-20 z-50 bg-white h-[85%] overflow-auto ">
+        <div className=" absolute right-10 top-24 z-50 bg-white h-[85%] overflow-auto ">
           <Notification />
         </div>
       )}

@@ -15,6 +15,7 @@ import Home from "./pages/Home/Home";
 import HomeLayout from "./layouts/HomeLayout/HomeLayout";
 import Requests from "./pages/Requests/Requests";
 import Privacypolicy from "./pages/Privacypolicy/Privacypolicy";
+import NotificationProvider from "./Context/NotificationContext/NotificationContext.jsx";
 
 const router = createBrowserRouter([
   {
@@ -61,7 +62,9 @@ const App = () => {
   return (
     <>
       <AuthProvider>
-        <RouterProvider router={router} />
+        <NotificationProvider>
+          <RouterProvider router={router} />
+        </NotificationProvider>
       </AuthProvider>
     </>
   );

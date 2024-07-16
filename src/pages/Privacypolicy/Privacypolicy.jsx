@@ -8,7 +8,7 @@ const Privacypolicy = () => {
       </div>
 
       <div className="flex p-5 ">
-        <div className="flex-[3]  ">
+        <div className="lg:flex-[3]    ">
           <div className=" text-Privacypolicy-text text-lg px-4 font-inter">
             Thanks for sending us your ideas. issues, or appreciations Lorem
             ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse a
