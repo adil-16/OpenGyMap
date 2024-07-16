@@ -6,8 +6,8 @@ import {
 } from "react-router-dom";
 import AppLayout from "./layouts/AppLayout/AppLayout";
 import { AuthProvider } from "./Context/AuthContext/AuthContext";
-import PublicRoutes from "./utils/PublicRoutes";
-import PrivateRoutes from "./utils/PrivateRoutes";
+import PublicRoutes from "./utils/Routes/PublicRoutes";
+import PrivateRoutes from "./utils/Routes/PrivateRoutes";
 import Auth from "./pages/Auth/Login/Auth";
 import Signup from "./pages/Auth/Signup/Signup";
 import Otp from "./pages/Auth/OtpVerification/Otp";
