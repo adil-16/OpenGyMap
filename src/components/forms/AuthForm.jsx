@@ -16,7 +16,7 @@ const AuthForm = ({
 }) => {
   return (
     <div>
-      <div className="flex p-1 w-96 border rounded-xl mb-8 bg-gray-200">
+      <div className="flex p-1 lg:w-96 w-80    border rounded-xl mb-8 bg-gray-200">
         <button
           onClick={() => handleButtonClick("phoneNumber")}
           className={`flex-1 px-4 py-2 rounded-xl focus:outline-none ${
@@ -39,7 +39,7 @@ const AuthForm = ({
         </button>
       </div>
       {activeButton === "phoneNumber" && (
-        <div className="flex items-center border-b-2 border-gray-300 py-2 mb-12 w-96">
+        <div className="flex items-center border-b-2 border-gray-300 py-2 mb-12 lg:w-96 md:w-80 sm:64">
           <FlagSelect
             selected={selectedCountry}
             onSelect={(countryCode) => handleCountryChange(countryCode)}
@@ -51,7 +51,7 @@ const AuthForm = ({
             placeholder="Phone Number"
             onChange={handlePhoneChange}
             value={phone}
-            className="appearance-none bg-transparent border-none w-full text-gray-700 py-1 px-2 leading-tight focus:outline-none"
+            className="appearance-none bg-transparent border-none lg:w-full sm:w-[90%] text-gray-700 py-1 px-2 leading-tight focus:outline-none"
           />
         </div>
       )}

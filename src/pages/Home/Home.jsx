@@ -25,7 +25,7 @@ const Home = () => {
           <img
             src="/Home/explode.png"
             alt="Explode Image"
-            className="w-24 ml-4"
+            className="w-24 ml-4  "
           />
           <h1 className="text-4xl lg:text-6xl font-bold mb-4 text-custom-black leading-tight">
             New designs
@@ -43,7 +43,11 @@ const Home = () => {
         </div>
         <div className="flex items-end justify-center lg:justify-end lg:w-1/2 p-4">
           <img src="/Home/star.png" alt="Star" />
-          <img src="/Home/home.png" alt="Basketball" className="rounded-xl" />
+          <img
+            src="/Home/home.png"
+            alt="Basketball"
+            className="rounded-xl mr-24 lg:mr-0"
+          />
         </div>
       </div>
       <div className="w-full max-w-screen-2xl bg-custom-gradient text-white py-12 mt-8 mb-6 rounded-3xl">
@@ -86,23 +90,24 @@ const Home = () => {
       <div className="mt-16 w-full md:w-3/4 lg:w-1/2">
         <SearchBar />
         <div className="flex flex-col md:flex-row justify-between items-center mt-10 w-full">
-          <div className="flex flex-row md:flex-row space-y-4 md:space-y-0 md:space-x-4 items-center">
-            <div className="relative bg-gray-200 border p-2 border-gray-400 rounded-md flex items-center justify-center">
+          <div className="flex flex-row md:flex-row space-y-4 md:space-y-0 space-x-4 items-center">
+            <div className="relative bg-gray-200 border  -mb-4 md:-mb-0 lg:-mb-0 p-2 border-gray-400 rounded-md flex items-center justify-center ">
               <img
                 src="/Home/basketball.png"
                 alt="basketball"
-                className="w-8 h-8"
+                className="  w-14 h-7  md:w-8 md:h-8 lg:w-8 lg:h-8"
               />
+
               <img
                 src="/Home/tick.png"
-                className="absolute -top-1 -right-1 w-4 h-4 bg-custom-blue rounded-sm"
+                className="absolute -top-1  -right-1 w-4 h-4 bg-custom-blue rounded-sm"
               />
             </div>
             <div className="bg-white border p-2 border-gray-400 rounded-md flex items-center justify-center">
               <img
                 src="/Home/football.png"
                 alt="football"
-                className="w-8 h-8"
+                className="w-14 h-7 md:h-8 md:w-6 lg:w-8 lg:h-8"
               />
             </div>
             <div className="relative max-w-sm">
@@ -158,10 +163,10 @@ const Home = () => {
             />
           ))}
         </div>
-      </div>
 
-      <div className="absolute bottom-0 mb-6 right-48 bg-custom-gradient rounded-full p-4">
-        <FaQuestion className="text-white w-8 h-8" />
+        <div className="absolute bottom-0  mb-8 right-4 sm:right-10 bg-custom-gradient rounded-full p-4">
+          <FaQuestion className="text-white w-8 h-8" />
+        </div>
       </div>
     </div>
   );

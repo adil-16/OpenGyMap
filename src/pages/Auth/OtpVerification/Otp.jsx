@@ -35,16 +35,16 @@ const Otp = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen ">
       <div className="hidden md:flex flex-col">
-        <img
-          src="/logo.png"
-          alt="OpenGymMap Logo"
-          className="w-40 ml-8 mt-12"
-        />
+        <img src="/logo.png" alt="OpenGymMap Logo" className="w-40 ml-8 " />
       </div>
-      <div className="flex flex-col items-center justify-center">
-        <img src="/Auth/otp.png" alt="Otp Image" className="w-40" />
+      <div className="flex flex-col items-center justify-center gap-4">
+        <img
+          src="/Auth/otp.png"
+          alt="Otp Image"
+          className="w-40 mt-24 lg:mt-0"
+        />
         <p className="font-semibold text-custom-black text-3xl mt-6">
           Verification
         </p>
@@ -70,8 +70,11 @@ const Otp = () => {
           Resend Otp
         </p>
         <VerifyButton text="Verify" onClick={handleRequestOtp} />
-        <Link to="/" className="text-custom-black font-semibold">
-          <span className="mr-2">&lt;</span> Return to sign up
+        <Link
+          to="/"
+          className="text-custom-black font-semibold mt-3 my-4  md:mt-0 lg:mt-0"
+        >
+          <span className="mr-2 ">&lt;</span> Return to sign up
         </Link>
       </div>
     </div>

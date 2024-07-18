@@ -17,7 +17,7 @@ import Explore from "./pages/Explore/Explore";
 import NotificationProvider from "./Context/NotificationContext/NotificationContext";
 import Requests from "./pages/Requests/Requests";
 import Privacypolicy from "./pages/Privacypolicy/Privacypolicy";
-
+import Exploredetails from "./pages/Exploredetails/Exploredetails";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +54,11 @@ const router = createBrowserRouter([
           {
             path: "/privacypolicy",
             element: <PublicRoutes Component={Privacypolicy} />,
+          },
+
+          {
+            path: "/explore/details/:id",
+            element: <PublicRoutes Component={Exploredetails} />,
           },
         ],
       },

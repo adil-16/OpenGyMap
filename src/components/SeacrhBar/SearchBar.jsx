@@ -3,7 +3,7 @@ import { CiSearch } from "react-icons/ci";
 
 const SearchBar = () => {
   return (
-    <div className="relative">
+    <div className="relative flex-grow">
       <CiSearch className="absolute left-6 top-1/2 transform -translate-y-1/2 text-custom-black font-bold text-4xl" />
       <input
         placeholder="Search by game, venue, location"

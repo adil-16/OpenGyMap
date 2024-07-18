@@ -3,7 +3,7 @@ import React from "react";
 
 const CustomTimeInput = ({ selectedTime, onChange }) => {
   return (
-    <div className="relative w-full md:w-32">
+    <div className="relative py-4    w-[80%] md:w-32 ">
       <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
         <svg
           className="w-5 h-5 text-custom-blue dark:text-custom-blue"

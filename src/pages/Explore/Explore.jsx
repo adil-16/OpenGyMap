@@ -23,8 +23,8 @@ const Explore = () => {
         <div className="w-full md:flex-grow md:w-3/5 lg:w-2/5">
           <SearchBar />
         </div>
-        <div className="flex flex-wrap space-x-4 items-center">
-          <div className="relative bg-gray-200 border p-2 border-gray-400 rounded-md flex items-center justify-center">
+        <div className="flex flex-wrap space-x-4 ml-3 md:ml-0 lg:ml-0 items-center">
+          <div className="relative bg-gray-200 border p-2  border-gray-400 rounded-md flex items-center justify-center">
             <img
               src="/Home/basketball.png"
               alt="basketball"
@@ -44,6 +44,7 @@ const Explore = () => {
               onChange={(date) => setSelectedDate(date)}
             />
           </div>
+
           <CustomTimeInput
             selectedTime={selectedTime}
             onChange={(e) => setSelectedTime(e.target.value)}
@@ -60,6 +61,7 @@ const Explore = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16">
           {CardsData.map((card) => (
             <Card
+              id={card.id}
               key={card.id}
               imageUrl={card.imageUrl}
               rate={card.rate}
@@ -71,6 +73,7 @@ const Explore = () => {
           {CardsData.map((card) => (
             <Card
               key={card.id}
+              id={card.id}
               imageUrl={card.imageUrl}
               rate={card.rate}
               address={card.address}
@@ -80,8 +83,8 @@ const Explore = () => {
           ))}
         </div>
       </div>
-      <div className="flex justify-center py-24">
-        <div className="absolute right-48  bg-custom-gradient rounded-full p-4">
+      <div className=" py-24">
+        <div className="absolute bottom-0  mb-8 right-4 sm:right-10 bg-custom-gradient rounded-full p-4">
           <FaQuestion className="text-white w-8 h-8" />
         </div>
       </div>
