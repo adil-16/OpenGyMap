@@ -2,7 +2,6 @@ import { React, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import CardsData from "../../utils/CardsData/CardsData";
 
-// import { FaLongArrowAltLeft } from "react-icons/fa";
 import { IoMdArrowBack } from "react-icons/io";
 import { FaLocationDot } from "react-icons/fa6";
 import { FaClock } from "react-icons/fa";
@@ -13,9 +12,12 @@ import { CiCircleMinus } from "react-icons/ci";
 import { CiCirclePlus } from "react-icons/ci";
 import Custombutton from "./components/Custombutton";
 import Calenderr from "./components/Calender";
+
+import ReservedAlert from "../../components/Alert/ReservedAlert";
 const Exploredetails = () => {
   const [hours, setHours] = useState(1);
-  const [selectedCourt, setSelectedCourt] = useState("Half Court"); // Initialize selected court
+  const [selectedCourt, setSelectedCourt] = useState("Half Court");
+  const [showReserveAlert, setShowReserveALert] = useState(false);
 
   const navigate = useNavigate();
   const { id } = useParams();
@@ -34,6 +36,10 @@ const Exploredetails = () => {
 
   const handlePlus = () => {
     setHours((prevHours) => prevHours + 1);
+  };
+
+  const handleReservedAlert = () => {
+    setShowReserveALert(true);
   };
 
   return (
@@ -224,18 +230,23 @@ const Exploredetails = () => {
 
           <div className="flex justify-center pb-4">
             <div className="py-4 rounded-lg bg-custom-blue w-40 text-white  text-center  ">
-              <button
-                className=""
-                onClick={() => {
-                  console.log("check Availability is clicked");
-                }}
-              >
+              <button className="" onClick={handleReservedAlert}>
                 Check Availability
               </button>
             </div>
           </div>
         </div>
       </div>
+
+      {showReserveAlert && (
+        <div className=" fixed top-0 left-0 w-full h-full flex items-center justify-center z-20 bg-custom-black bg-opacity-50">
+          <ReservedAlert
+            onClick={() => {
+              setShowReserveALert(false);
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 };
