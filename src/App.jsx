@@ -13,11 +13,12 @@ import Signup from "./pages/Auth/Signup/Signup";
 import Otp from "./pages/Auth/OtpVerification/Otp";
 import Home from "./pages/Home/Home";
 import HomeLayout from "./layouts/HomeLayout/HomeLayout";
+import PaymentLayout from "./layouts/PaymentLayout/PaymentLayout";
 import Explore from "./pages/Explore/Explore";
 import NotificationProvider from "./Context/NotificationContext/NotificationContext";
 import Requests from "./pages/Requests/Requests";
 import Privacypolicy from "./pages/Privacypolicy/Privacypolicy";
-
+import Payment from "./pages/Payment/Payment";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +55,15 @@ const router = createBrowserRouter([
           {
             path: "/privacypolicy",
             element: <PublicRoutes Component={Privacypolicy} />,
+          },
+        ],
+      },
+      {
+        element: <PaymentLayout />,
+        children: [
+          {
+            path: "/payment",
+            element: <PublicRoutes Component={Payment} />,
           },
         ],
       },

@@ -13,21 +13,20 @@ module.exports = {
         "custom-blue": "#2A346C",
         "nav-gray": "#595959",
         "navbar-gray": "#F8F8F8",
-        "request-icon":"#BC0000",
-        
-        "request-button-accepted":"#28C76F",
-        "request-button-notresponse":"#F79E1B",
-        "request-button-decline":"#F1416C",
-        "Privacypolicy-text":"#717171"
-
+        "request-icon": "#BC0000",
+        "payment-gray": "#717171",
+        "request-button-accepted": "#28C76F",
+        "request-button-notresponse": "#F79E1B",
+        "request-button-decline": "#F1416C",
+        "Privacypolicy-text": "#717171",
+        "popup-gray": "#6E6B7B",
       },
       fontFamily: {
-        poppins: ['Poppins', 'sans-serif'],
-        inter: ['Inter', 'sans-serif'],
-
+        poppins: ["Poppins", "sans-serif"],
+        inter: ["Inter", "sans-serif"],
       },
       boxShadow: {
-        'custom-light': '0px -2px 10px 4px rgba(133, 133, 133, 0.12)', // Adjust color and opacity if needed
+        "custom-light": "0px -2px 10px 4px rgba(133, 133, 133, 0.12)",
       },
     },
   },
