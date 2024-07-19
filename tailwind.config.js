@@ -13,6 +13,14 @@ module.exports = {
         "custom-blue": "#2A346C",
         "nav-gray": "#595959",
         "navbar-gray": "#F8F8F8",
+        "request-icon":"#BC0000",
+        
+        "request-button-accepted":"#28C76F",
+        "request-button-notresponse":"#F79E1B",
+        "request-button-decline":"#F1416C",
+        "Privacypolicy-text":"#717171",
+        "Upload-bg":"#282828"
+
         "request-icon": "#BC0000",
         "payment-gray": "#717171",
         "request-button-accepted": "#28C76F",

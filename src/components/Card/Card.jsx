@@ -1,6 +1,8 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-const Card = ({ imageUrl, rate, address, hours, status }) => {
+const Card = ({ id, imageUrl, rate, address, hours, status }) => {
+  const navigate = useNavigate();
   const getStatusStyles = () => {
     if (status === "Open Now") {
       return "bg-white text-custom-black ";
@@ -11,7 +13,10 @@ const Card = ({ imageUrl, rate, address, hours, status }) => {
   };
 
   return (
-    <div className="cursor-pointer flex-shrink-0">
+    <div
+      className="cursor-pointer flex-shrink-0"
+      onClick={() => navigate(`/explore/details/${id}`)}
+    >
       <div className="rounded-lg overflow-hidden relative m-2">
         <img src={imageUrl} alt="Gym Image" className="w-full" />
         <div

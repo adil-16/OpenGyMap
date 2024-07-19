@@ -12,7 +12,11 @@ const Footer = () => {
       <div className="shadow-custom-light">
         <div className="flex flex-col lg:flex-row justify-center  space-y-4 lg:space-y-0 lg:gap-x-40  p-20 ">
           <div className="flex justify-center lg:block">
-            <img className="h-30 w-28" src="/logo.png" alt="this" />
+            <img
+              className="h-30 w-28 object-contain"
+              src="/logo.png"
+              alt="this"
+            />
           </div>
 
           <div className="text-center lg:text-left">

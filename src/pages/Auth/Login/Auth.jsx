@@ -40,7 +40,7 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2">
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2   ">
       <div className="hidden md:flex items-center h-screen col-span-1 relative ">
         <img
           src="/Auth/image1.png"
@@ -53,7 +53,7 @@ const Auth = () => {
           className="absolute top-0 left-0 h-auto w-auto object-contain transform translate-x-1/3"
         />
       </div>
-      <div className="flex flex-col items-center col-span-1">
+      <div className="flex flex-col items-center   col-span-1 ">
         <img
           src="logo1.png"
           alt="OpenGymMap Logo"
@@ -76,9 +76,9 @@ const Auth = () => {
           handlePhoneChange={handlePhoneChange}
         />
         <RequestOtpButton text="Request OTP" onClick={handleRequestOtp} />
-        <p className="text-custom-gray">
+        <p className="text-custom-gray mb-16 md:mb-0 lg:mb-0">
           Not Registered yet?{" "}
-          <Link to={"/signup"} className="text-custom-blue font-semibold">
+          <Link to={"/signup"} className="text-custom-blue font-semibold  ">
             Create an Account
           </Link>
         </p>

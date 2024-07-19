@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import SearchBar from "../../components/SeacrhBar/SearchBar";
 import CustomDateInput from "../../components/DateAndTime/CustomDateInput";
 import CustomTimeInput from "../../components/DateAndTime/CustomTimeInput";
@@ -7,9 +7,36 @@ import CardsData from "../../utils/CardsData/CardsData";
 import Card from "../../components/Card/Card";
 import { FaQuestion } from "react-icons/fa";
 
+import SearchAlert from "../../components/Alert/SearchAlert";
+
 const Explore = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState("");
+  const [showAlert, setShowALert] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // const handleSearch = () => {
+  //   const filteredCards = CardsData.filter((card) =>
+  //     card.address.toLowerCase().includes(searchQuery.toLowerCase())
+  //   );
+
+  //   if (filteredCards.length === 0) {
+  //     setShowALert(true);
+  //   } else {
+  //     setShowALert(false);
+  //   }
+
+  //   return filteredCards;
+  // };
+
+  const filteredCards = useMemo(() => {
+    const filtered = CardsData.filter((card) =>
+      card.address.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    setShowALert(filtered.length === 0);
+    return filtered;
+  }, [searchQuery]);
 
   const getRandomStatus = () => {
     const statuses = ["Open Now", "Already Booked"];
@@ -18,13 +45,20 @@ const Explore = () => {
   };
 
   return (
-    <div className="mt-10 px-4 md:px-8 lg:px-16 relative">
+    <div
+      className={` mt-10 px-4 md:px-8 lg:px-16 relative 
+       
+      `}
+    >
       <div className="flex flex-wrap items-center justify-between gap-6">
         <div className="w-full md:flex-grow md:w-3/5 lg:w-2/5">
-          <SearchBar />
+          <SearchBar
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
-        <div className="flex flex-wrap space-x-4 items-center">
-          <div className="relative bg-gray-200 border p-2 border-gray-400 rounded-md flex items-center justify-center">
+        <div className="flex flex-wrap space-x-4 ml-3 md:ml-0 lg:ml-0 items-center">
+          <div className="relative bg-gray-200 border p-2  border-gray-400 rounded-md flex items-center justify-center">
             <img
               src="/Home/basketball.png"
               alt="basketball"
@@ -44,6 +78,7 @@ const Explore = () => {
               onChange={(date) => setSelectedDate(date)}
             />
           </div>
+
           <CustomTimeInput
             selectedTime={selectedTime}
             onChange={(e) => setSelectedTime(e.target.value)}
@@ -53,23 +88,19 @@ const Explore = () => {
           <button className="bg-navbar-gray rounded-full w-28 h-10 text-custom-blue border border-custom-blue">
             Near Me
           </button>
-          <SearchButton text="Search" />
+          <SearchButton
+            text="Search"
+            onClick={() => {
+              console.log("button is clicked");
+            }}
+          />
         </div>
       </div>
       <div className="mt-20 flex flex-col items-center">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16">
-          {CardsData.map((card) => (
+          {filteredCards.map((card) => (
             <Card
-              key={card.id}
-              imageUrl={card.imageUrl}
-              rate={card.rate}
-              address={card.address}
-              hours={card.hours}
-              status={getRandomStatus()}
-            />
-          ))}
-          {CardsData.map((card) => (
-            <Card
+              id={card.id}
               key={card.id}
               imageUrl={card.imageUrl}
               rate={card.rate}
@@ -80,11 +111,17 @@ const Explore = () => {
           ))}
         </div>
       </div>
-      <div className="flex justify-center py-24">
-        <div className="absolute right-48  bg-custom-gradient rounded-full p-4">
+      <div className=" py-24">
+        <div className="absolute bottom-0  mb-8 right-4 sm:right-10 bg-custom-gradient rounded-full p-4">
           <FaQuestion className="text-white w-8 h-8" />
         </div>
       </div>
+
+      {showAlert && (
+        <div className=" fixed top-0 left-0 w-full h-full flex items-center justify-center z-20 bg-gray-100 bg-opacity-50">
+          <SearchAlert />
+        </div>
+      )}
     </div>
   );
 };

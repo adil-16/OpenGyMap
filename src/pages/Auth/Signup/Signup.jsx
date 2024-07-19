@@ -53,11 +53,11 @@ const Signup = () => {
           className="absolute top-0 left-0 h-auto w-auto object-contain transform translate-x-1/3"
         />
       </div>
-      <div className="flex flex-col items-center col-span-1">
+      <div className="flex flex-col items-center col-span-1 gap-3">
         <img
           src="/logo.png"
           alt="OpenGymMap Logo"
-          className="w-40 mb-10 mt-6"
+          className="w-40 mb-10  lg:my-12 my-24"
         />
         <h1 className="text-4xl font-semibold mb-4 text-custom-black">
           Create an account

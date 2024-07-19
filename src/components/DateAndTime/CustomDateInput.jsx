@@ -7,12 +7,12 @@ const CustomDateInput = ({ selectedDate, onChange }) => {
     <DatePicker
       selected={selectedDate}
       onChange={onChange}
-      className="relative w-32 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 flex items-center justify-center"
+      className="relative  bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 flex items-center justify-center  md:w-32 w-full"
       customInput={
         <button className="flex items-center justify-center">
-          <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-2 lg:pl-4 pointer-events-none">
             <svg
-              className="w-5 h-5 text-custom-blue dark:text-custom-blue"
+              className=" w-4 h-4 lg:w-5 lg:h-5 text-custom-blue dark:text-custom-blue"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"

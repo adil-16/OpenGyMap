@@ -18,6 +18,9 @@ import Explore from "./pages/Explore/Explore";
 import NotificationProvider from "./Context/NotificationContext/NotificationContext";
 import Requests from "./pages/Requests/Requests";
 import Privacypolicy from "./pages/Privacypolicy/Privacypolicy";
+import Exploredetails from "./pages/Exploredetails/Exploredetails";
+import SettingLayout from "./layouts/SettingsLayout/SettingLayout";
+import PersonalInformation from "./pages/Settings/Personalnformation/PersonalInformation";
 import Payment from "./pages/Payment/Payment";
 
 const router = createBrowserRouter([
@@ -56,8 +59,26 @@ const router = createBrowserRouter([
             path: "/privacypolicy",
             element: <PublicRoutes Component={Privacypolicy} />,
           },
+
+          {
+            path: "/explore/details/:id",
+            element: <PublicRoutes Component={Exploredetails} />,
+          },
         ],
       },
+
+      // Setting Layout
+
+      {
+        element: <SettingLayout />,
+        children: [
+          {
+            path: "/setting",
+            element: <PublicRoutes Component={PersonalInformation} />,
+          },
+        ],
+      },
+
       {
         element: <PaymentLayout />,
         children: [
