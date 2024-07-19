@@ -18,7 +18,8 @@ module.exports = {
         "request-button-accepted":"#28C76F",
         "request-button-notresponse":"#F79E1B",
         "request-button-decline":"#F1416C",
-        "Privacypolicy-text":"#717171"
+        "Privacypolicy-text":"#717171",
+        "Upload-bg":"#282828"
 
       },
       fontFamily: {

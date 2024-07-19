@@ -18,6 +18,8 @@ import NotificationProvider from "./Context/NotificationContext/NotificationCont
 import Requests from "./pages/Requests/Requests";
 import Privacypolicy from "./pages/Privacypolicy/Privacypolicy";
 import Exploredetails from "./pages/Exploredetails/Exploredetails";
+import SettingLayout from "./layouts/SettingsLayout/SettingLayout";
+import PersonalInformation from "./pages/Settings/Personalnformation/PersonalInformation";
 
 const router = createBrowserRouter([
   {
@@ -62,6 +64,19 @@ const router = createBrowserRouter([
           },
         ],
       },
+
+      // Setting Layout
+
+      {
+        element: <SettingLayout />,
+        children: [
+          {
+            path: "/setting",
+            element: <PublicRoutes Component={PersonalInformation} />,
+          },
+        ],
+      },
+
       {
         path: "*",
         element: <Navigate to="/" replace />,
