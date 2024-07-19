@@ -21,7 +21,7 @@ const CardPopup = ({ onClose, onAddAnotherCard }) => {
             <div className="flex items-center justify-between p-4 rounded-lg">
               <div className="flex items-center">
                 <img
-                  src="/Payment/card.png"
+                  src="/Payment/mastercard.png"
                   alt="Card 1"
                   className="w-12 h-8"
                 />
@@ -34,7 +34,7 @@ const CardPopup = ({ onClose, onAddAnotherCard }) => {
             <div className="flex items-center justify-between p-4 rounded-lg">
               <div className="flex items-center">
                 <img
-                  src="/Payment/card.png"
+                  src="/Payment/mastercard.png"
                   alt="Card 2"
                   className="w-12 h-8"
                 />

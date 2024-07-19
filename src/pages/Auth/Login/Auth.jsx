@@ -55,7 +55,7 @@ const Auth = () => {
       </div>
       <div className="flex flex-col items-center   col-span-1 ">
         <img
-          src="logo1.png"
+          src="logo.png"
           alt="OpenGymMap Logo"
           className="w-40 mb-16 mt-12 object-contain"
         />

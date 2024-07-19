@@ -1,74 +1,73 @@
 .custom-calendar .p-datepicker {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
+
 .custom-calendar {
   width: 400px;
 }
 
-.custom-calendar thead[data-pc-section="tableheader"] th[data-pc-section="tableheadercell"] span[data-pc-section="weekday"] {
-  color: #717171CC !important; 
+.custom-calendar
+  thead[data-pc-section="tableheader"]
+  th[data-pc-section="tableheadercell"]
+  span[data-pc-section="weekday"] {
+  color: #717171cc !important;
   font-weight: 600;
-  
 }
 
 .custom-calendar .p-datepicker-header {
-  
-  display:none
+  display: none;
 }
+
 .custom-calendar .p-datepicker-calendar span.p-highlight {
-   background: linear-gradient(360deg, #2A346C 14.84%, #3971A1 103.16%);
-
-  color: white !important; 
-  padding: 5px; 
+  background: linear-gradient(360deg, #2a346c 14.84%, #3971a1 103.16%);
+  color: white !important;
+  padding: 5px;
 }
-
-
 
 .custom-calendar .p-datepicker-calendar-container {
   padding-top: 1rem;
 }
 
-.custom-calendar tbody[data-pc-section="tablebody"] td[data-pc-section="day"] span[data-pc-section="daylabel"] {
-  color:  #2E2E2E80;
+.custom-calendar
+  tbody[data-pc-section="tablebody"]
+  td[data-pc-section="day"]
+  span[data-pc-section="daylabel"] {
+  color: #2e2e2e80;
   margin-left: 10px !important;
-  font-weight: 400; 
+  font-weight: 400;
 }
 
-.custom-calendar tbody[data-pc-section="tablebody"] td.p-datepicker-other-month span[data-pc-section="daylabel"] {
-  color:  #2B2B2B26;
-  font-weight: 700; 
+.custom-calendar
+  tbody[data-pc-section="tablebody"]
+  td.p-datepicker-other-month
+  span[data-pc-section="daylabel"] {
+  color: #2b2b2b26;
+  font-weight: 700;
 }
 
-.custom-calendar tbody[data-pc-section="tablebody"] td.p-datepicker-today span[data-pc-section="daylabel"] {
-  color: #2E2E2E80; 
-  font-weight: 400; 
-
-
+.custom-calendar
+  tbody[data-pc-section="tablebody"]
+  td.p-datepicker-today
+  span[data-pc-section="daylabel"] {
+  color: #2e2e2e80;
+  font-weight: 400;
 }
-
 
 @media (max-width: 576px) {
   .custom-calendar {
-    width: 100%; 
-  }
-
-  .custom-calendar tbody[data-pc-section="tablebody"] td[data-pc-section="day"] span[data-pc-section="daylabel"] {
-    color:  #2E2E2E80;
-    font-weight: 400; 
+    width: 100%;
   }
 }
 
 @media (max-width: 1024px) {
   .custom-calendar {
-    width: 100%; 
+    width: 100%;
   }
 
-  .custom-calendar tbody[data-pc-section="tablebody"] td[data-pc-section="day"] span[data-pc-section="daylabel"] {
-    color:  #2E2E2E80;
+  .custom-calendar
+    tbody[data-pc-section="tablebody"]
+    td[data-pc-section="day"]
+    span[data-pc-section="daylabel"] {
     margin-left: 34px !important;
-    font-weight: 400; 
   }
 }
-
-
-
