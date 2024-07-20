@@ -6,6 +6,8 @@ module.exports = {
       backgroundImage: {
         "custom-gradient":
           "linear-gradient(360deg, #2A346C 14.84%, #3971A1 103.16%)",
+        "custom-red-gradient":
+          "linear-gradient(180deg, #FF5630 0%, #99341D 100%)",
       },
       colors: {
         "custom-black": "#252525",
@@ -13,22 +15,27 @@ module.exports = {
         "custom-blue": "#2A346C",
         "nav-gray": "#595959",
         "navbar-gray": "#F8F8F8",
-        "request-icon":"#BC0000",
-        
-        "request-button-accepted":"#28C76F",
-        "request-button-notresponse":"#F79E1B",
-        "request-button-decline":"#F1416C",
-        "Privacypolicy-text":"#717171",
-        "Upload-bg":"#282828"
+        "request-icon": "#BC0000",
 
+        "request-button-accepted": "#28C76F",
+        "request-button-notresponse": "#F79E1B",
+        "request-button-decline": "#F1416C",
+        "Privacypolicy-text": "#717171",
+        "Upload-bg": "#282828",
+        "request-icon": "#BC0000",
+        "payment-gray": "#717171",
+        "request-button-accepted": "#28C76F",
+        "request-button-notresponse": "#F79E1B",
+        "request-button-decline": "#F1416C",
+        "Privacypolicy-text": "#717171",
+        "popup-gray": "#6E6B7B",
       },
       fontFamily: {
-        poppins: ['Poppins', 'sans-serif'],
-        inter: ['Inter', 'sans-serif'],
-
+        poppins: ["Poppins", "sans-serif"],
+        inter: ["Inter", "sans-serif"],
       },
       boxShadow: {
-        'custom-light': '0px -2px 10px 4px rgba(133, 133, 133, 0.12)', // Adjust color and opacity if needed
+        "custom-light": "0px -2px 10px 4px rgba(133, 133, 133, 0.12)",
       },
     },
   },

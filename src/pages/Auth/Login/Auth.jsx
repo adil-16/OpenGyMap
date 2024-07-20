@@ -55,9 +55,9 @@ const Auth = () => {
       </div>
       <div className="flex flex-col items-center   col-span-1 ">
         <img
-          src="/logo.png"
+          src="logo.png"
           alt="OpenGymMap Logo"
-          className="w-40 mb-16 lg:my-12 my-24 "
+          className="w-40 mb-16 mt-12 object-contain"
         />
         <h1 className="text-4xl font-semibold mb-4 text-custom-black">
           Login Account

@@ -23,7 +23,7 @@ const ReservedAlert = ({ onClick }) => {
       <div className="">
         <p className="text-custom-gray font-medium font inter text-base text-center">
           <span className="text-custom-gray font-bold font inter  ">
-            Soory!
+            Sorry!
           </span>{" "}
           but the court on{" "}
           <span className="text-custom-gray font-bold font inter">

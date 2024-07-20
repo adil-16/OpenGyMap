@@ -13,6 +13,7 @@ import Signup from "./pages/Auth/Signup/Signup";
 import Otp from "./pages/Auth/OtpVerification/Otp";
 import Home from "./pages/Home/Home";
 import HomeLayout from "./layouts/HomeLayout/HomeLayout";
+import PaymentLayout from "./layouts/PaymentLayout/PaymentLayout";
 import Explore from "./pages/Explore/Explore";
 import NotificationProvider from "./Context/NotificationContext/NotificationContext";
 import Requests from "./pages/Requests/Requests";
@@ -20,7 +21,11 @@ import Privacypolicy from "./pages/Privacypolicy/Privacypolicy";
 import Exploredetails from "./pages/Exploredetails/Exploredetails";
 import SettingLayout from "./layouts/SettingsLayout/SettingLayout";
 import PersonalInformation from "./pages/Settings/Personalnformation/PersonalInformation";
-import Payment from "./pages/Settings/Payment/Payment";
+import Payment from "./pages/Payment/Payment";
+import MyBookings from "./pages/Settings/MyBookings/MyBookings";
+import MyFacility from "./pages/Settings/MyFacility/MyFacility";
+import SettingsPayment from "./pages/Settings/Payment/Payment";
+import Address from "./pages/Settings/Address/Address";
 
 const router = createBrowserRouter([
   {
@@ -75,14 +80,34 @@ const router = createBrowserRouter([
             path: "/setting",
             element: <PublicRoutes Component={PersonalInformation} />,
           },
-
+          {
+            path: "/settings/mybookings",
+            element: <PublicRoutes Component={MyBookings} />,
+          },
+          {
+            path: "/settings/myfacility",
+            element: <PublicRoutes Component={MyFacility} />,
+          },
           {
             path: "/settings/payment",
-            element: <PublicRoutes Component={Payment} />,
+            element: <PublicRoutes Component={SettingsPayment} />,
+          },
+          {
+            path: "/settings/address",
+            element: <PublicRoutes Component={Address} />,
           },
         ],
       },
 
+      {
+        element: <PaymentLayout />,
+        children: [
+          {
+            path: "/payment",
+            element: <PublicRoutes Component={Payment} />,
+          },
+        ],
+      },
       {
         path: "*",
         element: <Navigate to="/" replace />,
