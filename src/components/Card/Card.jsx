@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 
 const Card = ({ id, imageUrl, rate, address, hours, status }) => {
   const navigate = useNavigate();
+
   const getStatusStyles = () => {
     if (status === "Open Now") {
-      return "bg-white text-custom-black ";
+      return "bg-white text-custom-black";
     } else if (status === "Already Booked") {
       return "bg-orange-500 text-white";
     }
@@ -15,7 +16,7 @@ const Card = ({ id, imageUrl, rate, address, hours, status }) => {
   return (
     <div
       className="cursor-pointer flex-shrink-0"
-      onClick={() => navigate(`/explore/details/${id}`)}
+      onClick={() => navigate(`/explore/details/${id}`, { state: { status } })}
     >
       <div className="rounded-lg overflow-hidden relative m-2">
         <img src={imageUrl} alt="Gym Image" className="w-full" />
