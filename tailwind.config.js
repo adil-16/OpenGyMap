@@ -6,6 +6,8 @@ module.exports = {
       backgroundImage: {
         "custom-gradient":
           "linear-gradient(360deg, #2A346C 14.84%, #3971A1 103.16%)",
+        "custom-red-gradient":
+          "linear-gradient(180deg, #FF5630 0%, #99341D 100%)",
       },
       colors: {
         "custom-black": "#252525",

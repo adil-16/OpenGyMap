@@ -22,6 +22,8 @@ import Exploredetails from "./pages/Exploredetails/Exploredetails";
 import SettingLayout from "./layouts/SettingsLayout/SettingLayout";
 import PersonalInformation from "./pages/Settings/Personalnformation/PersonalInformation";
 import Payment from "./pages/Payment/Payment";
+import MyBookings from "./pages/Settings/MyBookings/MyBookings";
+import MyFacility from "./pages/Settings/MyFacility/MyFacility";
 
 const router = createBrowserRouter([
   {
@@ -75,6 +77,14 @@ const router = createBrowserRouter([
           {
             path: "/setting",
             element: <PublicRoutes Component={PersonalInformation} />,
+          },
+          {
+            path: "/settings/mybookings",
+            element: <PublicRoutes Component={MyBookings} />,
+          },
+          {
+            path: "/settings/myfacility",
+            element: <PublicRoutes Component={MyFacility} />,
           },
         ],
       },
