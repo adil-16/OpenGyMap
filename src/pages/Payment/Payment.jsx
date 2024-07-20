@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { IoMdArrowBack } from "react-icons/io";
 import PayButton from "../../components/buttons/Verify";
 import GymDetails from "./Components/GymDetails";
@@ -6,8 +6,19 @@ import UserDetails from "./Components/UserDetails";
 import BookingSummary from "./Components/BookingSummary";
 import PriceSummary from "./Components/PriceSummary";
 import PaymentOptions from "./Components/PaymentOptions";
+import SuccessPopup from "../../components/popups/PaymentPopups/SuccessPopup";
 
 const Payment = () => {
+  const [showPopup, setShowPopup] = useState(false);
+
+  const handlePayClick = () => {
+    setShowPopup(true);
+  };
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
+  };
+
   return (
     <div className="p-6 md:p-12">
       <div className="flex items-center mb-6">
@@ -33,8 +44,9 @@ const Payment = () => {
       </div>
 
       <div className="mt-20 text-right">
-        <PayButton text="Pay $84.14" />
+        <PayButton text="Pay $84.14" onClick={handlePayClick} />
       </div>
+      {showPopup && <SuccessPopup onClose={handleClosePopup} />}
     </div>
   );
 };
