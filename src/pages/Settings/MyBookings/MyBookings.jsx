@@ -3,7 +3,7 @@ import bookings from "../../../utils/BookingsData/BookingsData";
 
 const MyBookings = () => {
   return (
-    <div className="flex flex-col items-start p-6">
+    <div className="flex flex-col items-start">
       <h1 className="text-2xl font-semibold mb-2 pl-4">
         My Bookings ({bookings.length})
       </h1>

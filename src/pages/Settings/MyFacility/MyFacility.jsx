@@ -4,7 +4,7 @@ import facilities from "../../../utils/FacilitiesData/FacilitiesData";
 
 const MyFacility = () => {
   return (
-    <div className="p-6">
+    <div>
       <h1 className="text-2xl font-semibold mb-4">
         My Facility ({facilities.length})
       </h1>

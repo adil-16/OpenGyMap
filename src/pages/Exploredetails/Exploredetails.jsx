@@ -1,7 +1,6 @@
 import { React, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import CardsData from "../../utils/CardsData/CardsData";
-
 import { IoMdArrowBack } from "react-icons/io";
 import { FaLocationDot } from "react-icons/fa6";
 import { FaClock } from "react-icons/fa";

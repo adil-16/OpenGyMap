@@ -52,7 +52,7 @@ const SettingSidebar = () => {
           <IoIosArrowForward className="text-request-icon w-5 h-5" />
         </div>
 
-        <div className="flex justify-between items-center ">
+        <div className="flex justify-between items-center pt-4">
           <p className="text-custom-black font-inter text-base font-medium">
             Logout
           </p>

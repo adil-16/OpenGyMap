@@ -39,7 +39,6 @@ const DeleteAccountModal = ({ isOpen, onClose }) => {
             <button
               className="bg-custom-red-gradient text-white rounded-full px-20 py-3 font-medium"
               onClick={() => {
-                // Add delete account logic here
                 onClose();
               }}
             >

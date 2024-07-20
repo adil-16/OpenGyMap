@@ -24,6 +24,8 @@ import PersonalInformation from "./pages/Settings/Personalnformation/PersonalInf
 import Payment from "./pages/Payment/Payment";
 import MyBookings from "./pages/Settings/MyBookings/MyBookings";
 import MyFacility from "./pages/Settings/MyFacility/MyFacility";
+import SettingsPayment from "./pages/Settings/Payment/Payment";
+import Address from "./pages/Settings/Address/Address";
 
 const router = createBrowserRouter([
   {
@@ -85,6 +87,14 @@ const router = createBrowserRouter([
           {
             path: "/settings/myfacility",
             element: <PublicRoutes Component={MyFacility} />,
+          },
+          {
+            path: "/settings/payment",
+            element: <PublicRoutes Component={SettingsPayment} />,
+          },
+          {
+            path: "/settings/address",
+            element: <PublicRoutes Component={Address} />,
           },
         ],
       },
