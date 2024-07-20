@@ -20,6 +20,7 @@ import Privacypolicy from "./pages/Privacypolicy/Privacypolicy";
 import Exploredetails from "./pages/Exploredetails/Exploredetails";
 import SettingLayout from "./layouts/SettingsLayout/SettingLayout";
 import PersonalInformation from "./pages/Settings/Personalnformation/PersonalInformation";
+import Payment from "./pages/Settings/Payment/Payment";
 
 const router = createBrowserRouter([
   {
@@ -73,6 +74,11 @@ const router = createBrowserRouter([
           {
             path: "/setting",
             element: <PublicRoutes Component={PersonalInformation} />,
+          },
+
+          {
+            path: "/settings/payment",
+            element: <PublicRoutes Component={Payment} />,
           },
         ],
       },
