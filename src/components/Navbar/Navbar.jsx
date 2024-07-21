@@ -37,7 +37,7 @@ const Navbar = () => {
 
   const handleLinkClick = (path) => {
     setActiveLink(path);
-    localStorage.setItem("activeLink", path);
+    // localStorage.setItem("activeLink", path);
 
     console.log("activeLink is", path);
   };
