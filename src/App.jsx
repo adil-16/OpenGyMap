@@ -30,6 +30,8 @@ import AddFacility from "./pages/Settings/AddFacility/AddFacility";
 import FacilityDetails from "./pages/Settings/FacilityDetails/FacilityDetails";
 import { ImageProvider } from "./Context/ImageContext/ImageContext";
 
+import { FacilitiesDataProvider } from "./Context/FacilitiesDataContext/FacilitiesDataContext";
+
 const router = createBrowserRouter([
   {
     element: <AppLayout />,
@@ -134,7 +136,9 @@ const App = () => {
       <AuthProvider>
         <NotificationProvider>
           <ImageProvider>
-            <RouterProvider router={router} />
+            <FacilitiesDataProvider>
+              <RouterProvider router={router} />
+            </FacilitiesDataProvider>
           </ImageProvider>
         </NotificationProvider>
       </AuthProvider>

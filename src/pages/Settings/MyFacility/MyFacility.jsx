@@ -1,10 +1,14 @@
 import React from "react";
 import FacilityCard from "../components/FacilityCard";
-import facilities from "../../../utils/FacilitiesData/FacilitiesData";
+// import facilities from "../../../utils/FacilitiesData/FacilitiesData";
 import { useNavigate } from "react-router-dom";
+
+import { useFacilitiesData } from "../../../Context/FacilitiesDataContext/FacilitiesDataContext";
 
 const MyFacility = () => {
   const navigate = useNavigate();
+  const { data: facilities } = useFacilitiesData(); // Get facilities data from context
+
   return (
     <div>
       <h1 className="text-2xl font-semibold mb-4">
@@ -18,7 +22,14 @@ const MyFacility = () => {
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {facilities.map((facility) => (
-              <FacilityCard key={facility.id} {...facility} />
+              <FacilityCard
+                key={facility.id}
+                id={facility.id}
+                imageUrls={facility.imageUrls}
+                rate={facility.pricePerHour}
+                address={facility.location}
+                hours={`Monday-Friday ${facility.startingTime} - ${facility.closingTime}`}
+              />
             ))}
           </div>
         </div>

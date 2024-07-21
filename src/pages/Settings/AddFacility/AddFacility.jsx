@@ -48,14 +48,14 @@ const AddFacility = () => {
       startingTime,
       closingTime,
       pricePerHour,
-      images, // Include images in facility data
+      images,
     };
 
     navigate("/facilitydetails", { state: { facilityData } });
   };
 
   return (
-    <div className="p-8 px-12">
+    <div className="p-4 sm:p-8 px-4 sm:px-12 ">
       {/* Profile and icon */}
 
       <div className="flex space-x-2 items-center ">
@@ -65,7 +65,7 @@ const AddFacility = () => {
         </p>
       </div>
 
-      <div className="flex py-4">
+      <div className=" flex flex-col lg:flex lg:flex-row py-4">
         <div className="flex-1 ">
           <p className="font-inter font-semibold text-lg">Facility details</p>
 
@@ -238,7 +238,7 @@ const AddFacility = () => {
         {/* Slider */}
         <div className="flex-1  ">
           <div>
-            <p className="font-inter px-12 font-semibold text-lg">Gallery</p>
+            <p className="font-inter font-semibold text-lg">Gallery</p>
 
             <div className="py-4 ">
               <Slider
@@ -249,7 +249,14 @@ const AddFacility = () => {
             </div>
 
             <div className="flex space-x-4 justify-center items-end h-96 ">
-              <Button bgColor="bg-white" text="Cancel" textColor="text-black" />
+              <Button
+                bgColor="bg-white"
+                text="Cancel"
+                textColor="text-black"
+                onClick={() => {
+                  navigate(-1);
+                }}
+              />
 
               <Button
                 onClick={handleSave}

@@ -1,23 +1,43 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { RxArrowLeft } from "react-icons/rx";
 import { FaClock } from "react-icons/fa6";
 import { MdLocationPin } from "react-icons/md";
 import Slider from "./components/Slider";
 import Button from "../AddFacility/components/Button";
 
+import { useFacilitiesData } from "../../../Context/FacilitiesDataContext/FacilitiesDataContext";
+
 const FacilityDetails = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { addFacility } = useFacilitiesData();
+
   const facilityData = location.state?.facilityData;
 
   if (!facilityData) {
     return <p>No facility data found.</p>;
   }
+  const handleSave = () => {
+    const facilityToSave = {
+      ...facilityData,
+      imageUrls: facilityData.images || [],
+    };
+
+    console.log("Facility Data:", facilityToSave);
+    addFacility(facilityToSave);
+    navigate("/settings/myfacility");
+  };
 
   return (
     <div className="p-8 px-6">
       <div className="flex space-x-2 items-center ">
-        <RxArrowLeft className="h-6 w-6" />
+        <RxArrowLeft
+          onClick={() => {
+            navigate(-1);
+          }}
+          className="h-6 w-6"
+        />
         <p className="text-custom-black  text-2xl font-inter font-semibold">
           Review and Add
         </p>
@@ -82,12 +102,17 @@ const FacilityDetails = () => {
           </div>
 
           <div className="flex space-x-4 justify-center items-end h-96 ">
-            <Button bgColor="bg-white" text="Cancel" textColor="text-black" />
+            <Button
+              bgColor="bg-white"
+              text="Cancel"
+              onClick={() => {
+                navigate(-1);
+              }}
+              textColor="text-black"
+            />
 
             <Button
-              onClick={() => {
-                console.log("button is clicked");
-              }}
+              onClick={handleSave}
               bgColor="bg-custom-gradient"
               text="Add"
               textColor="text-white"

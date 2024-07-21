@@ -8,9 +8,11 @@ const DaySign = ({
 }) => {
   return (
     <div
-      className={`flex items-center justify-center w-10 h-10 rounded-full  ${bgColor} ${borderColor} border`}
+      className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full ${bgColor} ${borderColor} border`}
     >
-      <span className={`${textColor} font-medium text-xl`}>{text}</span>
+      <span className={`${textColor} font-medium text-sm sm:text-xl`}>
+        {text}
+      </span>
     </div>
   );
 };
