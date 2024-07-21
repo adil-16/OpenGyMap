@@ -1,8 +1,10 @@
 import React from "react";
 import FacilityCard from "../components/FacilityCard";
 import facilities from "../../../utils/FacilitiesData/FacilitiesData";
+import { useNavigate } from "react-router-dom";
 
 const MyFacility = () => {
+  const navigate = useNavigate();
   return (
     <div>
       <h1 className="text-2xl font-semibold mb-4">
@@ -34,7 +36,12 @@ const MyFacility = () => {
               </p>
             </div>
           </div>
-          <button className="bg-white text-custom-blue font-semibold py-4 px-16 border rounded-full mt-6">
+          <button
+            onClick={() => {
+              navigate("/addfacility");
+            }}
+            className="bg-white text-custom-blue font-semibold py-4 px-16 border rounded-full mt-6"
+          >
             Add a facility
           </button>
         </div>

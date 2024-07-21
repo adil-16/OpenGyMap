@@ -6,13 +6,25 @@ import Notification from "../Notification/Notification";
 const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
-  const [activeLink, setActiveLink] = useState("/homepage");
+  const [activeLink, setActiveLink] = useState(window.location.pathname);
+
+  // useEffect(() => {
+  //   const storedActiveLink = localStorage.getItem("activeLink");
+  //   if (storedActiveLink) {
+  //     setActiveLink(storedActiveLink);
+  //   }
+  // }, []);
 
   useEffect(() => {
-    const storedActiveLink = localStorage.getItem("activeLink");
-    if (storedActiveLink) {
-      setActiveLink(storedActiveLink);
-    }
+    const handleLocationChange = () => {
+      setActiveLink(window.location.pathname);
+    };
+
+    window.addEventListener("popstate", handleLocationChange);
+
+    return () => {
+      window.removeEventListener("popstate", handleLocationChange);
+    };
   }, []);
 
   const toggleDropdown = () => {
