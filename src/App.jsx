@@ -26,6 +26,9 @@ import MyBookings from "./pages/Settings/MyBookings/MyBookings";
 import MyFacility from "./pages/Settings/MyFacility/MyFacility";
 import SettingsPayment from "./pages/Settings/Payment/Payment";
 import Address from "./pages/Settings/Address/Address";
+import AddFacility from "./pages/Settings/AddFacility/AddFacility";
+import FacilityDetails from "./pages/Settings/FacilityDetails/FacilityDetails";
+import { ImageProvider } from "./Context/ImageContext/ImageContext";
 
 const router = createBrowserRouter([
   {
@@ -106,6 +109,15 @@ const router = createBrowserRouter([
             path: "/payment",
             element: <PublicRoutes Component={Payment} />,
           },
+
+          {
+            path: "/addfacility",
+            element: <PublicRoutes Component={AddFacility} />,
+          },
+          {
+            path: "/facilitydetails",
+            element: <PublicRoutes Component={FacilityDetails} />,
+          },
         ],
       },
       {
@@ -121,7 +133,9 @@ const App = () => {
     <>
       <AuthProvider>
         <NotificationProvider>
-          <RouterProvider router={router} />
+          <ImageProvider>
+            <RouterProvider router={router} />
+          </ImageProvider>
         </NotificationProvider>
       </AuthProvider>
     </>

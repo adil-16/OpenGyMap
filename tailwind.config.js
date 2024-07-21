@@ -16,6 +16,8 @@ module.exports = {
         "nav-gray": "#595959",
         "navbar-gray": "#F8F8F8",
         "request-icon": "#BC0000",
+        "border-color":"#979797",
+        "placeholder-color":"#59595980",
 
         "request-button-accepted": "#28C76F",
         "request-button-notresponse": "#F79E1B",
@@ -29,6 +31,8 @@ module.exports = {
         "request-button-decline": "#F1416C",
         "Privacypolicy-text": "#717171",
         "popup-gray": "#6E6B7B",
+
+        
       },
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],
