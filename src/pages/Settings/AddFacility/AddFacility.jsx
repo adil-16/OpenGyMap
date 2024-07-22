@@ -58,8 +58,13 @@ const AddFacility = () => {
     <div className="p-4 sm:p-8 px-4 sm:px-12 ">
       {/* Profile and icon */}
 
-      <div className="flex space-x-2 items-center ">
-        <RxArrowLeft className="h-6 w-6" />
+      <div
+        className="flex space-x-2 items-center cursor-pointer "
+        onClick={() => {
+          navigate(-1);
+        }}
+      >
+        <RxArrowLeft className="h-6 w-6 " />
         <p className="text-custom-black  text-2xl font-inter font-semibold">
           Add a Facility
         </p>

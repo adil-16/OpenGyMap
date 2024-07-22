@@ -31,7 +31,7 @@ const FacilityDetails = () => {
 
   return (
     <div className="p-8 px-6">
-      <div className="flex space-x-2 items-center ">
+      <div className="flex  space-x-2 items-center ">
         <RxArrowLeft
           onClick={() => {
             navigate(-1);
@@ -43,7 +43,7 @@ const FacilityDetails = () => {
         </p>
       </div>
 
-      <div className="flex">
+      <div className="flex flex-col lg:flex-row">
         <div className="flex-1 py-4 ">
           <div className="flex justify-between">
             <p className="font-poppins text-2xl font-semibold">
