@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import CardsData from "../../utils/CardsData/CardsData";
 import { IoMdArrowBack } from "react-icons/io";
 import { FaLocationDot } from "react-icons/fa6";
@@ -11,8 +11,8 @@ import { CiCircleMinus } from "react-icons/ci";
 import { CiCirclePlus } from "react-icons/ci";
 import Custombutton from "./components/Custombutton";
 import Calenderr from "./components/Calender";
-
 import ReservedAlert from "../../components/Alert/ReservedAlert";
+
 const Exploredetails = () => {
   const [hours, setHours] = useState(1);
   const [selectedCourt, setSelectedCourt] = useState("Half Court");
@@ -20,6 +20,8 @@ const Exploredetails = () => {
 
   const navigate = useNavigate();
   const { id } = useParams();
+  const location = useLocation();
+  const { status } = location.state || {};
 
   const cardId = parseInt(id, 10);
 
@@ -50,8 +52,12 @@ const Exploredetails = () => {
     setHours((prevHours) => prevHours + 1);
   };
 
-  const handleReservedAlert = () => {
-    setShowReserveALert(true);
+  const handleCheckAvailability = () => {
+    if (status === "Open Now") {
+      navigate("/payment");
+    } else if (status === "Already Booked") {
+      setShowReserveALert(true);
+    }
   };
 
   return (
@@ -245,7 +251,7 @@ const Exploredetails = () => {
 
           <div className="flex justify-center pb-4">
             <div className="py-4 rounded-lg bg-custom-blue w-40 text-white  text-center  ">
-              <button className="" onClick={handleReservedAlert}>
+              <button className="" onClick={handleCheckAvailability}>
                 Check Availability
               </button>
             </div>

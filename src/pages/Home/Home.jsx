@@ -136,6 +136,7 @@ const Home = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16">
           {CardsData.map((card) => (
             <Card
+              id={card.id}
               key={card.id}
               imageUrl={card.imageUrl}
               rate={card.rate}
