@@ -20,15 +20,18 @@ const AddFacility = () => {
   const [closingTime, setClosingTime] = useState("");
   const [pricePerHour, setPricePerHour] = useState("");
   const [images, setImages] = useState([]); // Define images state
-  const [selectedDays, setSelectedDays] = useState({
-    M: false,
-    T: false,
-    W: false,
-    Th: false,
-    F: false,
-    Sa: false,
-    Su: false,
-  });
+  // const [selectedDays, setSelectedDays] = useState({
+  //   M: false,
+  //   T: false,
+  //   W: false,
+  //   Th: false,
+  //   F: false,
+  //   Sa: false,
+  //   Su: false,
+  // });
+
+  const [selectedDays, setSelectedDays] = useState([]);
+
   const navigate = useNavigate();
 
   const handleUpload = (event) => {
@@ -64,18 +67,18 @@ const AddFacility = () => {
   };
 
   // const toggleDaySelection = (day) => {
-  //   setSelectedDays((prevSelectedDays) =>
-  //     prevSelectedDays.includes(day)
-  //       ? prevSelectedDays.filter((d) => d !== day)
-  //       : [...prevSelectedDays, day]
-  //   );
+  //   setSelectedDays((prevSelectedDays) => ({
+  //     ...prevSelectedDays,
+  //     [day]: !prevSelectedDays[day],
+  //   }));
   // };
 
   const toggleDaySelection = (day) => {
-    setSelectedDays((prevSelectedDays) => ({
-      ...prevSelectedDays,
-      [day]: !prevSelectedDays[day],
-    }));
+    setSelectedDays((prevSelectedDays) =>
+      prevSelectedDays.includes(day)
+        ? prevSelectedDays.filter((d) => d !== day)
+        : [...prevSelectedDays, day]
+    );
   };
   return (
     <div className="p-4 sm:p-8 px-4 sm:px-12 ">
@@ -192,14 +195,24 @@ const AddFacility = () => {
           </div>
 
           <div className="flex  space-x-6 p-4">
-            {Object.keys(selectedDays).map((day) => (
+           
+
+            {[
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday",
+              "Saturday",
+              "Sunday",
+            ].map((day, index) => (
               <DaySign
-                key={day}
-                text={day.charAt(0).toUpperCase()}
+                key={index}
+                text={day.charAt(0)}
                 bgColor="bg-white"
                 borderColor="border-placeholder-color"
                 textColor="text-black"
-                selected={selectedDays[day]}
+                selected={selectedDays.includes(day)}
                 onClick={() => toggleDaySelection(day)}
               />
             ))}

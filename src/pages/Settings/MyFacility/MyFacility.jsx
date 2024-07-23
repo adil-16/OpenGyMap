@@ -1,7 +1,8 @@
 import React from "react";
 import FacilityCard from "../components/FacilityCard";
-// import facilities from "../../../utils/FacilitiesData/FacilitiesData";
+import facilities from "../../../utils/FacilitiesData/FacilitiesData";
 import { useNavigate } from "react-router-dom";
+import FormatDays from "../../../utils/FormatDays/FormatDays";
 
 import { useFacilitiesData } from "../../../Context/FacilitiesDataContext/FacilitiesDataContext";
 
@@ -29,7 +30,14 @@ const MyFacility = () => {
                 imageUrls={facility.imageUrls}
                 rate={facility.pricePerHour}
                 address={facility.location}
-                hours={`Monday-Friday ${facility.startingTime} - ${facility.closingTime}`}
+                hours={`${
+                  Array.isArray(facility.selectedDays) &&
+                  facility.selectedDays.length > 0
+                    ? `${FormatDays(facility.selectedDays)} ${
+                        facility.startingTime
+                      } - ${facility.closingTime}`
+                    : "No availability"
+                }`}
               />
             ))}
           </div>
