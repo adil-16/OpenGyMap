@@ -25,10 +25,15 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        notificationRef.current &&
-        !notificationRef.current.contains(event.target)
-      ) {
+      const notificationRefContains = notificationRef.current?.contains(
+        event.target
+      );
+      const notificationButtonRefContains =
+        notificationButtonRef.current?.contains(event.target);
+
+      console.log("HELLO", notificationButtonRefContains);
+
+      if (!notificationRefContains && !notificationButtonRefContains) {
         setShowNotification(false);
       }
 
@@ -49,13 +54,18 @@ const Navbar = () => {
   };
 
   const toggleNotification = () => {
-    // setShowNotification((prev) => !prev);
-    setShowNotification(true);
+    if (showNotification) {
+      console.log("fuck");
+      setShowNotification(false);
+    }
+    console.log("hellow world");
+    setShowNotification((prev) => !prev);
   };
 
   const handleLinkClick = (path) => {
     setActiveLink(path);
-    // localStorage.setItem("activeLink", path);
+    setShowNotification(false); // Reset notification state on link click
+    setDropdownOpen(false);
 
     console.log("activeLink is", path);
   };
@@ -140,7 +150,7 @@ const Navbar = () => {
             <IoMdNotificationsOutline
               className="w-8 h-8 cursor-pointer"
               onClick={toggleNotification}
-              ref={notificationButtonRef} // Set ref here
+              ref={notificationButtonRef}
             />
             <span className="absolute top-0 right-0 w-2 h-2 bg-custom-blue rounded-full"></span>
           </div>

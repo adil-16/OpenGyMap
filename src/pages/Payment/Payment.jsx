@@ -7,9 +7,11 @@ import BookingSummary from "./Components/BookingSummary";
 import PriceSummary from "./Components/PriceSummary";
 import PaymentOptions from "./Components/PaymentOptions";
 import SuccessPopup from "../../components/popups/PaymentPopups/SuccessPopup";
+import { useNavigate } from "react-router-dom";
 
 const Payment = () => {
   const [showPopup, setShowPopup] = useState(false);
+  const navigate = useNavigate();
 
   const handlePayClick = () => {
     setShowPopup(true);
@@ -21,7 +23,12 @@ const Payment = () => {
 
   return (
     <div className="p-6 md:p-12">
-      <div className="flex items-center mb-6">
+      <div
+        className="flex items-center mb-6 cursor-pointer"
+        onClick={() => {
+          navigate(-1);
+        }}
+      >
         <IoMdArrowBack className="h-6 w-8 pr-2" />
         <span className="text-custom-black font-bold text-xl">Back</span>
       </div>

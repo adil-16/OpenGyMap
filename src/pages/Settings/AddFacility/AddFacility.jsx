@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "./components/Button";
 
 const AddFacility = () => {
-  const [basketballCourtName, setBasketballCourtName] = useState("");
+  const [courtName, setCourtName] = useState("");
   const [gymName, setGymName] = useState("");
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
@@ -20,7 +20,15 @@ const AddFacility = () => {
   const [closingTime, setClosingTime] = useState("");
   const [pricePerHour, setPricePerHour] = useState("");
   const [images, setImages] = useState([]); // Define images state
-
+  const [selectedDays, setSelectedDays] = useState({
+    M: false,
+    T: false,
+    W: false,
+    Th: false,
+    F: false,
+    Sa: false,
+    Su: false,
+  });
   const navigate = useNavigate();
 
   const handleUpload = (event) => {
@@ -40,7 +48,7 @@ const AddFacility = () => {
 
   const handleSave = () => {
     const facilityData = {
-      basketballCourtName,
+      courtName,
       gymName,
       location,
       description,
@@ -49,11 +57,26 @@ const AddFacility = () => {
       closingTime,
       pricePerHour,
       images,
+      selectedDays,
     };
 
     navigate("/facilitydetails", { state: { facilityData } });
   };
 
+  // const toggleDaySelection = (day) => {
+  //   setSelectedDays((prevSelectedDays) =>
+  //     prevSelectedDays.includes(day)
+  //       ? prevSelectedDays.filter((d) => d !== day)
+  //       : [...prevSelectedDays, day]
+  //   );
+  // };
+
+  const toggleDaySelection = (day) => {
+    setSelectedDays((prevSelectedDays) => ({
+      ...prevSelectedDays,
+      [day]: !prevSelectedDays[day],
+    }));
+  };
   return (
     <div className="p-4 sm:p-8 px-4 sm:px-12 ">
       {/* Profile and icon */}
@@ -83,8 +106,8 @@ const AddFacility = () => {
               fontSize="text-base "
               fontFamily="font-inter"
               bold="font-semibold"
-              value={basketballCourtName}
-              onChange={(e) => setBasketballCourtName(e.target.value)}
+              value={courtName}
+              onChange={(e) => setCourtName(e.target.value)}
             />
 
             <Input
@@ -169,54 +192,17 @@ const AddFacility = () => {
           </div>
 
           <div className="flex  space-x-6 p-4">
-            <DaySign
-              text="M"
-              bgColor="bg-white"
-              borderColor="border-placeholder-color"
-              textColor="text-black"
-            />
-
-            <DaySign
-              text="T"
-              bgColor="bg-white"
-              borderColor="border-placeholder-color"
-              textColor="text-black"
-            />
-
-            <DaySign
-              text="W"
-              bgColor="bg-custom-gradient"
-              borderColor="border-placeholder-color"
-              textColor="text-white"
-            />
-
-            <DaySign
-              text="T"
-              bgColor="bg-custom-gradient"
-              borderColor="border-placeholder-color"
-              textColor="text-white"
-            />
-
-            <DaySign
-              text="F"
-              bgColor="bg-custom-gradient"
-              borderColor="border-placeholder-color"
-              textColor="text-white"
-            />
-
-            <DaySign
-              text="S"
-              bgColor="bg-white"
-              borderColor="border-placeholder-color"
-              textColor="text-black"
-            />
-
-            <DaySign
-              text="S"
-              bgColor="bg-white"
-              borderColor="border-placeholder-color"
-              textColor="text-black"
-            />
+            {Object.keys(selectedDays).map((day) => (
+              <DaySign
+                key={day}
+                text={day.charAt(0).toUpperCase()}
+                bgColor="bg-white"
+                borderColor="border-placeholder-color"
+                textColor="text-black"
+                selected={selectedDays[day]}
+                onClick={() => toggleDaySelection(day)}
+              />
+            ))}
           </div>
 
           <div className="py-4">

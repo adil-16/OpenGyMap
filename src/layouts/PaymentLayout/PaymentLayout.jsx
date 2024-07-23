@@ -14,7 +14,7 @@ const PaymentLayout = () => {
 
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
       <Outlet />
     </div>
   );

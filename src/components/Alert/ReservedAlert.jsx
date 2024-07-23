@@ -3,7 +3,7 @@ import Crossicon from "../buttons/Crossicon";
 
 const ReservedAlert = ({ onClick }) => {
   return (
-    <div className="p-2 bg-white shadow-lg rounded-lg w-full max-w-md md:w-[75%] lg:w-[50%] xl:w-[25%] sm:h-[63%] md:h-[65%] lg:h-[72%] z-20 mx-auto my-auto">
+    <div className="p-2 bg-white shadow-lg rounded-lg w-full max-w-md md:w-[75%] lg:w-[50%] xl:w-[25%] h-auto  z-20 mx-auto my-auto">
       <div className="flex justify-between items-center p-5">
         <p className="font-inter font-semibold text-xl">Reserve</p>
         <Crossicon onClick={onClick} />
@@ -37,7 +37,7 @@ const ReservedAlert = ({ onClick }) => {
         </button>
       </div>
 
-      <div className="py-4 rounded-lg bg-custom-gradient flex justify-center pb-4 w-full text-white text-center">
+      <div className="py-4 rounded-lg bg-custom-gradient flex justify-center mb-6 w-full text-white text-center">
         <button
           onClick={() => {
             console.log("button is clicked");

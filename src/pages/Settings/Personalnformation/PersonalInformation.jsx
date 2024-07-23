@@ -28,8 +28,8 @@ const PersonalInformation = () => {
       <div className="font-semibold font-inter text-xl text-custom-black">
         Personal Information
       </div>
-      <div className="border-b border-nav-gray py-1 w-full"></div>
-      <div className="flex">
+      <div className="border-b border-nav-gray py-3 w-full"></div>
+      <div className="lg:flex lg:flex-row sm:flex-col  ">
         <div className="flex-1">
           <div className="py-4">
             <div>
@@ -88,7 +88,6 @@ const PersonalInformation = () => {
                     initialValue=""
                     buttonText=""
                     type="password"
-                  
                     saveButtonText=""
                     inputId="newPassword"
                   />
@@ -96,7 +95,6 @@ const PersonalInformation = () => {
                     label="Confirm Password"
                     initialValue=""
                     buttonText=""
-              
                     saveButtonText=""
                     inputId="confirmPassword"
                   />

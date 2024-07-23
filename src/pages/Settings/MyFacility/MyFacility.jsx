@@ -25,6 +25,7 @@ const MyFacility = () => {
               <FacilityCard
                 key={facility.id}
                 id={facility.id}
+                courtName={facility.courtName}
                 imageUrls={facility.imageUrls}
                 rate={facility.pricePerHour}
                 address={facility.location}

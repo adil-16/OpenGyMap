@@ -18,10 +18,10 @@ const SignupForm = ({
 }) => {
   return (
     <div>
-      <div className="flex-row  p-1 w-80 ml-10 lg:ml-0 justify-center items-center  lg:w-96 border rounded-xl mb-6 bg-gray-200">
+      <div className="flex-row  p-1  w-80  justify-center items-center  lg:w-96 border rounded-xl mb-6 bg-gray-200">
         <button
           onClick={() => handleButtonClick("phoneNumber")}
-          className={`flex-1 px-4 py-2 rounded-xl focus:outline-none ${
+          className={`flex-1 px-6 py-2  rounded-xl focus:outline-none ${
             activeButton === "phoneNumber"
               ? "bg-white font-bold border-b-2"
               : "border-b-2 border-transparent"
@@ -31,7 +31,7 @@ const SignupForm = ({
         </button>
         <button
           onClick={() => handleButtonClick("email")}
-          className={`flex-1 px-4 py-2 rounded-xl focus:outline-none ${
+          className={`flex-1 px-8 lg:px-12 ml-8 py-2 rounded-xl focus:outline-none ${
             activeButton === "email"
               ? "bg-white font-bold border-b-2"
               : "border-b-2 border-transparent"
@@ -41,7 +41,7 @@ const SignupForm = ({
         </button>
       </div>
       {activeButton === "phoneNumber" && (
-        <div className="flex items-center border-b-2 border-gray-300 py-2 mb-12 w-80 ml-10 lg:ml-0 lg:w-96">
+        <div className="flex items-center border-b-2 border-gray-300 py-2 mb-12 w-80   lg:w-96">
           <FlagSelect
             selected={selectedCountry}
             onSelect={(countryCode) => handleCountryChange(countryCode)}

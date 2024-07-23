@@ -1,3 +1,156 @@
+// import React from "react";
+// import { useLocation, useNavigate } from "react-router-dom";
+// import { RxArrowLeft } from "react-icons/rx";
+// import { FaClock } from "react-icons/fa6";
+// import { MdLocationPin } from "react-icons/md";
+// import Slider from "./components/Slider";
+// import Button from "../AddFacility/components/Button";
+// import DaySign from "../AddFacility/components/DaySign";
+
+// import { useFacilitiesData } from "../../../Context/FacilitiesDataContext/FacilitiesDataContext";
+
+// const FacilityDetails = () => {
+//   const location = useLocation();
+//   const navigate = useNavigate();
+//   const { addFacility } = useFacilitiesData();
+
+//   const facilityData = location.state?.facilityData;
+
+//   if (!facilityData) {
+//     return <p>No facility data found.</p>;
+//   }
+//   const handleSave = () => {
+//     const facilityToSave = {
+//       ...facilityData,
+//       imageUrls: facilityData.images || [],
+//     };
+
+//     console.log("Facility Data:", facilityToSave);
+//     addFacility(facilityToSave);
+//     navigate("/settings/myfacility");
+//   };
+
+//   return (
+//     <div className="p-8 px-6">
+//       <div className="flex  space-x-2 items-center ">
+//         <RxArrowLeft
+//           onClick={() => {
+//             navigate(-1);
+//           }}
+//           className="h-6 w-6"
+//         />
+//         <p className="text-custom-black  text-2xl font-inter font-semibold">
+//           Review and Add
+//         </p>
+//       </div>
+
+//       <div className="flex flex-col lg:flex-row">
+//         <div className="flex-1 py-4 ">
+//           <div className="flex justify-between">
+//             <p className="font-poppins text-2xl font-semibold">
+//               {facilityData.courtName}
+//             </p>
+
+//             <div className="flex  items-center space-x-2">
+//               <FaClock className="h-5 w-5 text-gray-500" />
+
+//               <p className="font-inter font-medium text-base text-request-button-accepted">
+//                 Monday-Friday <span>{facilityData.startingTime}</span>-{" "}
+//                 <span>{facilityData.closingTime}</span>
+//               </p>
+//             </div>
+//           </div>
+
+//           <div className="text-lg font-semibold text-custom-black font-inter py-2">
+//             {facilityData.gymName}
+//           </div>
+
+//           <div className="flex space-x-2 items-center">
+//             <MdLocationPin className="h-4 w-4 border-b-2 border-request-icon  text-request-icon" />
+//             <p className="text-nav-gray text-sm font-inter">
+//               {facilityData.location}
+//             </p>
+//           </div>
+
+//           <div className="py-2 flex justify-between  items-center">
+//             <p className="text-nav-gray text-base flex-1 font-medium font-inter">
+//               Price
+//             </p>
+
+//             <p className="text-custom-black text-xl flex-1 font-semibold font-inter  ml-16">
+//               {facilityData.pricePerHour}
+//             </p>
+//           </div>
+
+//           <div className="flex flex-col py-6">
+//             <p className="font-inter font-semibold text-xl">Description</p>
+
+//             <p className="font-inter font-normal text-nav-gray py-3">
+//               {facilityData.description}
+//             </p>
+//           </div>
+
+//           <div>
+//             <p className="font-inter font-semibold text-xl">House Rules</p>
+//             <ul className="list-disc list-inside text-nav-gray px-3 py-3">
+//               <li className="text-nav-gray">{facilityData.houseRules}</li>
+//             </ul>
+//           </div>
+
+//           <div className="py-4">
+//             <div className="flex space-x-4">
+//               {Object.keys(facilityData.selectedDays).map((day) => (
+//                 <DaySign
+//                   key={day}
+//                   text={day.charAt(0).toUpperCase()}
+//                   bgColor={
+//                     facilityData.selectedDays[day]
+//                       ? "bg-custom-gradient "
+//                       : "bg-white "
+//                   }
+//                   borderColor="border-border-color"
+//                   // textColor="text-white"
+
+//                   textColor={
+//                     facilityData.selectedDays[day]
+//                       ? "text-white "
+//                       : "text-black "
+//                   }
+//                 />
+//               ))}
+//             </div>
+//           </div>
+//         </div>
+//         <div className="flex-1 pl-8">
+//           <div>
+//             <Slider images={facilityData.images} />
+//           </div>
+
+//           <div className="flex space-x-4 justify-center items-end h-96 ">
+//             <Button
+//               bgColor="bg-white"
+//               text="Cancel"
+//               onClick={() => {
+//                 navigate(-1);
+//               }}
+//               textColor="text-black"
+//             />
+
+//             <Button
+//               onClick={handleSave}
+//               bgColor="bg-custom-gradient"
+//               text="Add"
+//               textColor="text-white"
+//             />
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default FacilityDetails;
+
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { RxArrowLeft } from "react-icons/rx";
@@ -5,6 +158,7 @@ import { FaClock } from "react-icons/fa6";
 import { MdLocationPin } from "react-icons/md";
 import Slider from "./components/Slider";
 import Button from "../AddFacility/components/Button";
+import DaySign from "../AddFacility/components/DaySign";
 
 import { useFacilitiesData } from "../../../Context/FacilitiesDataContext/FacilitiesDataContext";
 
@@ -26,82 +180,103 @@ const FacilityDetails = () => {
 
     console.log("Facility Data:", facilityToSave);
     addFacility(facilityToSave);
-    navigate("/settings/myfacility");
+    navigate("/setting/myfacility");
   };
 
   return (
-    <div className="p-8 px-6">
-      <div className="flex  space-x-2 items-center ">
+    <div className="p-4 sm:p-8 px-4 sm:px-6">
+      <div className="flex space-x-2 items-center">
         <RxArrowLeft
           onClick={() => {
             navigate(-1);
           }}
           className="h-6 w-6"
         />
-        <p className="text-custom-black  text-2xl font-inter font-semibold">
+        <p className="text-custom-black text-xl sm:text-2xl font-inter font-semibold">
           Review and Add
         </p>
       </div>
 
       <div className="flex flex-col lg:flex-row">
-        <div className="flex-1 py-4 ">
+        <div className="flex-1 py-4">
           <div className="flex justify-between">
-            <p className="font-poppins text-2xl font-semibold">
-              {facilityData.basketballCourtName}
+            <p className="font-poppins text-xl sm:text-2xl font-semibold">
+              {facilityData.courtName}
             </p>
 
-            <div className="flex  items-center space-x-2">
+            <div className="flex items-center space-x-2">
               <FaClock className="h-5 w-5 text-gray-500" />
-
-              <p className="font-inter font-medium text-base text-request-button-accepted">
+              <p className="font-inter font-medium text-sm sm:text-base text-request-button-accepted">
                 Monday-Friday <span>{facilityData.startingTime}</span>-{" "}
                 <span>{facilityData.closingTime}</span>
               </p>
             </div>
           </div>
 
-          <div className="text-lg font-semibold text-custom-black font-inter py-2">
+          <div className="text-base sm:text-lg font-semibold text-custom-black font-inter py-2">
             {facilityData.gymName}
           </div>
 
           <div className="flex space-x-2 items-center">
-            <MdLocationPin className="h-4 w-4 border-b-2 border-request-icon  text-request-icon" />
+            <MdLocationPin className="h-4 w-4 border-b-2 border-request-icon text-request-icon" />
             <p className="text-nav-gray text-sm font-inter">
               {facilityData.location}
             </p>
           </div>
 
-          <div className="py-2 flex justify-between  items-center">
+          <div className="py-2 flex justify-between items-center">
             <p className="text-nav-gray text-base flex-1 font-medium font-inter">
               Price
             </p>
-
-            <p className="text-custom-black text-xl flex-1 font-semibold font-inter  ml-16">
+            <p className="text-custom-black text-lg sm:text-xl flex-1 font-semibold font-inter ml-16">
               {facilityData.pricePerHour}
             </p>
           </div>
 
-          <div className="flex flex-col py-6">
-            <p className="font-inter font-semibold text-xl">Description</p>
-
+          <div className="flex flex-col py-4 sm:py-6">
+            <p className="font-inter font-semibold text-lg sm:text-xl">
+              Description
+            </p>
             <p className="font-inter font-normal text-nav-gray py-3">
               {facilityData.description}
             </p>
           </div>
 
           <div>
-            <p className="font-inter font-semibold text-xl">House Rules</p>
+            <p className="font-inter font-semibold text-lg sm:text-xl">
+              House Rules
+            </p>
             <ul className="list-disc list-inside text-nav-gray px-3 py-3">
               <li className="text-nav-gray">{facilityData.houseRules}</li>
             </ul>
           </div>
+
+          {/* <div className="py-4">
+            <div className="flex space-x-4">
+              {Object.keys(facilityData.selectedDays).map((day) => (
+                <DaySign
+                  key={day}
+                  text={day.charAt(0).toUpperCase()}
+                  bgColor={
+                    facilityData.selectedDays[day]
+                      ? "bg-custom-gradient"
+                      : "bg-white"
+                  }
+                  borderColor="border-border-color"
+                  textColor={
+                    facilityData.selectedDays[day] ? "text-white" : "text-black"
+                  }
+                />
+              ))}
+            </div>
+          </div> */}
         </div>
-        <div className="flex-1 pl-8">
+        <div className="flex-1 lg:pl-8">
           <div>
             <Slider images={facilityData.images} />
           </div>
 
-          <div className="flex space-x-4 justify-center items-end h-96 ">
+          <div className="flex space-x-4 justify-center items-end h-48 lg:h-96 mt-4 lg:mt-0">
             <Button
               bgColor="bg-white"
               text="Cancel"
