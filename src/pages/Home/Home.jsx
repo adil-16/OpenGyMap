@@ -46,6 +46,7 @@ const Home = () => {
             onClick={() => {
               navigate("/explore");
             }}
+            // to="/explore"
           />
         </div>
         <div className="flex items-end justify-center lg:justify-end lg:w-1/2 p-4">
