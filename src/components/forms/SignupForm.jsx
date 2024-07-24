@@ -1,6 +1,7 @@
 import React from "react";
-import FlagSelect from "react-flags-select";
 import InputField from "../InputField/InputField";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 const SignupForm = ({
   activeButton,
@@ -41,19 +42,12 @@ const SignupForm = ({
         </button>
       </div>
       {activeButton === "phoneNumber" && (
-        <div className="flex items-center border-b-2 border-gray-300 py-2 mb-12 w-80 ml-10 lg:ml-0 lg:w-96">
-          <FlagSelect
-            selected={selectedCountry}
-            onSelect={(countryCode) => handleCountryChange(countryCode)}
-            showSelectedLabel={false}
-            className=""
-          />
-          <input
-            type="text"
-            placeholder="Phone Number"
-            onChange={handlePhoneChange}
+        <div className="flex items-center border-b-2 border-gray-300 py-2 mb-12 lg:w-96 md:w-80 sm:64">
+          <PhoneInput
+            country={selectedCountry}
             value={phone}
-            className="appearance-none bg-transparent border-none w-full text-gray-700 py-1 px-2 leading-tight focus:outline-none"
+            onChange={handlePhoneChange}
+            className="text-gray-700 px-2 focus:outline-none"
           />
         </div>
       )}

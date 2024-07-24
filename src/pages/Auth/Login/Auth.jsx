@@ -7,7 +7,7 @@ import { AuthContext } from "../../../Context/AuthContext/AuthContext";
 const Auth = () => {
   const { email, setEmail } = useContext(AuthContext);
   const [activeButton, setActiveButton] = useState("phoneNumber");
-  const [selectedCountry, setSelectedCountry] = useState("IN");
+  const [selectedCountry, setSelectedCountry] = useState("in");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
 
@@ -30,8 +30,8 @@ const Auth = () => {
     setPassword(event.target.value);
   };
 
-  const handlePhoneChange = (event) => {
-    setPhone(event.target.value);
+  const handlePhoneChange = (phone) => {
+    setPhone(phone);
   };
 
   const handleRequestOtp = () => {
@@ -40,7 +40,7 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2   ">
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-3">
       <div className="hidden md:flex items-center h-screen col-span-1 relative ">
         <img
           src="/Auth/image1.png"
@@ -50,10 +50,10 @@ const Auth = () => {
         <img
           src="/Auth/image2.png"
           alt="Basketball Hoop"
-          className="absolute top-0 left-0 h-auto w-auto object-contain transform translate-x-1/3"
+          className="absolute top-0 left-0 h-auto w-auto object-contain transform translate-x-1/5"
         />
       </div>
-      <div className="flex flex-col items-center   col-span-1 ">
+      <div className="flex flex-col items-center col-span-2 ">
         <img
           src="logo.png"
           alt="OpenGymMap Logo"
