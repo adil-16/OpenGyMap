@@ -1,15 +1,20 @@
 import React, { useState } from "react";
 import SignupForm from "../../../components/forms/SignupForm";
 import RequestOtpButton from "../../../components/buttons/RequestOtp";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  sendOtpToPhone,
+  sendOtpToEmail,
+} from "../../../firebase/Functions/ApiFunctions";
 
 const Signup = () => {
   const [activeButton, setActiveButton] = useState("phoneNumber");
-  const [selectedCountry, setSelectedCountry] = useState("IN");
+  const [selectedCountry, setSelectedCountry] = useState("in");
   const [emailId, setEmailId] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [username, setUsername] = useState("");
+  const navigate = useNavigate();
 
   const handleButtonClick = (buttonType) => {
     setActiveButton(buttonType);
@@ -31,16 +36,27 @@ const Signup = () => {
     setPassword(event.target.value);
   };
 
-  const handlePhoneChange = (event) => {
-    setPhone(event.target.value);
+  const handlePhoneChange = (phone) => {
+    setPhone(phone);
   };
 
-  const handleRequestOtp = () => {
-    console.log("Requesting OTP");
+  const handleRequestOtp = async () => {
+    try {
+      if (activeButton === "phoneNumber") {
+        const verificationId = await sendOtpToPhone(phone);
+        localStorage.setItem("verificationId", verificationId);
+      } else {
+        await sendOtpToEmail(emailId);
+        localStorage.setItem("emailForSignIn", emailId);
+      }
+      navigate("/otp");
+    } catch (error) {
+      console.error("Error requesting OTP:", error);
+    }
   };
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2">
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-3">
       <div className="hidden md:flex items-center h-screen col-span-1 relative ">
         <img
           src="/Auth/image1.png"
@@ -50,10 +66,10 @@ const Signup = () => {
         <img
           src="/Auth/image2.png"
           alt="Basketball Hoop"
-          className="absolute top-0 left-0 h-auto w-auto object-contain transform translate-x-1/3"
+          className="absolute top-0 left-0 h-auto w-auto object-contain transform translate-x-1/5"
         />
       </div>
-      <div className="flex flex-col items-center col-span-1 gap-3">
+      <div className="flex flex-col items-center col-span-2 gap-3">
         <img
           src="/logo.png"
           alt="OpenGymMap Logo"

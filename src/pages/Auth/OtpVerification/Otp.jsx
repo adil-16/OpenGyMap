@@ -2,6 +2,10 @@ import React, { useState, useContext, useRef } from "react";
 import { AuthContext } from "../../../Context/AuthContext/AuthContext";
 import VerifyButton from "../../../components/buttons/Verify";
 import { useNavigate, Link } from "react-router-dom";
+import {
+  verifyPhoneOtp,
+  verifyEmailOtp,
+} from "../../../firebase/Functions/ApiFunctions";
 
 const Otp = () => {
   const navigate = useNavigate();
@@ -30,8 +34,21 @@ const Otp = () => {
     }
   };
 
-  const handleRequestOtp = () => {
-    navigate("/homepage");
+  const handleRequestOtp = async () => {
+    try {
+      const verificationId = localStorage.getItem("verificationId");
+      const emailForSignIn = localStorage.getItem("emailForSignIn");
+      if (verificationId) {
+        await verifyPhoneOtp(verificationId, otpString);
+      } else if (emailForSignIn) {
+        const emailLink = window.location.href;
+        await verifyEmailOtp(emailForSignIn, emailLink);
+        console.log("user", emailForSignIn);
+      }
+      navigate("/homepage");
+    } catch (error) {
+      console.error("Error verifying OTP:", error);
+    }
   };
 
   return (

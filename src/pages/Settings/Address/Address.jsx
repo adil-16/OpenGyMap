@@ -9,6 +9,8 @@ const Address = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [placeName, setPlaceName] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [selectedSuggestion, setSelectedSuggestion] = useState(null);
 
   useEffect(() => {
     const getLocation = () => {
@@ -72,6 +74,47 @@ const Address = () => {
     getLocation();
   }, [location]);
 
+  const handleInputChange = async (e) => {
+    const input = e.target.value;
+    setPlaceName(input);
+
+    if (input.length > 2) {
+      try {
+        const response = await fetch(
+          `/maps/api/place/autocomplete/json?input=${input}&key=${
+            import.meta.env.VITE_GOOGLE_MAPS_API
+          }`
+        );
+
+        const res = await response.json();
+        setSuggestions(res.predictions);
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const handleSuggestionClick = async (suggestion) => {
+    setSelectedSuggestion(suggestion);
+    setPlaceName(suggestion.description);
+    setSuggestions([]);
+
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?place_id=${
+          suggestion.place_id
+        }&key=${import.meta.env.VITE_GOOGLE_MAPS_API}`
+      );
+      const res = await response.json();
+      const { lat, lng } = res.results[0].geometry.location;
+      setLocation({ latitude: lat, longitude: lng });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -98,9 +141,22 @@ const Address = () => {
             <input
               type="text"
               value={placeName}
+              onChange={handleInputChange}
               className="pl-16 p-4 border rounded-full w-11/12 text-custom-black font-semibold"
-              readOnly
             />
+            {suggestions.length > 0 && (
+              <ul className="absolute bg-white border rounded-md w-full mt-1 max-h-48 overflow-y-auto">
+                {suggestions.map((suggestion) => (
+                  <li
+                    key={suggestion.place_id}
+                    className="p-2 hover:bg-gray-200 cursor-pointer"
+                    onClick={() => handleSuggestionClick(suggestion)}
+                  >
+                    {suggestion.description}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <div className="flex space-x-4">
             <button className="px-8 py-3 border text-custom-black rounded-xl">
@@ -111,7 +167,6 @@ const Address = () => {
             </button>
           </div>
         </div>
-
         <div className="flex justify-center items-center">
           {location.latitude && location.longitude && (
             <Map latitude={location.latitude} longitude={location.longitude} />
