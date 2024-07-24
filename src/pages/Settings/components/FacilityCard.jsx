@@ -1,5 +1,6 @@
 import React from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
+import Slider from "./Slider";
 
 const FacilityCard = ({
   id,
@@ -9,17 +10,12 @@ const FacilityCard = ({
   hours,
   courtName,
 }) => {
-  const firstImageUrl = imageUrls.length > 0 ? imageUrls[0] : "/Home/games.png";
-
   return (
     <div className="w-full">
-      <div className="relative rounded-lg overflow-hidden shadow-lg bg-white">
-        <img
-          src={firstImageUrl}
-          alt="Gym"
-          className="w-full h-48 object-cover"
-        />
-        <div className="absolute top-2 left-2">
+      <div className="relative rounded-lg h-96 overflow-hidden shadow-lg bg-white">
+        <Slider imageUrls={imageUrls} />
+
+        <div className="absolute top-2 left-2 ">
           <button className="px-4 py-1 bg-white rounded-full shadow">
             Edit
           </button>
