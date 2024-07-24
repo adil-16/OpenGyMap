@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { Link } from "react-router-dom";
 import Notification from "../Notification/Notification";
@@ -7,13 +7,9 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [activeLink, setActiveLink] = useState(window.location.pathname);
-
-  // useEffect(() => {
-  //   const storedActiveLink = localStorage.getItem("activeLink");
-  //   if (storedActiveLink) {
-  //     setActiveLink(storedActiveLink);
-  //   }
-  // }, []);
+  const notificationRef = useRef(null);
+  const dropdownRef = useRef(null);
+  const notificationButtonRef = useRef(null); // Ref for notification button
 
   useEffect(() => {
     const handleLocationChange = () => {
@@ -27,17 +23,49 @@ const Navbar = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const notificationRefContains = notificationRef.current?.contains(
+        event.target
+      );
+      const notificationButtonRefContains =
+        notificationButtonRef.current?.contains(event.target);
+
+      console.log("HELLO", notificationButtonRefContains);
+
+      if (!notificationRefContains && !notificationButtonRefContains) {
+        setShowNotification(false);
+      }
+
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
+    setDropdownOpen((prev) => !prev);
   };
 
   const toggleNotification = () => {
-    setShowNotification(!showNotification);
+    if (showNotification) {
+      console.log("fuck");
+      setShowNotification(false);
+    }
+    console.log("hellow world");
+    setShowNotification((prev) => !prev);
   };
 
   const handleLinkClick = (path) => {
     setActiveLink(path);
-    localStorage.setItem("activeLink", path);
+    setShowNotification(false); // Reset notification state on link click
+    setDropdownOpen(false);
 
     console.log("activeLink is", path);
   };
@@ -122,6 +150,7 @@ const Navbar = () => {
             <IoMdNotificationsOutline
               className="w-8 h-8 cursor-pointer"
               onClick={toggleNotification}
+              ref={notificationButtonRef}
             />
             <span className="absolute top-0 right-0 w-2 h-2 bg-custom-blue rounded-full"></span>
           </div>
@@ -144,6 +173,7 @@ const Navbar = () => {
 
             {dropdownOpen && (
               <div
+                ref={dropdownRef} // Set ref here
                 className="absolute right-0 mt-2 w-48 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-white dark:divide-gray-600 z-20"
                 id="user-dropdown"
               >
@@ -172,7 +202,10 @@ const Navbar = () => {
       </div>
 
       {showNotification && (
-        <div className="absolute right-10 top-24 z-50 bg-white h-[85%] overflow-auto hide-scrollbar">
+        <div
+          ref={notificationRef} // Set ref here
+          className="absolute right-10 top-24 z-50 bg-white h-[85%] overflow-auto hide-scrollbar"
+        >
           <Notification />
         </div>
       )}

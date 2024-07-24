@@ -2,9 +2,14 @@ import React from "react";
 import FacilityCard from "../components/FacilityCard";
 import facilities from "../../../utils/FacilitiesData/FacilitiesData";
 import { useNavigate } from "react-router-dom";
+import FormatDays from "../../../utils/FormatDays/FormatDays";
+
+import { useFacilitiesData } from "../../../Context/FacilitiesDataContext/FacilitiesDataContext";
 
 const MyFacility = () => {
   const navigate = useNavigate();
+  const { data: facilities } = useFacilitiesData(); // Get facilities data from context
+
   return (
     <div>
       <h1 className="text-2xl font-semibold mb-4">
@@ -18,7 +23,22 @@ const MyFacility = () => {
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {facilities.map((facility) => (
-              <FacilityCard key={facility.id} {...facility} />
+              <FacilityCard
+                key={facility.id}
+                id={facility.id}
+                courtName={facility.courtName}
+                imageUrls={facility.imageUrls}
+                rate={facility.pricePerHour}
+                address={facility.location}
+                hours={`${
+                  Array.isArray(facility.selectedDays) &&
+                  facility.selectedDays.length > 0
+                    ? `${FormatDays(facility.selectedDays)} ${
+                        facility.startingTime
+                      } - ${facility.closingTime}`
+                    : "No availability"
+                }`}
+              />
             ))}
           </div>
         </div>

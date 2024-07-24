@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import CardsData from "../../utils/CardsData/CardsData";
 import { IoMdArrowBack } from "react-icons/io";
@@ -27,6 +27,19 @@ const Exploredetails = () => {
 
   const card = CardsData.find((card) => card.id === cardId);
 
+  useEffect(() => {
+    if (showReserveAlert) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    // Clean up on component unmount
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+    };
+  }, [showReserveAlert]);
+
   if (!card) {
     return <p>Card not found!</p>;
   }
@@ -48,7 +61,10 @@ const Exploredetails = () => {
   };
 
   return (
-    <div className="lg:flex-row lg:flex min-h-screen   flex-col p-8">
+    <div
+      className={`   lg:flex-row lg:flex min-h-screen    flex-col p-8
+      }`}
+    >
       <div className="flex-[2] px-8  ">
         <div
           className="flex gap-2 cursor-pointer items-center"

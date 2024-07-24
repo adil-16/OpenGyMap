@@ -1,11 +1,24 @@
 import React from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
 
-const FacilityCard = ({ id, imageUrl, rate, address, hours }) => {
+const FacilityCard = ({
+  id,
+  imageUrls = [],
+  rate,
+  address,
+  hours,
+  courtName,
+}) => {
+  const firstImageUrl = imageUrls.length > 0 ? imageUrls[0] : "/Home/games.png";
+
   return (
     <div className="w-full">
       <div className="relative rounded-lg overflow-hidden shadow-lg bg-white">
-        <img src={imageUrl} alt="Gym" className="w-full h-48 object-cover" />
+        <img
+          src={firstImageUrl}
+          alt="Gym"
+          className="w-full h-48 object-cover"
+        />
         <div className="absolute top-2 left-2">
           <button className="px-4 py-1 bg-white rounded-full shadow">
             Edit
@@ -18,7 +31,7 @@ const FacilityCard = ({ id, imageUrl, rate, address, hours }) => {
         </div>
         <div className="p-3">
           <h3 className="text-md font-semibold text-custom-black flex justify-between">
-            <span>Basketball Gym Name</span>
+            <span>{courtName}</span>
             <span>{rate}</span>
           </h3>
           <div className="flex items-center pt-3">

@@ -27,13 +27,7 @@ const Aside = ({ onClick }) => {
           <FaHome className="mr-3" />
           Home
         </Link>
-        <Link
-          to="/privacypolicy"
-          className="flex items-center text-lg p-3 hover:bg-gray-100 rounded-lg w-full"
-        >
-          <FaShieldAlt className="mr-3" />
-          Privacy Policy
-        </Link>
+
         <Link
           to="/explore"
           className="flex items-center text-lg p-3 hover:bg-gray-100 rounded-lg w-full"
@@ -48,8 +42,16 @@ const Aside = ({ onClick }) => {
           <FaEnvelopeOpenText className="mr-3" />
           Requests
         </Link>
+
         <Link
-          to="#"
+          to="/privacypolicy"
+          className="flex items-center text-lg p-3 hover:bg-gray-100 rounded-lg w-full"
+        >
+          <FaShieldAlt className="mr-3" />
+          Privacy Policy
+        </Link>
+        <Link
+          to="/setting"
           className="flex items-center text-lg p-3 hover:bg-gray-100 rounded-lg w-full"
         >
           <FaCog className="mr-3" />

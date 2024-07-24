@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight, FaPlus, FaTimes } from "react-icons/fa";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 
 const Slider = ({ images, handleUpload, handleDelete }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [inputKey, setInputKey] = useState(Date.now()); // State to force input re-render
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -14,6 +15,19 @@ const Slider = ({ images, handleUpload, handleDelete }) => {
     setCurrentIndex(
       (prevIndex) => (prevIndex - 1 + images.length) % images.length
     );
+  };
+
+  const handleFileChange = (event) => {
+    handleUpload(event);
+    setInputKey(Date.now());
+    setCurrentIndex(images.length);
+  };
+
+  const handleImageDelete = (index) => {
+    handleDelete(index);
+    if (index === currentIndex && images.length > 1) {
+      setCurrentIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
+    }
   };
 
   return (
@@ -39,7 +53,12 @@ const Slider = ({ images, handleUpload, handleDelete }) => {
       <div className="absolute inset-0 flex items-center justify-center">
         <label className="cursor-pointer">
           <FaPlus className="text-custom-black text-3xl bg-white p-2 rounded-full" />
-          <input type="file" className="hidden" onChange={handleUpload} />
+          <input
+            type="file"
+            className="hidden"
+            onChange={handleFileChange}
+            key={inputKey} // Add key to force re-render
+          />
         </label>
       </div>
 
@@ -49,7 +68,7 @@ const Slider = ({ images, handleUpload, handleDelete }) => {
           <button
             type="button"
             className="text-white text-2xl  p-2 "
-            onClick={() => handleDelete(currentIndex)}
+            onClick={() => handleImageDelete(currentIndex)}
           >
             <RxCross2 />
           </button>

@@ -7,10 +7,12 @@ import SearchButton from "../../components/buttons/Verify";
 import Card from "../../components/Card/Card";
 import CardsData from "../../utils/CardsData/CardsData";
 import { FaQuestion } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState();
+  const navigate = useNavigate();
 
   const getRandomStatus = () => {
     const statuses = ["Open Now", "Already Booked"];
@@ -39,7 +41,13 @@ const Home = () => {
             <br />
             habitant arcu eget. Et integer facilisi eget diam.
           </p>
-          <ExploreButton text="Explore" />
+          <ExploreButton
+            text="Explore"
+            onClick={() => {
+              navigate("/explore");
+            }}
+            // to="/explore"
+          />
         </div>
         <div className="flex items-end justify-center lg:justify-end lg:w-1/2 p-4">
           <img src="/Home/star.png" alt="Star" />
