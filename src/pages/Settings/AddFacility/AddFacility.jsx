@@ -1,36 +1,33 @@
 import React, { useState } from "react";
 import { RxArrowLeft } from "react-icons/rx";
-
+import { v4 as uuidv4 } from "uuid";
 import Input from "./components/Input";
 import StartingAndEndingInput from "./components/StartingAndEndingInput";
-
 import DaySign from "./components/DaySign";
-
 import Slider from "./components/Slider";
 import { useNavigate } from "react-router-dom";
 import Button from "./components/Button";
 
+const getTodayDate = () => {
+  const today = new Date();
+  return today.toISOString().split("T")[0];
+};
+
 const AddFacility = () => {
-  const [courtName, setCourtName] = useState("");
+  const [basketCourtName, setBasketCourtName] = useState("");
   const [gymName, setGymName] = useState("");
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
-  const [houseRules, setHouseRules] = useState("");
-  const [startingTime, setStartingTime] = useState("");
-  const [closingTime, setClosingTime] = useState("");
-  const [pricePerHour, setPricePerHour] = useState("");
-  const [images, setImages] = useState([]); // Define images state
-  // const [selectedDays, setSelectedDays] = useState({
-  //   M: false,
-  //   T: false,
-  //   W: false,
-  //   Th: false,
-  //   F: false,
-  //   Sa: false,
-  //   Su: false,
-  // });
+  const [rules, setRules] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [closeTime, setCloseTime] = useState("");
+  const [amount, setAmount] = useState("");
+  const [facilityImagesList, setFacilityImagesList] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
+  const [latitude, setLat] = useState(null);
+  const [longitude, setLng] = useState(null);
 
-  const [selectedDays, setSelectedDays] = useState([]);
+  const [daysList, setDaysList] = useState([]);
 
   const navigate = useNavigate();
 
@@ -39,51 +36,94 @@ const AddFacility = () => {
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        setImages((prevImages) => [...prevImages, reader.result]);
+        setFacilityImagesList((prevImages) => [...prevImages, reader.result]);
       };
       reader.readAsDataURL(file);
     }
   };
 
   const handleDelete = (index) => {
-    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+    setFacilityImagesList((prevImages) =>
+      prevImages.filter((_, i) => i !== index)
+    );
   };
 
   const handleSave = () => {
     const facilityData = {
-      courtName,
+      // facilityId: uuidv4(),
+      basketCourtName,
       gymName,
       location,
       description,
-      houseRules,
-      startingTime,
-      closingTime,
-      pricePerHour,
-      images,
-      selectedDays,
+      rules,
+      startTime: `${getTodayDate()}T${startTime}:00.000`,
+      closeTime: `${getTodayDate()}T${closeTime}:00.000`,
+      amount,
+      facilityImagesList,
+      daysList,
+      latitude,
+      longitude,
+      bookingDateAndTime: [],
+      bookingList: [],
+      createdAt: new Date().toISOString(),
     };
 
     navigate("/facilitydetails", { state: { facilityData } });
   };
 
-  // const toggleDaySelection = (day) => {
-  //   setSelectedDays((prevSelectedDays) => ({
-  //     ...prevSelectedDays,
-  //     [day]: !prevSelectedDays[day],
-  //   }));
-  // };
-
   const toggleDaySelection = (day) => {
-    setSelectedDays((prevSelectedDays) =>
+    setDaysList((prevSelectedDays) =>
       prevSelectedDays.includes(day)
         ? prevSelectedDays.filter((d) => d !== day)
         : [...prevSelectedDays, day]
     );
   };
+
+  const fetchSuggestions = async (input) => {
+    if (input.length > 2) {
+      try {
+        const response = await fetch(
+          `/maps/api/place/autocomplete/json?input=${input}&key=${
+            import.meta.env.VITE_GOOGLE_MAPS_API
+          }`
+        );
+        const data = await response.json();
+        setSuggestions(data.predictions);
+      } catch (error) {
+        console.error("Error fetching suggestions:", error);
+      }
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const input = e.target.value;
+    setLocation(input);
+    fetchSuggestions(input);
+  };
+
+  const handleSuggestionClick = async (suggestion) => {
+    setLocation(suggestion.description);
+    setSuggestions([]);
+
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?place_id=${
+          suggestion.place_id
+        }&key=${import.meta.env.VITE_GOOGLE_MAPS_API}`
+      );
+      const data = await response.json();
+      const { lat, lng } = data.results[0].geometry.location;
+      setLat(lat);
+      setLng(lng);
+    } catch (error) {
+      console.error("Error fetching location details:", error);
+    }
+  };
+
   return (
     <div className="p-4 sm:p-8 px-4 sm:px-12 ">
-      {/* Profile and icon */}
-
       <div
         className="flex space-x-2 items-center cursor-pointer "
         onClick={() => {
@@ -109,8 +149,8 @@ const AddFacility = () => {
               fontSize="text-base "
               fontFamily="font-inter"
               bold="font-semibold"
-              value={courtName}
-              onChange={(e) => setCourtName(e.target.value)}
+              value={basketCourtName}
+              onChange={(e) => setBasketCourtName(e.target.value)}
             />
 
             <Input
@@ -134,8 +174,21 @@ const AddFacility = () => {
               fontFamily="font-inter"
               bold="font-semibold"
               value={location}
-              onChange={(e) => setLocation(e.target.value)}
+              onChange={handleInputChange}
             />
+            {suggestions.length > 0 && (
+              <ul className="absolute bg-white border rounded-md w-full mt-1 max-h-48 overflow-y-auto">
+                {suggestions.map((suggestion) => (
+                  <li
+                    key={suggestion.place_id}
+                    className="p-2 hover:bg-gray-200 cursor-pointer"
+                    onClick={() => handleSuggestionClick(suggestion)}
+                  >
+                    {suggestion.description}
+                  </li>
+                ))}
+              </ul>
+            )}
 
             <Input
               placeholder="Description"
@@ -157,8 +210,8 @@ const AddFacility = () => {
               fontSize="text-base "
               fontFamily="font-inter"
               bold="font-semibold"
-              value={houseRules}
-              onChange={(e) => setHouseRules(e.target.value)}
+              value={rules}
+              onChange={(e) => setRules(e.target.value)}
             />
           </div>
 
@@ -176,8 +229,8 @@ const AddFacility = () => {
                 fontSize="text-lg"
                 fontFamily="font-inter"
                 bold="font-semibold"
-                value={startingTime}
-                onChange={(e) => setStartingTime(e.target.value)}
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
               />
 
               <StartingAndEndingInput
@@ -188,15 +241,13 @@ const AddFacility = () => {
                 fontSize="text-lg"
                 fontFamily="font-inter"
                 bold="font-semibold"
-                value={closingTime}
-                onChange={(e) => setClosingTime(e.target.value)}
+                value={closeTime}
+                onChange={(e) => setCloseTime(e.target.value)}
               />
             </div>
           </div>
 
           <div className="flex  space-x-6 p-4">
-           
-
             {[
               "Monday",
               "Tuesday",
@@ -212,7 +263,7 @@ const AddFacility = () => {
                 bgColor="bg-white"
                 borderColor="border-placeholder-color"
                 textColor="text-black"
-                selected={selectedDays.includes(day)}
+                selected={daysList.includes(day)}
                 onClick={() => toggleDaySelection(day)}
               />
             ))}
@@ -232,8 +283,8 @@ const AddFacility = () => {
                 fontSize="text-base "
                 fontFamily="font-inter"
                 bold="font-semibold"
-                value={pricePerHour}
-                onChange={(e) => setPricePerHour(e.target.value)}
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
               />
             </div>
           </div>
@@ -246,7 +297,7 @@ const AddFacility = () => {
 
             <div className="py-4 ">
               <Slider
-                images={images}
+                images={facilityImagesList}
                 handleUpload={handleUpload}
                 handleDelete={handleDelete}
               />

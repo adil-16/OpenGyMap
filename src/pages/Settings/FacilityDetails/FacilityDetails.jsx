@@ -7,6 +7,7 @@ import Slider from "./components/Slider";
 import Button from "../AddFacility/components/Button";
 import { useFacilitiesData } from "../../../Context/FacilitiesDataContext/FacilitiesDataContext";
 import FormatDays from "../../../utils/FormatDays/FormatDays";
+import { addFacilityToFirestore } from "../../../firebase/Functions/FacilityFunctions";
 
 const FacilityDetails = () => {
   const location = useLocation();
@@ -18,15 +19,19 @@ const FacilityDetails = () => {
   if (!facilityData) {
     return <p>No facility data found.</p>;
   }
-  const handleSave = () => {
+  const handleSave = async () => {
     const facilityToSave = {
       ...facilityData,
-      imageUrls: facilityData.images || [],
+      // imageUrls: facilityData.facilityImagesList || [],
     };
+    console.log(facilityToSave);
 
-    console.log("Facility Data:", facilityToSave);
-    addFacility(facilityToSave);
-    navigate("/setting/myfacility");
+    try {
+      await addFacilityToFirestore(facilityToSave);
+      navigate("/setting/myfacility");
+    } catch (error) {
+      console.error("Error saving facility:", error);
+    }
   };
 
   return (
@@ -47,17 +52,17 @@ const FacilityDetails = () => {
         <div className="flex-1 py-4">
           <div className="flex justify-between">
             <p className="font-poppins text-xl sm:text-2xl font-semibold">
-              {facilityData.courtName}
+              {facilityData.basketCourtName}
             </p>
 
             <div className="flex items-center space-x-2">
               <FaClock className="h-5 w-5 text-gray-500" />
               <p className="font-inter font-medium text-sm sm:text-base text-request-button-accepted">
-                {FormatDays(facilityData.selectedDays)}{" "}
+                {FormatDays(facilityData.daysList)}{" "}
                 <span>
-                  {facilityData.startingTime} <span>-</span>{" "}
+                  {facilityData.startTime} <span>-</span>{" "}
                 </span>
-                <span>{facilityData.closingTime}</span>
+                <span>{facilityData.closeTime}</span>
               </p>
             </div>
           </div>
@@ -78,7 +83,7 @@ const FacilityDetails = () => {
               Price
             </p>
             <p className="text-custom-black text-lg sm:text-xl flex-1 font-semibold font-inter ml-16">
-              {facilityData.pricePerHour}
+              {facilityData.amount}
             </p>
           </div>
 
@@ -96,13 +101,13 @@ const FacilityDetails = () => {
               House Rules
             </p>
             <ul className="list-disc list-inside text-nav-gray px-3 py-3">
-              <li className="text-nav-gray">{facilityData.houseRules}</li>
+              <li className="text-nav-gray">{facilityData.rules}</li>
             </ul>
           </div>
         </div>
         <div className="flex-1 lg:pl-8">
           <div>
-            <Slider images={facilityData.images} />
+            <Slider images={facilityData.facilityImagesList} />
           </div>
 
           <div className="flex space-x-4 justify-center items-end h-48 lg:h-96 mt-4 lg:mt-0">

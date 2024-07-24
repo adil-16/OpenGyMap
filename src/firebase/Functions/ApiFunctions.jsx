@@ -1,5 +1,6 @@
 import { auth } from "../firebase.config";
 import {
+  createUserWithEmailAndPassword,
   RecaptchaVerifier,
   signInWithPhoneNumber,
   signInWithEmailLink,
@@ -8,6 +9,27 @@ import {
   PhoneAuthProvider,
   signInWithCredential,
 } from "firebase/auth";
+
+/**
+ * Register a user with email and password
+ * @param {string} email - The user's email address.
+ * @param {string} password - The user's password.
+ * @returns {Promise<UserCredential>} - A promise that resolves with the user credential.
+ */
+
+export const registerUserWithEmailAndPassword = async (email, password) => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    return userCredential;
+  } catch (error) {
+    console.error("Error creating user with email and password:", error);
+    throw error;
+  }
+};
 
 // Function to setup Recaptcha
 const setupRecaptcha = () => {
@@ -24,7 +46,6 @@ const setupRecaptcha = () => {
   return recaptchaVerifier;
 };
 
-// Function to send OTP to phone number
 export const sendOtpToPhone = async (phoneNumber) => {
   setupRecaptcha();
   const appVerifier = window.recaptchaVerifier;
@@ -42,7 +63,6 @@ export const sendOtpToPhone = async (phoneNumber) => {
   }
 };
 
-// Function to verify OTP for phone number
 export const verifyPhoneOtp = async (verificationId, otp) => {
   try {
     const credential = auth.PhoneAuthProvider.credential(verificationId, otp);
@@ -51,38 +71,5 @@ export const verifyPhoneOtp = async (verificationId, otp) => {
   } catch (error) {
     console.error("Error during signInWithCredential", error);
     throw error;
-  }
-};
-
-// Function to send OTP to email
-export const sendOtpToEmail = async (email) => {
-  const actionCodeSettings = {
-    // URL to redirect to after email verification
-    url: "http://localhost:5173/otp",
-    handleCodeInApp: true,
-  };
-
-  try {
-    await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-    window.localStorage.setItem("emailForSignIn", email);
-  } catch (error) {
-    console.error("Error during sendSignInLinkToEmail", error);
-    throw error;
-  }
-};
-
-// Function to verify OTP for email
-export const verifyEmailOtp = async (email, emailLink) => {
-  if (isSignInWithEmailLink(auth, emailLink)) {
-    try {
-      const result = await signInWithEmailLink(auth, email, emailLink);
-      window.localStorage.removeItem("emailForSignIn");
-      return result.user;
-    } catch (error) {
-      console.error("Error during signInWithEmailLink", error);
-      throw error;
-    }
-  } else {
-    throw new Error("Invalid email link");
   }
 };

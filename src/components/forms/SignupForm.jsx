@@ -14,6 +14,8 @@ const SignupForm = ({
   handleEmailChange,
   password,
   handlePasswordChange,
+  confirmPassword,
+  handleConfirmPasswordChange,
   phone,
   handlePhoneChange,
 }) => {
@@ -77,8 +79,8 @@ const SignupForm = ({
           <InputField
             type="password"
             placeholder="Confirm Password"
-            value={password}
-            onChange={handlePasswordChange}
+            value={confirmPassword}
+            onChange={handleConfirmPasswordChange}
             iconSrc="/Auth/password.png"
           />
         </>

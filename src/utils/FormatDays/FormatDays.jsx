@@ -1,7 +1,7 @@
 // utils/formatDays.js
 
-function FormatDays(selectedDays) {
-  if (selectedDays.length === 0) {
+function FormatDays(daysList) {
+  if (daysList.length === 0) {
     return "No availability";
   }
 
@@ -14,7 +14,7 @@ function FormatDays(selectedDays) {
     "Saturday",
     "Sunday",
   ];
-  const dayIndices = selectedDays.map((day) => dayNames.indexOf(day));
+  const dayIndices = daysList.map((day) => dayNames.indexOf(day));
 
   const ranges = [];
   let start = dayIndices[0];

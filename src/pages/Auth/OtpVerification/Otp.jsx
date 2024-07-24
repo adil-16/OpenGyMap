@@ -2,10 +2,7 @@ import React, { useState, useContext, useRef } from "react";
 import { AuthContext } from "../../../Context/AuthContext/AuthContext";
 import VerifyButton from "../../../components/buttons/Verify";
 import { useNavigate, Link } from "react-router-dom";
-import {
-  verifyPhoneOtp,
-  verifyEmailOtp,
-} from "../../../firebase/Functions/ApiFunctions";
+import { verifyPhoneOtp } from "../../../firebase/Functions/ApiFunctions";
 
 const Otp = () => {
   const navigate = useNavigate();
@@ -42,7 +39,7 @@ const Otp = () => {
         await verifyPhoneOtp(verificationId, otpString);
       } else if (emailForSignIn) {
         const emailLink = window.location.href;
-        await verifyEmailOtp(emailForSignIn, emailLink);
+        // await verifyEmailOtp(emailForSignIn, emailLink);
         console.log("user", emailForSignIn);
       }
       navigate("/homepage");
