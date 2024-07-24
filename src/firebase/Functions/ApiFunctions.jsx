@@ -58,13 +58,12 @@ export const verifyPhoneOtp = async (verificationId, otp) => {
 export const sendOtpToEmail = async (email) => {
   const actionCodeSettings = {
     // URL to redirect to after email verification
-    url: "http://localhost:3000/otp",
+    url: "http://localhost:5173/otp",
     handleCodeInApp: true,
   };
 
   try {
     await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-    console.log("hh");
     window.localStorage.setItem("emailForSignIn", email);
   } catch (error) {
     console.error("Error during sendSignInLinkToEmail", error);

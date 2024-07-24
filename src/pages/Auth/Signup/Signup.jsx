@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import SignupForm from "../../../components/forms/SignupForm";
 import RequestOtpButton from "../../../components/buttons/RequestOtp";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  sendOtpToPhone,
+  sendOtpToEmail,
+} from "../../../firebase/Functions/ApiFunctions";
 
 const Signup = () => {
   const [activeButton, setActiveButton] = useState("phoneNumber");
@@ -10,6 +14,7 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [username, setUsername] = useState("");
+  const navigate = useNavigate();
 
   const handleButtonClick = (buttonType) => {
     setActiveButton(buttonType);
@@ -35,8 +40,19 @@ const Signup = () => {
     setPhone(phone);
   };
 
-  const handleRequestOtp = () => {
-    console.log("Requesting OTP");
+  const handleRequestOtp = async () => {
+    try {
+      if (activeButton === "phoneNumber") {
+        const verificationId = await sendOtpToPhone(phone);
+        localStorage.setItem("verificationId", verificationId);
+      } else {
+        await sendOtpToEmail(emailId);
+        localStorage.setItem("emailForSignIn", emailId);
+      }
+      navigate("/otp");
+    } catch (error) {
+      console.error("Error requesting OTP:", error);
+    }
   };
 
   return (
