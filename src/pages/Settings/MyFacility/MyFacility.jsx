@@ -34,6 +34,7 @@ const MyFacility = () => {
 
   const handleEdit = (facility) => {
     navigate("/addfacility", { state: { facility, isEdit: true } });
+    console.log("facility ", facility);
   };
 
   const handleDeleteFacility = (id) => {
@@ -91,11 +92,13 @@ const MyFacility = () => {
             )}
           </div>
 
-          <Pagination
-            items={facilities}
-            itemsPerPage={ITEMS_PER_PAGE}
-            onPageChange={handlePageChange}
-          />
+          {!loading ? (
+            <Pagination
+              items={facilities}
+              itemsPerPage={ITEMS_PER_PAGE}
+              onPageChange={handlePageChange}
+            />
+          ) : null}
         </div>
         <div className="pl-4">
           <p className="text-custom-black text-md font-semibold mb-4">

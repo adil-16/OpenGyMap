@@ -1,36 +1,53 @@
 import React, { useState, useEffect } from "react";
 import { RxArrowLeft } from "react-icons/rx";
-import { v4 as uuidv4 } from "uuid";
+
 import Input from "./components/Input";
 import StartingAndEndingInput from "./components/StartingAndEndingInput";
 import DaySign from "./components/DaySign";
 import Slider from "./components/Slider";
 import { useNavigate, useLocation } from "react-router-dom";
 import Button from "./components/Button";
-
 const getTodayDate = () => {
   const today = new Date();
   return today.toISOString().split("T")[0];
 };
 
+const extractTime = (dateTime) => {
+  return dateTime ? dateTime.split("T")[1].substring(0, 5) : "";
+};
+
 const AddFacility = () => {
-  const [basketCourtName, setBasketCourtName] =useState(facilityData?.basketCourtName || "");
+  const locationn = useLocation();
+  const facilityData = locationn.state?.facility || {};
+  const [basketCourtName, setBasketCourtName] = useState(
+    facilityData?.basketCourtName || ""
+  );
   const [gymName, setGymName] = useState(facilityData?.gymName || "");
   const [location, setLocation] = useState(facilityData?.location || "");
-  const [description, setDescription] = useState(facilityData?.description || "");
+  const [description, setDescription] = useState(
+    facilityData?.description || ""
+  );
   const [rules, setRules] = useState(facilityData?.rules || "");
-  const [startTime, setStartTime] = useState(facilityData?.startTime || "");
-  const [closeTime, setCloseTime] = useState(facilityData?.closeTime || "");
+  // const [startTime, setStartTime] = useState(facilityData?.startTime || "");
+  // const [closeTime, setCloseTime] = useState(facilityData?.closeTime || "");
+
+  const [startTime, setStartTime] = useState(
+    extractTime(facilityData?.startTime)
+  );
+  const [closeTime, setCloseTime] = useState(
+    extractTime(facilityData?.closeTime)
+  );
   const [amount, setAmount] = useState(facilityData?.amount || "");
-  const [facilityImagesList, setFacilityImagesList] = useState(facilityData?.facilityImagesList || "");
+  const [facilityImagesList, setFacilityImagesList] = useState(
+    facilityData?.facilityImagesList || ""
+  );
   const [suggestions, setSuggestions] = useState([]);
   const [latitude, setLat] = useState(null);
   const [longitude, setLng] = useState(null);
   const uid = localStorage.getItem("uid");
 
-  const [daysList, setDaysList] = useState([]);
+  const [daysList, setDaysList] = useState(facilityData?.daysList || []);
   const isEdit = locationn.state?.isEdit;
-
 
   const navigate = useNavigate();
 
