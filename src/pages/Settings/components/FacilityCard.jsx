@@ -12,6 +12,7 @@ const FacilityCard = ({
   hours,
   courtName,
   onDelete,
+  time,
 }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -62,8 +63,11 @@ const FacilityCard = ({
               alt="Time Icon"
               className="w-4 h-4 mr-2"
             />
-            <span className="text-payment-gray text-sm">{hours}</span>
+            <span className="text-payment-gray text-sm w-[90%] break-words">
+              {hours}
+            </span>
           </div>
+          <span className="text-payment-gray text-sm ml-7">{time}</span>
         </div>
       </div>
 

@@ -31,6 +31,33 @@ export const fetchFacilitiesFromFirestore = async (setData, setLoading) => {
 };
 
 /**
+ * Fetch facilities from Firestore, excluding those created by the current user.
+ * @param {Function} setFacilities
+ * @param {Function} setLoading
+ */
+export const fetchFacilitiesForUser = async (setFacilities, setLoading) => {
+  try {
+    setLoading(true);
+    const querySnapshot = await getDocs(collection(db, "facilities"));
+    const facilitiesList = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    const uid = localStorage.getItem("uid");
+    const filteredFacilities = facilitiesList.filter(
+      (facility) => facility.createdBy !== uid
+    );
+
+    setFacilities(filteredFacilities);
+  } catch (error) {
+    console.error("Error fetching facilities:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+/**
  * @param {Object} facilityData
  * @returns {Promise<void>}
  */
