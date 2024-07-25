@@ -26,6 +26,7 @@ const AddFacility = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [latitude, setLat] = useState(null);
   const [longitude, setLng] = useState(null);
+  const uid = localStorage.getItem("uid");
 
   const [daysList, setDaysList] = useState([]);
 
@@ -50,7 +51,7 @@ const AddFacility = () => {
 
   const handleSave = () => {
     const facilityData = {
-      // facilityId: uuidv4(),
+      createdBy: uid,
       basketCourtName,
       gymName,
       location,

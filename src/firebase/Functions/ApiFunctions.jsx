@@ -44,6 +44,24 @@ export const updateUserProfilePicture = async (uid, profilePicture) => {
 };
 
 /**
+ * Update the user's address, latitude, and longitude
+ * @param {string} uid -
+ * @param {string} address
+ * @param {number} latitude
+ * @param {number} longitude
+ */
+export const updateUserAddress = async (uid, address, latitude, longitude) => {
+  try {
+    const userDocRef = doc(db, "users", uid);
+    await updateDoc(userDocRef, { address, latitude, longitude });
+    console.log("User address updated successfully");
+  } catch (error) {
+    console.error("Error updating user address:", error);
+    throw error;
+  }
+};
+
+/**
  * Fetch user details by UID
  * @param {string} uid
  * @returns {Promise<Object>}

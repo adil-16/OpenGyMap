@@ -9,6 +9,14 @@ import { useFacilitiesData } from "../../../Context/FacilitiesDataContext/Facili
 import FormatDays from "../../../utils/FormatDays/FormatDays";
 import { addFacilityToFirestore } from "../../../firebase/Functions/FacilityFunctions";
 
+const formatTime = (timeString) => {
+  const date = new Date(timeString);
+  return date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
 const FacilityDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -22,7 +30,6 @@ const FacilityDetails = () => {
   const handleSave = async () => {
     const facilityToSave = {
       ...facilityData,
-      // imageUrls: facilityData.facilityImagesList || [],
     };
     console.log(facilityToSave);
 
@@ -60,9 +67,9 @@ const FacilityDetails = () => {
               <p className="font-inter font-medium text-sm sm:text-base text-request-button-accepted">
                 {FormatDays(facilityData.daysList)}{" "}
                 <span>
-                  {facilityData.startTime} <span>-</span>{" "}
+                  {formatTime(facilityData.startTime)} <span>-</span>{" "}
                 </span>
-                <span>{facilityData.closeTime}</span>
+                <span>{formatTime(facilityData.closeTime)}</span>
               </p>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import FacilityCard from "../components/FacilityCard";
 import FormatDays from "../../../utils/FormatDays/FormatDays";
 import { useNavigate } from "react-router-dom";
@@ -10,8 +10,12 @@ const ITEMS_PER_PAGE = 4;
 
 const MyFacility = () => {
   const navigate = useNavigate();
-  const { data: facilities } = useFacilitiesData();
+  const { data: facilities, loading, fetchFacilities } = useFacilitiesData();
   const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    fetchFacilities();
+  }, [fetchFacilities]);
 
   const totalPages = Math.ceil(facilities.length / ITEMS_PER_PAGE);
 
@@ -24,6 +28,13 @@ const MyFacility = () => {
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentItems = facilities.slice(startIndex, endIndex);
+  const formatTime = (timeString) => {
+    const date = new Date(timeString);
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   return (
     <div>
@@ -37,43 +48,47 @@ const MyFacility = () => {
             Facilities
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {currentItems.map((facility) => (
-              <FacilityCard
-                key={facility.id}
-                id={facility.id}
-                courtName={facility.courtName}
-                imageUrls={facility.imageUrls}
-                rate={facility.pricePerHour}
-                address={facility.location}
-                hours={`${
-                  Array.isArray(facility.selectedDays) &&
-                  facility.selectedDays.length > 0
-                    ? `${FormatDays(facility.selectedDays)} ${
-                        facility.startingTime
-                      } - ${facility.closingTime}`
-                    : "No availability"
-                }`}
+            {loading ? (
+              <div>Loading facilities...</div>
+            ) : (
+              currentItems.map((facility) => (
+                <FacilityCard
+                  key={facility.id}
+                  id={facility.id}
+                  courtName={facility.basketCourtName}
+                  imageUrls={facility.facilityImagesList}
+                  rate={`$${facility.amount}/hr`}
+                  address={facility.location}
+                  hours={`${
+                    Array.isArray(facility.daysList) &&
+                    facility.daysList.length > 0
+                      ? `${FormatDays(facility.daysList)} ${formatTime(
+                          facility.startTime
+                        )} - ${formatTime(facility.closeTime)}`
+                      : "No availability"
+                  }`}
+                />
+              ))
+            )}
+          </div>
+
+          {!loading ? (
+            <div className="flex justify-center items-center mt-6 pb-3">
+              <IoIosArrowDropleftCircle
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="h-8 w-8 cursor-pointer"
               />
-            ))}
-          </div>
-
-          <div className="flex justify-center items-center mt-6 pb-3">
-            <IoIosArrowDropleftCircle
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="h-8 w-8 cursor-pointer"
-            />
-            {/* </button> */}
-            <span className="px-4 py-2  text-black rounded">
-              Page {currentPage} of {totalPages}
-            </span>
-
-            <IoIosArrowDroprightCircle
-              className="h-8 w-8 cursor-pointer"
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            />
-          </div>
+              <span className="px-4 py-2 text-black rounded">
+                Page {currentPage} of {totalPages}
+              </span>
+              <IoIosArrowDroprightCircle
+                className="h-8 w-8 cursor-pointer"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              />
+            </div>
+          ) : null}
         </div>
         <div className="pl-4">
           <p className="text-custom-black text-md font-semibold mb-4">
