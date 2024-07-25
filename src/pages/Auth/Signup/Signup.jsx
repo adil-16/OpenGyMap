@@ -54,7 +54,7 @@ const Signup = () => {
           console.error("Passwords do not match");
           return;
         }
-        await registerUserWithEmailAndPassword(emailId, password);
+        await registerUserWithEmailAndPassword(emailId, password, username);
         console.log(emailId);
         localStorage.setItem("emailForSignIn", emailId);
       }

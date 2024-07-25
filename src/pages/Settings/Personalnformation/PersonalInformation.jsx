@@ -1,18 +1,53 @@
-// PersonalInformation.jsx
-import React, { useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import LabelInput from "../components/LabelInput";
+import {
+  getUserDetails,
+  updateUserPassword,
+  updateUserFullName,
+  updateUserProfilePicture,
+} from "../../../firebase/Functions/ApiFunctions";
+import CryptoJS from "crypto-js";
 
 const PersonalInformation = () => {
+  const [userDetails, setUserDetails] = useState({});
   const [editingId, setEditingId] = useState(null);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const uid = localStorage.getItem("uid");
+
+  useEffect(() => {
+    if (uid) {
+      getUserDetails(uid)
+        .then((details) => {
+          setUserDetails(details);
+          if (details.profilePicture) {
+            setImage(details.profilePicture);
+          }
+        })
+        .catch((error) => console.error("Error fetching user details:", error))
+        .finally(() => setLoading(false));
+    }
+  }, [uid]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImage(reader.result);
+        const imageDataUrl = reader.result;
+        setImage(imageDataUrl);
+        updateUserProfilePicture(uid, imageDataUrl)
+          .then(() => {
+            console.log("Profile picture updated successfully");
+          })
+          .catch((error) => {
+            console.error("Error updating profile picture:", error);
+          });
       };
       reader.readAsDataURL(file);
     }
@@ -21,7 +56,58 @@ const PersonalInformation = () => {
   const handleCancelUpdate = () => {
     setIsUpdatingPassword(false);
     setEditingId(null);
+    setNewPassword("");
+    setConfirmPassword("");
   };
+
+  const handleUpdatePassword = async () => {
+    console.log("Old Password:", decryptedPassword);
+    console.log("New Password:", newPassword);
+    console.log("Confirm Password:", confirmPassword);
+    try {
+      if (!decryptedPassword || !newPassword || !confirmPassword) {
+        console.log("Please fill in all password fields.");
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        console.log("New password and confirm password do not match.");
+        return;
+      }
+
+      await updateUserPassword(decryptedPassword, newPassword);
+      console.log("Password Changed Successfully!");
+      const encryptedNewPassword = CryptoJS.AES.encrypt(
+        newPassword,
+        "your-encryption-key"
+      ).toString();
+      localStorage.setItem("encryptedPassword", encryptedNewPassword);
+      handleCancelUpdate();
+    } catch (error) {
+      console.log(`Error changing password: ${error.message}`);
+    }
+  };
+
+  const handleUpdateFullName = async (fullName) => {
+    try {
+      await updateUserFullName(uid, fullName);
+      setUserDetails((prevDetails) => ({ ...prevDetails, fullName }));
+      console.log("Full name updated successfully");
+    } catch (error) {
+      console.log(`Error updating full name: ${error.message}`);
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  const encryptedPassword = localStorage.getItem("encryptedPassword");
+  const decryptedPassword = encryptedPassword
+    ? CryptoJS.AES.decrypt(encryptedPassword, "your-encryption-key").toString(
+        CryptoJS.enc.Utf8
+      )
+    : "";
 
   return (
     <>
@@ -35,19 +121,26 @@ const PersonalInformation = () => {
             <div>
               <LabelInput
                 label="Name"
-                initialValue="Shayan"
+                value={userDetails?.fullName || ""}
+                handleChange={(e) =>
+                  setUserDetails({ ...userDetails, fullName: e.target.value })
+                }
                 buttonText="Edit"
                 editingId={editingId}
                 setEditingId={setEditingId}
                 saveButtonText="Save"
                 type="text"
                 inputId="name"
+                onSave={handleUpdateFullName}
               />
             </div>
             <div className="py-3">
               <LabelInput
                 label="Email"
-                initialValue="Shayan@gmail.com"
+                value={userDetails?.email || ""}
+                handleChange={(e) =>
+                  setUserDetails({ ...userDetails, email: e.target.value })
+                }
                 buttonText="Edit"
                 editingId={editingId}
                 setEditingId={setEditingId}
@@ -60,7 +153,7 @@ const PersonalInformation = () => {
               {!isUpdatingPassword ? (
                 <LabelInput
                   label="Password"
-                  initialValue="123456"
+                  value={decryptedPassword}
                   buttonText="Update"
                   editingId={editingId}
                   setEditingId={(editing) => {
@@ -74,13 +167,12 @@ const PersonalInformation = () => {
                 <>
                   <LabelInput
                     label="Old Password"
-                    initialValue=""
+                    value={decryptedPassword}
                     type="password"
                     buttonText=""
-                    // editingId={editingId}
+                    editingId={editingId}
                     setEditingId={setEditingId}
                     saveButtonText=""
-                    readOnly
                     inputId="oldPassword"
                   />
                   <LabelInput
@@ -90,13 +182,18 @@ const PersonalInformation = () => {
                     type="password"
                     saveButtonText=""
                     inputId="newPassword"
+                    value={newPassword}
+                    handleChange={(e) => setNewPassword(e.target.value)}
                   />
                   <LabelInput
                     label="Confirm Password"
                     initialValue=""
                     buttonText=""
                     saveButtonText=""
+                    type="password"
                     inputId="confirmPassword"
+                    value={confirmPassword}
+                    handleChange={(e) => setConfirmPassword(e.target.value)}
                   />
                   <div className="py-3 space-x-2">
                     <button
@@ -106,10 +203,7 @@ const PersonalInformation = () => {
                       Cancel
                     </button>
                     <button
-                      onClick={() => {
-                        setIsUpdatingPassword(false);
-                        setEditingId(null);
-                      }}
+                      onClick={handleUpdatePassword}
                       className="bg-custom-gradient text-xs w-24 text-white p-3 text-center rounded-lg"
                     >
                       Update

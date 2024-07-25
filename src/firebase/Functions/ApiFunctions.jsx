@@ -1,32 +1,147 @@
 import { auth } from "../firebase.config";
 import {
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   RecaptchaVerifier,
   signInWithPhoneNumber,
-  signInWithEmailLink,
-  sendSignInLinkToEmail,
-  isSignInWithEmailLink,
-  PhoneAuthProvider,
-  signInWithCredential,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  updatePassword,
 } from "firebase/auth";
+import { collection, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../firebase.config";
+
+/**
+ * Update the user's full name
+ * @param {string} uid
+ * @param {string} fullName
+ */
+export const updateUserFullName = async (uid, fullName) => {
+  try {
+    const userDocRef = doc(db, "users", uid);
+    await updateDoc(userDocRef, { fullName });
+    console.log("User full name updated successfully");
+  } catch (error) {
+    console.error("Error updating user full name:", error);
+    throw error;
+  }
+};
+
+/**
+ * Update the user's profile picture
+ * @param {string} uid
+ * @param {string} profilePicture
+ */
+export const updateUserProfilePicture = async (uid, profilePicture) => {
+  try {
+    const userDocRef = doc(db, "users", uid);
+    await updateDoc(userDocRef, { profilePicture });
+    console.log("User profile picture updated successfully");
+  } catch (error) {
+    console.error("Error updating user profile picture:", error);
+    throw error;
+  }
+};
+
+/**
+ * Fetch user details by UID
+ * @param {string} uid
+ * @returns {Promise<Object>}
+ */
+export const getUserDetails = async (uid) => {
+  try {
+    const userDocRef = doc(db, "users", uid);
+    const userDoc = await getDoc(userDocRef);
+
+    if (userDoc.exists()) {
+      return userDoc.data();
+    } else {
+      throw new Error("No such user!");
+    }
+  } catch (error) {
+    console.error("Error fetching user details:", error);
+    throw error;
+  }
+};
 
 /**
  * Register a user with email and password
- * @param {string} email - The user's email address.
- * @param {string} password - The user's password.
- * @returns {Promise<UserCredential>} - A promise that resolves with the user credential.
+ * @param {string} email
+ * @param {string} password
+ * @param {string} username
+ * @returns {Promise<UserCredential>}
  */
 
-export const registerUserWithEmailAndPassword = async (email, password) => {
+export const registerUserWithEmailAndPassword = async (
+  email,
+  password,
+  username
+) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
       password
     );
+    const user = userCredential.user;
+
+    await setDoc(doc(db, "users", user.uid), {
+      email: user.email,
+      fullName: username,
+      uid: user.uid,
+      createdAt: new Date().toISOString(),
+      address: "",
+      fcmToken: "",
+      isActive: true,
+      latitude: null,
+      longitude: null,
+      phoneNumber: "",
+      profilePicture: "",
+      totalRevenue: null,
+      updatedAt: new Date().toISOString(),
+    });
+
     return userCredential;
   } catch (error) {
     console.error("Error creating user with email and password:", error);
+    throw error;
+  }
+};
+
+export const updateUserPassword = async (oldPassword, newPassword) => {
+  try {
+    const user = auth.currentUser;
+    console.log("user", user);
+    if (!user) throw new Error("No user is currently signed in.");
+    console.log("old", oldPassword);
+    console.log("new", newPassword);
+
+    const credential = EmailAuthProvider.credential(user.email, oldPassword);
+    await reauthenticateWithCredential(user, credential);
+
+    await updatePassword(user, newPassword);
+  } catch (error) {
+    console.error("Error updating password:", error);
+    throw error;
+  }
+};
+
+/**
+ * Sign in a user with email and password
+ * @param {string} email
+ * @param {string} password
+ * @returns {Promise<UserCredential>}
+ */
+export const Login = async (email, password) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    return userCredential;
+  } catch (error) {
+    console.error("Error signing in with email and password:", error);
     throw error;
   }
 };

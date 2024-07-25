@@ -1,5 +1,4 @@
 import React from "react";
-import FlagSelect from "react-flags-select";
 import InputField from "../InputField/InputField";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";

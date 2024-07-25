@@ -3,9 +3,14 @@ import AuthForm from "../../../components/forms/AuthForm";
 import RequestOtpButton from "../../../components/buttons/RequestOtp";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../Context/AuthContext/AuthContext";
+import {
+  Login,
+  sendOtpToPhone,
+} from "../../../firebase/Functions/ApiFunctions";
+import CryptoJS from "crypto-js";
 
 const Auth = () => {
-  const { email, setEmail } = useContext(AuthContext);
+  const { email, setEmail, setUid } = useContext(AuthContext);
   const [activeButton, setActiveButton] = useState("phoneNumber");
   const [selectedCountry, setSelectedCountry] = useState("in");
   const [password, setPassword] = useState("");
@@ -34,9 +39,32 @@ const Auth = () => {
     setPhone(phone);
   };
 
-  const handleRequestOtp = () => {
-    console.log("Requesting OTP");
-    navigate("/otp");
+  const handleRequestOtp = async () => {
+    try {
+      if (activeButton === "phoneNumber") {
+        const verificationId = await sendOtpToPhone(phone);
+        localStorage.setItem("verificationId", verificationId);
+        navigate("/otp");
+      } else {
+        const userCredential = await Login(email, password);
+        console.log("User signed in:", userCredential);
+        setUid(userCredential.user.uid);
+
+        // Encrypt the password
+        const encryptedPassword = CryptoJS.AES.encrypt(
+          password,
+          "your-encryption-key"
+        ).toString();
+
+        // Store uid and encrypted password in local storage
+        localStorage.setItem("uid", userCredential.user.uid);
+        localStorage.setItem("encryptedPassword", encryptedPassword);
+
+        navigate("/homepage");
+      }
+    } catch (error) {
+      console.error("Error during authentication:", error);
+    }
   };
 
   return (
@@ -75,7 +103,7 @@ const Auth = () => {
           phone={phone}
           handlePhoneChange={handlePhoneChange}
         />
-        <RequestOtpButton text="Request OTP" onClick={handleRequestOtp} />
+        <RequestOtpButton text="Login" onClick={handleRequestOtp} />
         <p className="text-custom-gray mb-16 md:mb-0 lg:mb-0">
           Not Registered yet?{" "}
           <Link to={"/signup"} className="text-custom-blue font-semibold  ">
