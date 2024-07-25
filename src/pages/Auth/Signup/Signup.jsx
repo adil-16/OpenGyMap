@@ -56,8 +56,8 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-3">
-      <div className="hidden md:flex items-center h-screen col-span-1 relative ">
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div className="hidden lg:flex lg:items-center h-auto col-span-1 relative ">
         <img
           src="/Auth/image1.png"
           alt="Background"
@@ -78,7 +78,7 @@ const Signup = () => {
         <h1 className="text-4xl font-semibold mb-4 text-custom-black">
           Create an account
         </h1>
-        <p className="mb-6 text-custom-gray">Hello, Welcome Back!</p>
+        <p className=" text-custom-gray">Hello, Welcome Back!</p>
         <SignupForm
           activeButton={activeButton}
           handleButtonClick={handleButtonClick}
@@ -95,8 +95,8 @@ const Signup = () => {
         />
         <RequestOtpButton text="Create Account" onClick={handleRequestOtp} />
 
-        <Link to="/" className="text-custom-black font-semibold">
-          <span className="mr-2">&lt;</span> Return to sign up
+        <Link to="/" className="text-custom-black font-semibold ">
+          <span className="mr-2 pb-4">&lt;</span> Return to sign in
         </Link>
       </div>
     </div>

@@ -1,4 +1,3 @@
-// FacilitiesDataContext.jsx
 import React, { createContext, useState, useContext } from "react";
 
 import facilities from "../../utils/FacilitiesData/FacilitiesData";
@@ -14,9 +13,20 @@ export const FacilitiesDataProvider = ({ children }) => {
       { ...newFacility, id: prevData.length + 1 },
     ]);
   };
+  const updateFacility = (updatedFacility) => {
+    setData((prevData) =>
+      prevData.map((facility) =>
+        facility.id === updatedFacility.id ? updatedFacility  : facility
+
+
+      )
+    );
+  };
 
   return (
-    <FacilitiesDataContext.Provider value={{ data, setData, addFacility }}>
+    <FacilitiesDataContext.Provider
+      value={{ data, setData, addFacility, updateFacility }}
+    >
       {children}
     </FacilitiesDataContext.Provider>
   );

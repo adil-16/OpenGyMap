@@ -32,7 +32,7 @@ const SignupForm = ({
         </button>
         <button
           onClick={() => handleButtonClick("email")}
-          className={`flex-1 px-8 lg:px-12 ml-8 py-2 rounded-xl focus:outline-none ${
+          className={`flex-1 px-8 lg:px-16 ml-8 py-2 rounded-xl focus:outline-none ${
             activeButton === "email"
               ? "bg-white font-bold border-b-2"
               : "border-b-2 border-transparent"
@@ -42,14 +42,40 @@ const SignupForm = ({
         </button>
       </div>
       {activeButton === "phoneNumber" && (
-        <div className="flex items-center border-b-2 border-gray-300 py-2 mb-12 lg:w-96 md:w-80 sm:64">
-          <PhoneInput
-            country={selectedCountry}
-            value={phone}
-            onChange={handlePhoneChange}
-            className="text-gray-700 px-2 focus:outline-none"
+        <>
+          <InputField
+            type="text"
+            placeholder="Full Name"
+            value={username}
+            onChange={handleUsernameChange}
+            iconSrc="/Auth/username.png"
           />
-        </div>
+
+          <div className="flex items-center border-b-2 border-gray-300  mb-4 lg:w-96 md:w-80 sm:64">
+            <PhoneInput
+              country={selectedCountry}
+              value={phone}
+              onChange={handlePhoneChange}
+              className="text-gray-700  focus:outline-none"
+            />
+          </div>
+
+          <InputField
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={handlePasswordChange}
+            iconSrc="/Auth/password.png"
+          />
+
+          <InputField
+            type="password"
+            placeholder="Confirm Password"
+            value={password}
+            onChange={handlePasswordChange}
+            iconSrc="/Auth/password.png"
+          />
+        </>
       )}
       {activeButton === "email" && (
         <>

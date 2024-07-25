@@ -9,31 +9,24 @@ const Navbar = () => {
   const [activeLink, setActiveLink] = useState(window.location.pathname);
   const notificationRef = useRef(null);
   const dropdownRef = useRef(null);
-  const notificationButtonRef = useRef(null); // Ref for notification button
 
   useEffect(() => {
     const handleLocationChange = () => {
       setActiveLink(window.location.pathname);
     };
 
-    window.addEventListener("popstate", handleLocationChange);
+    setTimeout(() => {}, 10);
 
-    return () => {
-      window.removeEventListener("popstate", handleLocationChange);
-    };
-  }, []);
+    handleLocationChange();
+  }, [window.location.pathname]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       const notificationRefContains = notificationRef.current?.contains(
         event.target
       );
-      const notificationButtonRefContains =
-        notificationButtonRef.current?.contains(event.target);
 
-      console.log("HELLO", notificationButtonRefContains);
-
-      if (!notificationRefContains && !notificationButtonRefContains) {
+      if (!notificationRefContains) {
         setShowNotification(false);
       }
 
@@ -55,19 +48,13 @@ const Navbar = () => {
 
   const toggleNotification = () => {
     if (showNotification) {
-      console.log("fuck");
       setShowNotification(false);
     }
-    console.log("hellow world");
     setShowNotification((prev) => !prev);
   };
 
   const handleLinkClick = (path) => {
     setActiveLink(path);
-    setShowNotification(false); // Reset notification state on link click
-    setDropdownOpen(false);
-
-    console.log("activeLink is", path);
   };
 
   return (
@@ -150,7 +137,6 @@ const Navbar = () => {
             <IoMdNotificationsOutline
               className="w-8 h-8 cursor-pointer"
               onClick={toggleNotification}
-              ref={notificationButtonRef}
             />
             <span className="absolute top-0 right-0 w-2 h-2 bg-custom-blue rounded-full"></span>
           </div>

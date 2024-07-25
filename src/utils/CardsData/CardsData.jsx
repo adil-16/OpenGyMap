@@ -95,6 +95,40 @@ const CardsData = [
     title: "Modern Gaming Area",
     name: "Babarian Gym Pro",
   },
+
+  {
+    id: 7,
+    imageUrl: "/Home/games.png",
+    rate: "$42.75/hr",
+    address: "Street 101, Florida, USA",
+    hours: "Monday - Friday 10:00 - 24:00",
+    description:
+      "A spacious and modern gaming area with a variety of options for entertainment. Great for parties and events.",
+    houseRules: [
+      "No outside food.",
+      "Keep noise to a minimum.",
+      "Clean up before leaving.",
+    ],
+    title: "Modern Gaming Area",
+    name: "Babarian Gym Pro",
+  },
+
+  {
+    id: 8,
+    imageUrl: "/Home/games.png",
+    rate: "$42.75/hr",
+    address: "Street 101, Florida, USA",
+    hours: "Monday - Friday 10:00 - 24:00",
+    description:
+      "A spacious and modern gaming area with a variety of options for entertainment. Great for parties and events.",
+    houseRules: [
+      "No outside food.",
+      "Keep noise to a minimum.",
+      "Clean up before leaving.",
+    ],
+    title: "Modern Gaming Area",
+    name: "Babarian Gym Pro",
+  },
 ];
 
 export default CardsData;

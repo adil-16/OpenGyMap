@@ -40,8 +40,8 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-3">
-      <div className="hidden md:flex items-center h-screen col-span-1 relative ">
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div className="hidden lg:flex lg:items-center h-auto col-span-1 relative">
         <img
           src="/Auth/image1.png"
           alt="Background"

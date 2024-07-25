@@ -1,4 +1,3 @@
-// PersonalInformation.jsx
 import React, { useState } from "react";
 import LabelInput from "../components/LabelInput";
 
@@ -6,7 +5,10 @@ const PersonalInformation = () => {
   const [editingId, setEditingId] = useState(null);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
   const [image, setImage] = useState(null);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
+  console.log("NEW PASSWORD ", confirmPassword);
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -60,7 +62,7 @@ const PersonalInformation = () => {
               {!isUpdatingPassword ? (
                 <LabelInput
                   label="Password"
-                  initialValue="123456"
+                  value="123456"
                   buttonText="Update"
                   editingId={editingId}
                   setEditingId={(editing) => {
@@ -74,10 +76,9 @@ const PersonalInformation = () => {
                 <>
                   <LabelInput
                     label="Old Password"
-                    initialValue=""
+                    value="123456"
                     type="password"
                     buttonText=""
-                    // editingId={editingId}
                     setEditingId={setEditingId}
                     saveButtonText=""
                     readOnly
@@ -85,6 +86,10 @@ const PersonalInformation = () => {
                   />
                   <LabelInput
                     label="New Password"
+                    value={newPassword}
+                    handleChange={(e) => {
+                      setNewPassword(e.target.value);
+                    }}
                     initialValue=""
                     buttonText=""
                     type="password"
@@ -94,6 +99,10 @@ const PersonalInformation = () => {
                   <LabelInput
                     label="Confirm Password"
                     initialValue=""
+                    handleChange={(e) => {
+                      setConfirmPassword(e.target.value);
+                    }}
+                    value={confirmPassword}
                     buttonText=""
                     saveButtonText=""
                     inputId="confirmPassword"

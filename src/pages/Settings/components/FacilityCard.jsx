@@ -1,6 +1,7 @@
 import React from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
 import Slider from "./Slider";
+import { HiClock } from "react-icons/hi2";
 
 const FacilityCard = ({
   id,
@@ -9,14 +10,19 @@ const FacilityCard = ({
   address,
   hours,
   courtName,
+  onEdit,
+  time,
 }) => {
   return (
-    <div className="w-full">
-      <div className="relative rounded-lg h-96 overflow-hidden shadow-lg bg-white">
+    <div className=" max-w-full ">
+      <div className="relative rounded-lg  h-[100%] overflow-hidden shadow-lg bg-white">
         <Slider imageUrls={imageUrls} />
 
         <div className="absolute top-2 left-2 ">
-          <button className="px-4 py-1 bg-white rounded-full shadow">
+          <button
+            onClick={onEdit}
+            className="px-4 py-1 bg-white rounded-full shadow"
+          >
             Edit
           </button>
         </div>
@@ -27,25 +33,26 @@ const FacilityCard = ({
         </div>
         <div className="p-3">
           <h3 className="text-md font-semibold text-custom-black flex justify-between">
-            <span>{courtName}</span>
-            <span>{rate}</span>
+            <span className="break-words w-[50%] truncate">{courtName}</span>
+            <span className="break-words w-[30%]">{rate}</span>
           </h3>
-          <div className="flex items-center pt-3">
+          <div className="flex items-start pt-3">
             <img
               src="/Home/location.png"
               alt="Location Icon"
-              className="w-3 h-4 mr-2"
+              className="w-3 h-4 mr-2 my-1"
             />
-            <p className="text-custom-black text-sm font-semibold">{address}</p>
+            <div className="text-custom-black text-sm font-semibold  w-[90%] truncate break-words  ">
+              {address}
+            </div>
           </div>
-          <div className="flex items-center mt-3">
-            <img
-              src="/Home/time.png"
-              alt="Time Icon"
-              className="w-4 h-4 mr-2"
-            />
-            <span className="text-payment-gray text-sm">{hours}</span>
+          <div className="flex items-start mt-3">
+            <HiClock className="w-5 h-5 mr-2 text-Privacypolicy-text" />
+            <span className="text-payment-gray text-sm break-words w-[90%]">
+              {hours}
+            </span>
           </div>
+          <span className="text-payment-gray text-sm ml-7">{time}</span>
         </div>
       </div>
     </div>

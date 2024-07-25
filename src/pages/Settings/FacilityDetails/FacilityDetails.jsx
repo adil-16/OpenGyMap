@@ -11,9 +11,10 @@ import FormatDays from "../../../utils/FormatDays/FormatDays";
 const FacilityDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { addFacility } = useFacilitiesData();
+  const { data, addFacility, updateFacility } = useFacilitiesData();
 
   const facilityData = location.state?.facilityData;
+  const isEdit = location.state?.isEdit;
 
   if (!facilityData) {
     return <p>No facility data found.</p>;
@@ -26,6 +27,20 @@ const FacilityDetails = () => {
 
     console.log("Facility Data:", facilityToSave);
     addFacility(facilityToSave);
+    navigate("/setting/myfacility");
+  };
+
+  const handleUpdate = () => {
+    const updatedFacility = {
+      ...facilityData,
+      imageUrls: facilityData.images || [],
+    };
+
+    console.log("Updating facility:", updatedFacility);
+    updateFacility(updatedFacility);
+
+    console.log("data is ", data);
+
     navigate("/setting/myfacility");
   };
 
@@ -115,12 +130,23 @@ const FacilityDetails = () => {
               textColor="text-black"
             />
 
-            <Button
-              onClick={handleSave}
-              bgColor="bg-custom-gradient"
-              text="Add"
-              textColor="text-white"
-            />
+            {!isEdit && (
+              <Button
+                onClick={handleSave}
+                bgColor="bg-custom-gradient"
+                text="Add"
+                textColor="text-white"
+              />
+            )}
+
+            {isEdit && (
+              <Button
+                onClick={handleUpdate}
+                bgColor="bg-custom-gradient"
+                text="Update"
+                textColor="text-white"
+              />
+            )}
           </div>
         </div>
       </div>

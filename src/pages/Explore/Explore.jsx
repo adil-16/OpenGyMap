@@ -7,6 +7,9 @@ import CardsData from "../../utils/CardsData/CardsData";
 import Card from "../../components/Card/Card";
 import { FaQuestion } from "react-icons/fa";
 import SearchAlert from "../../components/Alert/SearchAlert";
+import Pagination from "../../components/Pagination/Pagination";
+
+const ITEMS_PER_PAGE = 6;
 
 const Explore = () => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -19,14 +22,12 @@ const Explore = () => {
   });
 
   const [searchQuery, setSearchQuery] = useState("");
-
-
+  const [currentPage, setCurrentPage] = useState(1);
 
   const handleSearchParamsChange = (field, value) => {
     setSearchParams((prevParams) => ({ ...prevParams, [field]: value }));
   };
 
-  // Filter cards based on search parameters
   const filteredCards = useMemo(() => {
     const { location, date, time } = searchParams;
     const filtered = CardsData.filter((card) =>
@@ -47,6 +48,15 @@ const Explore = () => {
     const statuses = ["Open Now", "Already Booked"];
     const randomIndex = Math.floor(Math.random() * statuses.length);
     return statuses[randomIndex];
+  };
+
+  // Paginate filtered cards
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentItems = filteredCards.slice(startIndex, endIndex);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -103,7 +113,7 @@ const Explore = () => {
           </div>
           <div className="mt-20 flex flex-col items-center">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16">
-              {filteredCards.map((card) => (
+              {currentItems.map((card) => (
                 <Card
                   id={card.id}
                   key={card.id}
@@ -115,6 +125,12 @@ const Explore = () => {
                 />
               ))}
             </div>
+
+            <Pagination
+              items={filteredCards}
+              itemsPerPage={ITEMS_PER_PAGE}
+              onPageChange={handlePageChange}
+            />
           </div>
           <div className="py-24">
             <div className="absolute bottom-0 mb-8 right-4 sm:right-10 bg-custom-gradient rounded-full p-4">

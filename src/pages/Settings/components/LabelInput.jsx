@@ -7,17 +7,23 @@ const LabelInput = ({
   editingId,
   setEditingId,
   saveButtonText = "Save",
-  isUpdatingPassword = false,
   readOnly = false,
   type = "text",
   inputId,
+  value,
+  handleChange,
 }) => {
-  const [value, setValue] = useState(initialValue);
   const [isEditing, setIsEditing] = useState(false);
 
   const handleEditClick = () => {
-    console.log("hello");
-    if (!editingId) {
+    if (label === "Email") {
+      setIsEditing(false);
+      setEditingId(null);
+    } else if (
+      !editingId &&
+      label !== "New Password" &&
+      label !== "Confirm Password"
+    ) {
       setIsEditing(true);
       setEditingId(inputId);
     }
@@ -28,16 +34,11 @@ const LabelInput = ({
     setEditingId(null);
   };
 
-  const handleChange = (e) => {
-    setValue(e.target.value);
-  };
-
   const handleCancelClick = () => {
     setIsEditing(false);
     setEditingId(null);
     setValue(initialValue);
   };
-  
 
   const isDimmed = editingId && editingId !== inputId;
 
@@ -60,7 +61,10 @@ const LabelInput = ({
           }
           className="w-full border py-3 border-gray-300 p-2 pr-10 rounded-full"
         />
-        {isEditing && buttonText !== "Update" && label !== "Old Password" ? (
+        {isEditing &&
+        buttonText !== "Update" &&
+        label !== "Old Password" &&
+        label !== "Email" ? (
           <button
             onClick={handleCancelClick}
             className="absolute inset-y-0 underline text-nav-gray font-semibold text-base right-2 flex items-center px-2"
@@ -71,7 +75,9 @@ const LabelInput = ({
           <button
             disabled={editingId && editingId !== inputId}
             onClick={handleEditClick}
-            className="absolute inset-y-0 underline text-nav-gray font-semibold text-base right-2 flex items-center px-2"
+            className={`absolute inset-y-0 underline text-nav-gray font-semibold text-base right-2 flex items-center px-2   ${
+              label === "Email" ? "hidden" : ""
+            }`}
           >
             {buttonText}
           </button>

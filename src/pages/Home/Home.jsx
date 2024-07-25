@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import SearchBar from "../../components/SeacrhBar/SearchBar";
 import ExploreButton from "../../components/buttons/Verify";
 import CustomDateInput from "../../components/DateAndTime/CustomDateInput";
@@ -7,17 +7,44 @@ import SearchButton from "../../components/buttons/Verify";
 import Card from "../../components/Card/Card";
 import CardsData from "../../utils/CardsData/CardsData";
 import { FaQuestion } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
+import Pagination from "../../components/Pagination/Pagination";
+
+const ITEMS_PER_PAGE = 6;
 const Home = () => {
+  const navigate = useNavigate();
+
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState();
-  const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
 
   const getRandomStatus = () => {
     const statuses = ["Open Now", "Already Booked"];
     const randomIndex = Math.floor(Math.random() * statuses.length);
     return statuses[randomIndex];
+  };
+
+  // const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  // const endIndex = startIndex + ITEMS_PER_PAGE;
+  // const currentItems = filteredCards.slice(startIndex, endIndex);
+
+  // const handlePageChange = (page) => {
+  //   setCurrentPage(page);
+  // };
+
+  const filteredCards = useMemo(() => {
+    // Apply any filtering logic here if needed
+    return CardsData;
+  }, []);
+
+  // Calculate pagination
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentItems = filteredCards.slice(startIndex, endIndex);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -41,13 +68,9 @@ const Home = () => {
             <br />
             habitant arcu eget. Et integer facilisi eget diam.
           </p>
-          <ExploreButton
-            text="Explore"
-            onClick={() => {
-              navigate("/explore");
-            }}
-            // to="/explore"
-          />
+          <Link to="/explore">
+            <ExploreButton text="Explore" />
+          </Link>
         </div>
         <div className="flex items-end justify-center lg:justify-end lg:w-1/2 p-4">
           <img src="/Home/star.png" alt="Star" />
@@ -142,7 +165,7 @@ const Home = () => {
           Popular Basketball Gyms
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16">
-          {CardsData.map((card) => (
+          {filteredCards.map((card) => (
             <Card
               id={card.id}
               key={card.id}
@@ -161,7 +184,7 @@ const Home = () => {
           Basketball Gyms Near You
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16">
-          {CardsData.map((card) => (
+          {currentItems.map((card) => (
             <Card
               key={card.id}
               imageUrl={card.imageUrl}
@@ -171,6 +194,14 @@ const Home = () => {
               status={getRandomStatus()}
             />
           ))}
+        </div>
+
+        <div>
+          <Pagination
+            items={filteredCards}
+            itemsPerPage={ITEMS_PER_PAGE}
+            onPageChange={handlePageChange}
+          />
         </div>
 
         <div className="absolute bottom-0  mb-8 right-4 sm:right-10 bg-custom-gradient rounded-full p-4">

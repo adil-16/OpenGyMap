@@ -31,7 +31,7 @@ const Slider = ({ images, handleUpload, handleDelete }) => {
   };
 
   return (
-    <div className="relative w-full max-w-lg mx-auto">
+    <div className="relative  max-w-lg ">
       <div className="relative h-40 md:h-60 overflow-hidden rounded-lg bg-[url(/Home/games.png)] ">
         {images.map((image, index) => (
           <div
@@ -49,7 +49,6 @@ const Slider = ({ images, handleUpload, handleDelete }) => {
         ))}
       </div>
 
-      {/* Upload Icon */}
       <div className="absolute inset-0 flex items-center justify-center">
         <label className="cursor-pointer">
           <FaPlus className="text-custom-black text-3xl bg-white p-2 rounded-full" />
@@ -57,12 +56,11 @@ const Slider = ({ images, handleUpload, handleDelete }) => {
             type="file"
             className="hidden"
             onChange={handleFileChange}
-            key={inputKey} // Add key to force re-render
+            key={inputKey}
           />
         </label>
       </div>
 
-      {/* Delete Icon */}
       {images.length > 0 && (
         <div className="absolute bottom-0 flex items-center justify-center w-full">
           <button
@@ -75,7 +73,6 @@ const Slider = ({ images, handleUpload, handleDelete }) => {
         </div>
       )}
 
-      {/* Previous Button */}
       <button
         type="button"
         className="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer"
@@ -87,7 +84,6 @@ const Slider = ({ images, handleUpload, handleDelete }) => {
         </span>
       </button>
 
-      {/* Next Button */}
       <button
         type="button"
         className="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer"

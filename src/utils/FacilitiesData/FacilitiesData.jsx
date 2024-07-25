@@ -61,7 +61,7 @@ const facilities = [
     closingTime: "11:00 PM",
     amountPerHour: "$75.00/hr",
     imageUrls: ["/Home/profile.png", "/Home/games.png"],
-    hours: " 10:00 - 22:00",
+
     selectedDays: ["Monday", "Tuesday", "Sunday"],
   },
 ];

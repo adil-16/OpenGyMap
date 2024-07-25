@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import FacilityCard from "../components/FacilityCard";
 import FormatDays from "../../../utils/FormatDays/FormatDays";
 import { useNavigate } from "react-router-dom";
 import { useFacilitiesData } from "../../../Context/FacilitiesDataContext/FacilitiesDataContext";
-import { IoIosArrowDropleftCircle } from "react-icons/io";
-import { IoIosArrowDroprightCircle } from "react-icons/io";
+
+import Pagination from "../../../components/Pagination/Pagination";
 
 const ITEMS_PER_PAGE = 4;
 
@@ -13,17 +13,21 @@ const MyFacility = () => {
   const { data: facilities } = useFacilitiesData();
   const [currentPage, setCurrentPage] = useState(1);
 
-  const totalPages = Math.ceil(facilities.length / ITEMS_PER_PAGE);
-
   const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
+    setCurrentPage(page);
   };
+
+  useEffect(() => {
+    console.log("Facilities data in component:", facilities);
+  }, [facilities]);
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentItems = facilities.slice(startIndex, endIndex);
+
+  const handleEdit = (facility) => {
+    navigate("/addfacility", { state: { facility, isEdit: true } });
+  };
 
   return (
     <div>
@@ -48,32 +52,22 @@ const MyFacility = () => {
                 hours={`${
                   Array.isArray(facility.selectedDays) &&
                   facility.selectedDays.length > 0
-                    ? `${FormatDays(facility.selectedDays)} ${
-                        facility.startingTime
-                      } - ${facility.closingTime}`
+                    ? `${FormatDays(facility.selectedDays)} `
                     : "No availability"
                 }`}
+                time={`
+                ${facility.startingTime} - ${facility.closingTime}
+              `}
+                onEdit={() => handleEdit(facility)}
               />
             ))}
           </div>
 
-          <div className="flex justify-center items-center mt-6 pb-3">
-            <IoIosArrowDropleftCircle
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="h-8 w-8 cursor-pointer"
-            />
-            {/* </button> */}
-            <span className="px-4 py-2  text-black rounded">
-              Page {currentPage} of {totalPages}
-            </span>
-
-            <IoIosArrowDroprightCircle
-              className="h-8 w-8 cursor-pointer"
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            />
-          </div>
+          <Pagination
+            items={facilities}
+            itemsPerPage={ITEMS_PER_PAGE}
+            onPageChange={handlePageChange}
+          />
         </div>
         <div className="pl-4">
           <p className="text-custom-black text-md font-semibold mb-4">
