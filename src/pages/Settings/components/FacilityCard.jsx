@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
 import Slider from "./Slider";
+import DeleteAccountModal from "../../../components/popups/SettingsPopups/DeleteAccount";
+import { deleteFacilityFromFirestore } from "../../../firebase/Functions/FacilityFunctions";
 
 const FacilityCard = ({
   id,
@@ -9,7 +11,20 @@ const FacilityCard = ({
   address,
   hours,
   courtName,
+  onDelete,
 }) => {
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const handleDelete = async () => {
+    try {
+      await deleteFacilityFromFirestore(id);
+      onDelete(id);
+      setIsDeleteModalOpen(false);
+    } catch (error) {
+      console.error("Error deleting facility:", error);
+    }
+  };
+
   return (
     <div className="w-full">
       <div className="relative rounded-lg h-96 overflow-hidden shadow-lg bg-white">
@@ -21,7 +36,10 @@ const FacilityCard = ({
           </button>
         </div>
         <div className="absolute top-2 right-2">
-          <button className="p-2 bg-white rounded-full shadow">
+          <button
+            onClick={() => setIsDeleteModalOpen(true)}
+            className="p-2 bg-white rounded-full shadow"
+          >
             <RiDeleteBinLine className="text-red-500" />
           </button>
         </div>
@@ -48,6 +66,12 @@ const FacilityCard = ({
           </div>
         </div>
       </div>
+
+      <DeleteAccountModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onDelete={handleDelete}
+      />
     </div>
   );
 };

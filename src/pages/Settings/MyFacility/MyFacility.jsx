@@ -5,17 +5,19 @@ import { useNavigate } from "react-router-dom";
 import { useFacilitiesData } from "../../../Context/FacilitiesDataContext/FacilitiesDataContext";
 import { IoIosArrowDropleftCircle } from "react-icons/io";
 import { IoIosArrowDroprightCircle } from "react-icons/io";
+import { fetchFacilitiesFromFirestore } from "../../../firebase/Functions/FacilityFunctions";
 
 const ITEMS_PER_PAGE = 4;
 
 const MyFacility = () => {
   const navigate = useNavigate();
-  const { data: facilities, loading, fetchFacilities } = useFacilitiesData();
+  const { data: facilities, setData } = useFacilitiesData();
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchFacilities();
-  }, [fetchFacilities]);
+    fetchFacilitiesFromFirestore(setData, setLoading);
+  }, [setData, setLoading]);
 
   const totalPages = Math.ceil(facilities.length / ITEMS_PER_PAGE);
 
@@ -28,6 +30,13 @@ const MyFacility = () => {
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentItems = facilities.slice(startIndex, endIndex);
+
+  const handleDeleteFacility = (id) => {
+    setData((prevFacilities) =>
+      prevFacilities.filter((facility) => facility.id !== id)
+    );
+  };
+
   const formatTime = (timeString) => {
     const date = new Date(timeString);
     return date.toLocaleTimeString([], {
@@ -67,6 +76,7 @@ const MyFacility = () => {
                         )} - ${formatTime(facility.closeTime)}`
                       : "No availability"
                   }`}
+                  onDelete={handleDeleteFacility}
                 />
               ))
             )}

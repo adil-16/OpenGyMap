@@ -20,13 +20,10 @@ const Explore = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
 
-
-
   const handleSearchParamsChange = (field, value) => {
     setSearchParams((prevParams) => ({ ...prevParams, [field]: value }));
   };
 
-  // Filter cards based on search parameters
   const filteredCards = useMemo(() => {
     const { location, date, time } = searchParams;
     const filtered = CardsData.filter((card) =>

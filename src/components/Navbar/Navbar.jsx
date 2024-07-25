@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { Link } from "react-router-dom";
 import Notification from "../Notification/Notification";
+import { getUserDetails } from "../../firebase/Functions/ApiFunctions";
 
 const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -9,7 +10,8 @@ const Navbar = () => {
   const [activeLink, setActiveLink] = useState(window.location.pathname);
   const notificationRef = useRef(null);
   const dropdownRef = useRef(null);
-  const notificationButtonRef = useRef(null); // Ref for notification button
+  const notificationButtonRef = useRef(null);
+  const [profilePicture, setProfilePicture] = useState("/Home/profile.png");
 
   useEffect(() => {
     const handleLocationChange = () => {
@@ -49,6 +51,22 @@ const Navbar = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const fetchProfilePicture = async () => {
+      try {
+        const uid = localStorage.getItem("uid");
+        if (uid) {
+          const userDetails = await getUserDetails(uid);
+          setProfilePicture(userDetails.profilePicture || "/Home/profile.png");
+        }
+      } catch (error) {
+        console.error("Error fetching profile picture:", error);
+      }
+    };
+
+    fetchProfilePicture();
+  }, []);
+
   const toggleDropdown = () => {
     setDropdownOpen((prev) => !prev);
   };
@@ -64,7 +82,7 @@ const Navbar = () => {
 
   const handleLinkClick = (path) => {
     setActiveLink(path);
-    setShowNotification(false); // Reset notification state on link click
+    setShowNotification(false);
     setDropdownOpen(false);
 
     console.log("activeLink is", path);
@@ -166,7 +184,7 @@ const Navbar = () => {
               <span className="sr-only">Open user menu</span>
               <img
                 className="w-12 h-12 rounded-full"
-                src="/Home/profile.png"
+                src={profilePicture}
                 alt="user photo"
               />
             </button>
