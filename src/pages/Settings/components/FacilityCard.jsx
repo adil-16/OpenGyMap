@@ -71,7 +71,6 @@ const FacilityCard = ({
             </span>
           </div>
           <span className="text-payment-gray text-sm ml-7">{time}</span>
-          <span className="text-payment-gray text-sm ml-7">{time}</span>
         </div>
       </div>
 
