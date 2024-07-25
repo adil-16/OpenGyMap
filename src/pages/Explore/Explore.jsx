@@ -3,13 +3,11 @@ import SearchBar from "../../components/SeacrhBar/SearchBar";
 import CustomDateInput from "../../components/DateAndTime/CustomDateInput";
 import CustomTimeInput from "../../components/DateAndTime/CustomTimeInput";
 import SearchButton from "../../components/buttons/Verify";
-import FormatDays from "../../utils/FormatDays/FormatDays";
+import CardsData from "../../utils/CardsData/CardsData";
+import Card from "../../components/Card/Card";
 import { FaQuestion } from "react-icons/fa";
 import SearchAlert from "../../components/Alert/SearchAlert";
 import Pagination from "../../components/Pagination/Pagination";
-
-import FacilitiesData from "../../utils/CardsData/CardsData";
-import FacilityCard from "../../components/Card/Card";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -30,6 +28,16 @@ const Explore = () => {
     setSearchParams((prevParams) => ({ ...prevParams, [field]: value }));
   };
 
+  const filteredCards = useMemo(() => {
+    const { location, date, time } = searchParams;
+    const filtered = CardsData.filter((card) =>
+      card.address.toLowerCase().includes(location.toLowerCase())
+    );
+
+    setShowALert(filtered.length === 0);
+    return filtered;
+  }, [searchParams]);
+
   const handleSearch = () => {
     handleSearchParamsChange("location", searchQuery);
     handleSearchParamsChange("date", selectedDate);
@@ -45,20 +53,11 @@ const Explore = () => {
   // Paginate filtered cards
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentItems = FacilitiesData.slice(startIndex, endIndex);
+  const currentItems = filteredCards.slice(startIndex, endIndex);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
-
-  // const getStatusStyles = () => {
-  //   if (status === "Open Now") {
-  //     return "bg-white text-custom-black";
-  //   } else if (status === "Already Booked") {
-  //     return "bg-orange-500 text-white";
-  //   }
-  //   return "";
-  // };
 
   return (
     <>
@@ -114,30 +113,21 @@ const Explore = () => {
           </div>
           <div className="mt-20 flex flex-col items-center">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16">
-              {currentItems.map((facility) => (
-                <FacilityCard
-                  key={facility.id}
-                  id={facility.id}
-                  courtName={facility.courtName}
-                  imageUrls={facility.imageUrls}
-                  rate={`${facility.amountPerHour}`}
-                  address={facility.location}
-                  hours={`${
-                    Array.isArray(facility.selectedDays) &&
-                    facility.selectedDays.length > 0
-                      ? `${FormatDays(facility.selectedDays)} `
-                      : "No availability"
-                  }`}
-                  time={`
-                  ${facility.startingTime} - ${facility.closingTime}
-                `}
+              {currentItems.map((card) => (
+                <Card
+                  id={card.id}
+                  key={card.id}
+                  imageUrl={card.imageUrl}
+                  rate={card.rate}
+                  address={card.address}
+                  hours={card.hours}
                   status={getRandomStatus()}
                 />
               ))}
             </div>
 
             <Pagination
-              items={FacilitiesData}
+              items={filteredCards}
               itemsPerPage={ITEMS_PER_PAGE}
               onPageChange={handlePageChange}
             />
