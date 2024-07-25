@@ -69,7 +69,7 @@ const SettingSidebar = () => {
 
       <div className="py-10 space-y-3 hidden lg:block">
         <div
-          className="flex justify-between items-center cursor-pointer"
+          className="flex justify-between ml-3 items-center cursor-pointer"
           onClick={() => setIsDeleteModalOpen(true)}
         >
           <p className="text-request-icon font-inter text-base font-medium">
@@ -79,7 +79,7 @@ const SettingSidebar = () => {
         </div>
 
         <div
-          className="flex justify-between items-center cursor-pointer py-3"
+          className="flex justify-between ml-3 items-center cursor-pointer py-3"
           onClick={() => {
             navigate("/");
           }}

@@ -51,14 +51,6 @@ const Explore = () => {
     setCurrentPage(page);
   };
 
-  // const getStatusStyles = () => {
-  //   if (status === "Open Now") {
-  //     return "bg-white text-custom-black";
-  //   } else if (status === "Already Booked") {
-  //     return "bg-orange-500 text-white";
-  //   }
-  //   return "";
-  // };
 
   return (
     <>

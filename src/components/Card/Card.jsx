@@ -30,19 +30,17 @@ const Card = ({
 
   return (
     <div
-      className=" max-w-full "
+      className=" w-[90%]  "
       onClick={() => navigate(`/explore/details/${id}`, { state: { status } })}
     >
       <div className="relative rounded-lg  h-[100%] overflow-hidden shadow-lg bg-white">
         <Slider imageUrls={imageUrls} />
 
-    
-          <div
-            className={`absolute top-5 left-3 rounded-full px-6 py-2 ${getStatusStyles()}`}
-          >
-            {status}
-          </div>
-        
+        <div
+          className={`absolute top-5 left-3 rounded-full px-6 py-2 ${getStatusStyles()}`}
+        >
+          {status}
+        </div>
 
         <div className="p-3">
           <h3 className="text-md font-semibold text-custom-black flex justify-between">

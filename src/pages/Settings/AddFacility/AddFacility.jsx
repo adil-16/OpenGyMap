@@ -7,6 +7,11 @@ import DaySign from "./components/DaySign";
 import Slider from "./components/Slider";
 import { useNavigate, useLocation } from "react-router-dom";
 import Button from "./components/Button";
+import TimePicker from "react-time-picker";
+
+import "react-time-picker/dist/TimePicker.css";
+import "react-clock/dist/Clock.css";
+
 const getTodayDate = () => {
   const today = new Date();
   return today.toISOString().split("T")[0];
@@ -34,12 +39,13 @@ const AddFacility = () => {
   const [startTime, setStartTime] = useState(
     extractTime(facilityData?.startTime)
   );
+
   const [closeTime, setCloseTime] = useState(
     extractTime(facilityData?.closeTime)
   );
   const [amount, setAmount] = useState(facilityData?.amount || "");
   const [facilityImagesList, setFacilityImagesList] = useState(
-    facilityData?.facilityImagesList || ""
+    facilityData?.facilityImagesList || []
   );
   const [suggestions, setSuggestions] = useState([]);
   const [latitude, setLat] = useState(null);
@@ -240,8 +246,8 @@ const AddFacility = () => {
               Opening and Closing Time
             </p>
 
-            <div className="flex py-2 space-x-8">
-              <StartingAndEndingInput
+            <div className="flex py-4 space-x-8">
+              {/* <StartingAndEndingInput
                 placeholder="Starting time "
                 borderColor="border-border-color"
                 placeholderColor="placeholder-placeholder-color"
@@ -251,9 +257,30 @@ const AddFacility = () => {
                 bold="font-semibold"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
+              /> */}
+
+              <TimePicker
+                onChange={setStartTime}
+                value={startTime}
+                disableClock={true}
+                format="HH:mm"
+                hourPlaceholder="HH"
+                minutePlaceholder="MM"
+                // clockIcon=""
               />
 
-              <StartingAndEndingInput
+              <TimePicker
+                onChange={setCloseTime}
+                value={closeTime}
+                disableClock={true}
+                format="HH:mm"
+                hourPlaceholder="HH"
+                minutePlaceholder="MM"
+                // clearIcon={null}
+                // clockIcon={null}
+              />
+
+              {/* <StartingAndEndingInput
                 placeholder="Closing time "
                 borderColor="border-border-color"
                 placeholderColor="placeholder-placeholder-color"
@@ -263,7 +290,7 @@ const AddFacility = () => {
                 bold="font-semibold"
                 value={closeTime}
                 onChange={(e) => setCloseTime(e.target.value)}
-              />
+              /> */}
             </div>
           </div>
 

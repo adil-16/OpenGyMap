@@ -4,20 +4,29 @@ import ExploreButton from "../../components/buttons/Verify";
 import CustomDateInput from "../../components/DateAndTime/CustomDateInput";
 import CustomTimeInput from "../../components/DateAndTime/CustomTimeInput";
 import SearchButton from "../../components/buttons/Verify";
-import Card from "../../components/Card/Card";
-import CardsData from "../../utils/CardsData/CardsData";
+import FacilitiesData from "../../utils/CardsData/CardsData";
+import FacilityCard from "../../components/Card/Card";
 import { FaQuestion } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 import Pagination from "../../components/Pagination/Pagination";
-
+import FormatDays from "../../utils/FormatDays/FormatDays";
 const ITEMS_PER_PAGE = 6;
 const Home = () => {
-  const navigate = useNavigate();
-
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState();
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [clickBasketBall, setClickBasketBall] = useState(false);
+
+  const [clickFootball, setClickFootball] = useState(false);
+
+  const toogleBasketBall = () => {
+    setClickBasketBall(!clickBasketBall);
+  };
+
+  const toogleFootball = () => {
+    setClickFootball(!clickFootball);
+  };
 
   const getRandomStatus = () => {
     const statuses = ["Open Now", "Already Booked"];
@@ -25,23 +34,9 @@ const Home = () => {
     return statuses[randomIndex];
   };
 
-  // const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  // const endIndex = startIndex + ITEMS_PER_PAGE;
-  // const currentItems = filteredCards.slice(startIndex, endIndex);
-
-  // const handlePageChange = (page) => {
-  //   setCurrentPage(page);
-  // };
-
-  const filteredCards = useMemo(() => {
-    // Apply any filtering logic here if needed
-    return CardsData;
-  }, []);
-
-  // Calculate pagination
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentItems = filteredCards.slice(startIndex, endIndex);
+  const currentItems = FacilitiesData.slice(startIndex, endIndex);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -122,24 +117,43 @@ const Home = () => {
         <SearchBar />
         <div className="flex flex-col md:flex-row justify-between items-center mt-10 w-full">
           <div className="flex flex-row md:flex-row space-y-4 md:space-y-0 space-x-4 items-center">
-            <div className="relative bg-gray-200 border  -mb-4 md:-mb-0 lg:-mb-0 p-2 border-gray-400 rounded-md flex items-center justify-center ">
+            <div
+              className={`relative  border  -mb-4 md:-mb-0 border-gray-400 lg:-mb-0 p-2 ${
+                clickBasketBall && "bg-gray-200"
+              }  rounded-md flex items-center justify-center `}
+            >
               <img
+                onClick={toogleBasketBall}
                 src="/Home/basketball.png"
                 alt="basketball"
-                className="  w-14 h-7  md:w-8 md:h-8 lg:w-8 lg:h-8"
+                className="  w-14 h-7 cursor-pointer  md:w-8 md:h-8 lg:w-8 lg:h-8"
               />
 
-              <img
-                src="/Home/tick.png"
-                className="absolute -top-1  -right-1 w-4 h-4 bg-custom-blue rounded-sm"
-              />
+              {clickBasketBall && (
+                <img
+                  src="/Home/tick.png"
+                  className="absolute -top-1  -right-1 w-4 h-4 bg-custom-blue rounded-sm"
+                />
+              )}
             </div>
-            <div className="bg-white border p-2 border-gray-400 rounded-md flex items-center justify-center">
+            <div
+              className={`   ${
+                clickFootball && "bg-gray-200"
+              } relative border p-2 border-gray-400 rounded-md flex items-center justify-center`}
+            >
               <img
+                onClick={toogleFootball}
                 src="/Home/football.png"
                 alt="football"
-                className="w-14 h-7 md:h-8 md:w-6 lg:w-8 lg:h-8"
+                className="w-14 h-7 md:h-8 md:w-6 lg:w-8 lg:h-8 cursor-pointer"
               />
+
+              {clickFootball && (
+                <img
+                  src="/Home/tick.png"
+                  className="absolute -top-1  -right-1 w-4 h-4 bg-custom-blue rounded-sm"
+                />
+              )}
             </div>
             <div className="relative max-w-sm">
               <CustomDateInput
@@ -164,15 +178,24 @@ const Home = () => {
         <h1 className="text-custom-black text-4xl font-bold text-center mb-16">
           Popular Basketball Gyms
         </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16">
-          {filteredCards.map((card) => (
-            <Card
-              id={card.id}
-              key={card.id}
-              imageUrl={card.imageUrl}
-              rate={card.rate}
-              address={card.address}
-              hours={card.hours}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-8 px-24 ">
+          {currentItems.map((facility) => (
+            <FacilityCard
+              key={facility.id}
+              id={facility.id}
+              courtName={facility.courtName}
+              imageUrls={facility.imageUrls}
+              rate={`${facility.amountPerHour}`}
+              address={facility.location}
+              hours={`${
+                Array.isArray(facility.selectedDays) &&
+                facility.selectedDays.length > 0
+                  ? `${FormatDays(facility.selectedDays)} `
+                  : "No availability"
+              }`}
+              time={`
+                  ${facility.startingTime} - ${facility.closingTime}
+                `}
               status={getRandomStatus()}
             />
           ))}
@@ -183,27 +206,36 @@ const Home = () => {
         <h1 className="text-custom-black text-4xl font-bold text-center mb-16">
           Basketball Gyms Near You
         </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16">
-          {currentItems.map((card) => (
-            <Card
-              key={card.id}
-              imageUrl={card.imageUrl}
-              rate={card.rate}
-              address={card.address}
-              hours={card.hours}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-8 px-24">
+          {currentItems.map((facility) => (
+            <FacilityCard
+              key={facility.id}
+              id={facility.id}
+              courtName={facility.courtName}
+              imageUrls={facility.imageUrls}
+              rate={`${facility.amountPerHour}`}
+              address={facility.location}
+              hours={`${
+                Array.isArray(facility.selectedDays) &&
+                facility.selectedDays.length > 0
+                  ? `${FormatDays(facility.selectedDays)} `
+                  : "No availability"
+              }`}
+              time={`
+                  ${facility.startingTime} - ${facility.closingTime}
+                `}
               status={getRandomStatus()}
             />
           ))}
         </div>
 
-        <div>
+        <div className="absolute bottom-0  mb-8 left-0 right-6 sm:right-2 md:right-4 p-4">
           <Pagination
-            items={filteredCards}
+            items={FacilitiesData}
             itemsPerPage={ITEMS_PER_PAGE}
             onPageChange={handlePageChange}
           />
         </div>
-
         <div className="absolute bottom-0  mb-8 right-4 sm:right-10 bg-custom-gradient rounded-full p-4">
           <FaQuestion className="text-white w-8 h-8" />
         </div>

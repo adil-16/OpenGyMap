@@ -15,12 +15,12 @@ const StartingAndEndingInput = ({
   return (
     <div className="flex flex-col items-start">
       <input
+        // onChange={onChange}
         onChange={onChange}
         value={value}
         type="time"
         placeholder={placeholder}
         className={`w-full text-center py-2 border-b ${bold} ${borderColor} ${placeholderColor} ${textColor} ${fontSize} ${fontFamily} focus:outline-none`}
-        step="3600" 
       />
       <div
         className={`mt-2 mr-32 border-b-2 ${spanBorderColor} ${textColor} ${fontSize} ${fontFamily}`}
