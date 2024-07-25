@@ -3,15 +3,22 @@ import FacilityCard from "../components/FacilityCard";
 import FormatDays from "../../../utils/FormatDays/FormatDays";
 import { useNavigate } from "react-router-dom";
 import { useFacilitiesData } from "../../../Context/FacilitiesDataContext/FacilitiesDataContext";
-
 import Pagination from "../../../components/Pagination/Pagination";
+import { fetchFacilitiesFromFirestore } from "../../../firebase/Functions/FacilityFunctions";
 
 const ITEMS_PER_PAGE = 4;
 
 const MyFacility = () => {
   const navigate = useNavigate();
-  const { data: facilities } = useFacilitiesData();
+  const { data: facilities, setData } = useFacilitiesData();
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchFacilitiesFromFirestore(setData, setLoading);
+  }, [setData, setLoading]);
+
+  const totalPages = Math.ceil(facilities.length / ITEMS_PER_PAGE);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -29,6 +36,20 @@ const MyFacility = () => {
     navigate("/addfacility", { state: { facility, isEdit: true } });
   };
 
+  const handleDeleteFacility = (id) => {
+    setData((prevFacilities) =>
+      prevFacilities.filter((facility) => facility.id !== id)
+    );
+  };
+
+  const formatTime = (timeString) => {
+    const date = new Date(timeString);
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   return (
     <div>
       <h1 className="text-2xl font-semibold mb-4">
@@ -41,26 +62,33 @@ const MyFacility = () => {
             Facilities
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {currentItems.map((facility) => (
-              <FacilityCard
-                key={facility.id}
-                id={facility.id}
-                courtName={facility.courtName}
-                imageUrls={facility.imageUrls}
-                rate={facility.pricePerHour}
-                address={facility.location}
-                hours={`${
-                  Array.isArray(facility.selectedDays) &&
-                  facility.selectedDays.length > 0
-                    ? `${FormatDays(facility.selectedDays)} `
-                    : "No availability"
-                }`}
-                time={`
-                ${facility.startingTime} - ${facility.closingTime}
-              `}
-                onEdit={() => handleEdit(facility)}
-              />
-            ))}
+            {loading ? (
+              <div>Loading facilities...</div>
+            ) : (
+              currentItems.map((facility) => (
+                <FacilityCard
+                  key={facility.id}
+                  id={facility.id}
+                  courtName={facility.basketCourtName}
+                  imageUrls={facility.facilityImagesList}
+                  rate={`$${facility.amount}/hr`}
+                  address={facility.location}
+                  hours={`${
+                    Array.isArray(facility.daysList) &&
+                    facility.daysList.length > 0
+                      ? `${FormatDays(facility.daysList)} `
+                      : "No availability"
+                  }`}
+                  time={`
+                  ${formatTime(facility.startTime)} - ${formatTime(
+                    facility.closeTime
+                  )}
+                `}
+                  onEdit={() => handleEdit(facility)}
+                  onDelete={handleDeleteFacility}
+                />
+              ))
+            )}
           </div>
 
           <Pagination

@@ -1,11 +1,9 @@
 import React, { createContext, useState, useContext } from "react";
 
-import facilities from "../../utils/FacilitiesData/FacilitiesData";
-
 const FacilitiesDataContext = createContext();
 
 export const FacilitiesDataProvider = ({ children }) => {
-  const [data, setData] = useState(facilities);
+  const [data, setData] = useState([]);
 
   const addFacility = (newFacility) => {
     setData((prevData) => [

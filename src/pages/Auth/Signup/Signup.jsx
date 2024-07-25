@@ -4,7 +4,7 @@ import RequestOtpButton from "../../../components/buttons/RequestOtp";
 import { Link, useNavigate } from "react-router-dom";
 import {
   sendOtpToPhone,
-  sendOtpToEmail,
+  registerUserWithEmailAndPassword,
 } from "../../../firebase/Functions/ApiFunctions";
 
 const Signup = () => {
@@ -12,6 +12,7 @@ const Signup = () => {
   const [selectedCountry, setSelectedCountry] = useState("in");
   const [emailId, setEmailId] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [username, setUsername] = useState("");
   const navigate = useNavigate();
@@ -35,6 +36,9 @@ const Signup = () => {
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   };
+  const handleConfirmPasswordChange = (event) => {
+    setConfirmPassword(event.target.value);
+  };
 
   const handlePhoneChange = (phone) => {
     setPhone(phone);
@@ -46,10 +50,15 @@ const Signup = () => {
         const verificationId = await sendOtpToPhone(phone);
         localStorage.setItem("verificationId", verificationId);
       } else {
-        await sendOtpToEmail(emailId);
+        if (password !== confirmPassword) {
+          console.error("Passwords do not match");
+          return;
+        }
+        await registerUserWithEmailAndPassword(emailId, password, username);
+        console.log(emailId);
         localStorage.setItem("emailForSignIn", emailId);
       }
-      navigate("/otp");
+      navigate("/");
     } catch (error) {
       console.error("Error requesting OTP:", error);
     }
@@ -90,6 +99,8 @@ const Signup = () => {
           handleEmailChange={handleEmailChange}
           password={password}
           handlePasswordChange={handlePasswordChange}
+          confirmPassword={confirmPassword}
+          handleConfirmPasswordChange={handleConfirmPasswordChange}
           phone={phone}
           handlePhoneChange={handlePhoneChange}
         />

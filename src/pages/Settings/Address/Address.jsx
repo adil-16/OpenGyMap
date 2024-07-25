@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Map from "../components/Map";
+import {
+  updateUserAddress,
+  getUserDetails,
+} from "../../../firebase/Functions/ApiFunctions";
 
 const Address = () => {
   const [location, setLocation] = useState({
@@ -13,65 +17,89 @@ const Address = () => {
   const [selectedSuggestion, setSelectedSuggestion] = useState(null);
 
   useEffect(() => {
-    const getLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const LATITUDE = position.coords.latitude;
-            const LONGITUDE = position.coords.longitude;
+    const fetchUserData = async () => {
+      try {
+        const uid = localStorage.getItem("uid");
+        if (uid) {
+          const userDetails = await getUserDetails(uid);
+          if (userDetails.address) {
+            setPlaceName(userDetails.address);
             setLocation({
-              latitude: LATITUDE,
-              longitude: LONGITUDE,
+              latitude: userDetails.latitude || null,
+              longitude: userDetails.longitude || null,
             });
-            setLoading(false);
-          },
-          (error) => {
-            switch (error.code) {
-              case error.PERMISSION_DENIED:
-                setError("User denied the request for Geolocation.");
-                break;
-              case error.POSITION_UNAVAILABLE:
-                setError("Location information is unavailable.");
-                break;
-              case error.TIMEOUT:
-                setError("The request to get user location timed out.");
-                break;
-              case error.UNKNOWN_ERROR:
-                setError("An unknown error occurred.");
-                break;
-              default:
-                setError("An unknown error occurred.");
-            }
-            setLoading(false);
+          } else {
+            // If address is empty, use current location
+            getCurrentLocation();
           }
-        );
-      } else {
-        setError("Geolocation is not supported by this browser.");
+          setLoading(false);
+        } else {
+          setError("User ID not found");
+          setLoading(false);
+        }
+      } catch (err) {
+        setError("Error fetching user details");
         setLoading(false);
       }
     };
 
-    getLocation();
+    fetchUserData();
   }, []);
 
-  useEffect(() => {
-    const getLocation = async () => {
-      if (location.latitude && location.longitude) {
-        try {
-          const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${
-              location.latitude
-            },${location.longitude}&key=${import.meta.env.VITE_GOOGLE_MAPS_API}`
-          );
-          const res = await response.json();
-          setPlaceName(res.results[0].formatted_address);
-        } catch (err) {
-          console.log(err);
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const LATITUDE = position.coords.latitude;
+          const LONGITUDE = position.coords.longitude;
+          setLocation({
+            latitude: LATITUDE,
+            longitude: LONGITUDE,
+          });
+          fetchAddressFromLocation(LATITUDE, LONGITUDE);
+        },
+        (error) => {
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              setError("User denied the request for Geolocation.");
+              break;
+            case error.POSITION_UNAVAILABLE:
+              setError("Location information is unavailable.");
+              break;
+            case error.TIMEOUT:
+              setError("The request to get user location timed out.");
+              break;
+            case error.UNKNOWN_ERROR:
+              setError("An unknown error occurred.");
+              break;
+            default:
+              setError("An unknown error occurred.");
+          }
         }
-      }
-    };
+      );
+    } else {
+      setError("Geolocation is not supported by this browser.");
+    }
+  };
 
-    getLocation();
+  const fetchAddressFromLocation = async (latitude, longitude) => {
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${
+          import.meta.env.VITE_GOOGLE_MAPS_API
+        }`
+      );
+      const res = await response.json();
+      setPlaceName(res.results[0].formatted_address);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    if (location.latitude && location.longitude) {
+      fetchAddressFromLocation(location.latitude, location.longitude);
+    }
   }, [location]);
 
   const handleInputChange = async (e) => {
@@ -85,7 +113,6 @@ const Address = () => {
             import.meta.env.VITE_GOOGLE_MAPS_API
           }`
         );
-
         const res = await response.json();
         setSuggestions(res.predictions);
       } catch (err) {
@@ -112,6 +139,24 @@ const Address = () => {
       setLocation({ latitude: lat, longitude: lng });
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  const handleUpdateClick = async () => {
+    try {
+      const uid = localStorage.getItem("uid");
+      if (uid) {
+        await updateUserAddress(
+          uid,
+          placeName,
+          location.latitude,
+          location.longitude
+        );
+      } else {
+        console.log("User ID not found");
+      }
+    } catch (error) {
+      console.log("Error updating address");
     }
   };
 
@@ -162,7 +207,10 @@ const Address = () => {
             <button className="px-8 py-3 border text-custom-black rounded-xl">
               Cancel
             </button>
-            <button className="px-8 py-3 bg-custom-gradient text-white rounded-xl">
+            <button
+              onClick={handleUpdateClick}
+              className="px-8 py-3 bg-custom-gradient text-white rounded-xl"
+            >
               Update
             </button>
           </div>

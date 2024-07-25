@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 
 const LabelInput = ({
   label,
-  initialValue,
   buttonText,
   editingId,
   setEditingId,
@@ -10,10 +9,12 @@ const LabelInput = ({
   readOnly = false,
   type = "text",
   inputId,
-  value,
   handleChange,
+  value,
+  onSave,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [inputValue, setInputValue] = useState(value);
 
   const handleEditClick = () => {
     if (label === "Email") {
@@ -32,12 +33,16 @@ const LabelInput = ({
   const handleSaveClick = () => {
     setIsEditing(false);
     setEditingId(null);
+    if (onSave) {
+      onSave(inputValue);
+    }
   };
 
   const handleCancelClick = () => {
     setIsEditing(false);
     setEditingId(null);
-    setValue(initialValue);
+    setValue(value);
+    setInputValue(value);
   };
 
   const isDimmed = editingId && editingId !== inputId;
@@ -53,13 +58,18 @@ const LabelInput = ({
         <input
           type={type}
           value={value}
-          onChange={handleChange}
+          onChange={(e) => {
+            setInputValue(e.target.value);
+            if (handleChange) {
+              handleChange(e);
+            }
+          }}
           readOnly={
             label === "Name" || label === "Email"
               ? !isEditing || readOnly
               : isEditing || readOnly
           }
-          className="w-full border py-3 border-gray-300 p-2 pr-10 rounded-full"
+          className="w-full border py-3 border-gray-300 p-2 pr-10 pl-4 rounded-full"
         />
         {isEditing &&
         buttonText !== "Update" &&

@@ -1,52 +1,36 @@
 import React, { useState, useEffect } from "react";
 import { RxArrowLeft } from "react-icons/rx";
-
+import { v4 as uuidv4 } from "uuid";
 import Input from "./components/Input";
 import StartingAndEndingInput from "./components/StartingAndEndingInput";
-
 import DaySign from "./components/DaySign";
-
 import Slider from "./components/Slider";
 import { useNavigate, useLocation } from "react-router-dom";
 import Button from "./components/Button";
 
+const getTodayDate = () => {
+  const today = new Date();
+  return today.toISOString().split("T")[0];
+};
+
 const AddFacility = () => {
-  const locationn = useLocation();
-  const facilityData = locationn.state?.facility;
-  const isEdit = locationn.state?.isEdit;
-
-  console.log("HELL", isEdit);
-
-  const convertTo24Hour = (time12h) => {
-    const [time, modifier] = time12h.split(" ");
-    let [hours, minutes] = time.split(":");
-    if (modifier === "PM" && hours !== "12") hours = parseInt(hours, 10) + 12;
-    if (modifier === "AM" && hours === "12") hours = 0;
-    return `${String(hours).padStart(2, "0")}:${minutes}`;
-  };
-
-  const [courtName, setCourtName] = useState(facilityData?.courtName || "");
+  const [basketCourtName, setBasketCourtName] =useState(facilityData?.basketCourtName || "");
   const [gymName, setGymName] = useState(facilityData?.gymName || "");
   const [location, setLocation] = useState(facilityData?.location || "");
-  const [description, setDescription] = useState(
-    facilityData?.description || ""
-  );
-  const [houseRules, setHouseRules] = useState(facilityData?.houseRules || "");
+  const [description, setDescription] = useState(facilityData?.description || "");
+  const [rules, setRules] = useState(facilityData?.rules || "");
+  const [startTime, setStartTime] = useState(facilityData?.startTime || "");
+  const [closeTime, setCloseTime] = useState(facilityData?.closeTime || "");
+  const [amount, setAmount] = useState(facilityData?.amount || "");
+  const [facilityImagesList, setFacilityImagesList] = useState(facilityData?.facilityImagesList || "");
+  const [suggestions, setSuggestions] = useState([]);
+  const [latitude, setLat] = useState(null);
+  const [longitude, setLng] = useState(null);
+  const uid = localStorage.getItem("uid");
 
-  const [startingTime, setStartingTime] = useState(
-    facilityData?.startingTime ? convertTo24Hour(facilityData.startingTime) : ""
-  );
-  const [closingTime, setClosingTime] = useState(
-    facilityData?.closingTime ? convertTo24Hour(facilityData.closingTime) : ""
-  );
+  const [daysList, setDaysList] = useState([]);
+  const isEdit = locationn.state?.isEdit;
 
-  const [pricePerHour, setPricePerHour] = useState(
-    facilityData?.amountPerHour || ""
-  );
-  const [images, setImages] = useState(facilityData?.imageUrls || []);
-  const [selectedDays, setSelectedDays] = useState(
-    facilityData?.selectedDays || []
-  );
 
   const navigate = useNavigate();
 
@@ -55,44 +39,94 @@ const AddFacility = () => {
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        setImages((prevImages) => [...prevImages, reader.result]);
+        setFacilityImagesList((prevImages) => [...prevImages, reader.result]);
       };
       reader.readAsDataURL(file);
     }
   };
 
   const handleDelete = (index) => {
-    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+    setFacilityImagesList((prevImages) =>
+      prevImages.filter((_, i) => i !== index)
+    );
   };
 
   const handleSave = () => {
     const facilityData = {
-      courtName,
+      createdBy: uid,
+      basketCourtName,
       gymName,
       location,
       description,
-      houseRules,
-      startingTime,
-      closingTime,
-      pricePerHour,
-      images,
-      selectedDays,
+      rules,
+      startTime: `${getTodayDate()}T${startTime}:00.000`,
+      closeTime: `${getTodayDate()}T${closeTime}:00.000`,
+      amount,
+      facilityImagesList,
+      daysList,
+      latitude,
+      longitude,
+      bookingDateAndTime: [],
+      bookingList: [],
+      createdAt: new Date().toISOString(),
     };
 
     navigate("/facilitydetails", { state: { facilityData, isEdit } });
   };
 
   const toggleDaySelection = (day) => {
-    setSelectedDays((prevSelectedDays) =>
+    setDaysList((prevSelectedDays) =>
       prevSelectedDays.includes(day)
         ? prevSelectedDays.filter((d) => d !== day)
         : [...prevSelectedDays, day]
     );
   };
+
+  const fetchSuggestions = async (input) => {
+    if (input.length > 2) {
+      try {
+        const response = await fetch(
+          `/maps/api/place/autocomplete/json?input=${input}&key=${
+            import.meta.env.VITE_GOOGLE_MAPS_API
+          }`
+        );
+        const data = await response.json();
+        setSuggestions(data.predictions);
+      } catch (error) {
+        console.error("Error fetching suggestions:", error);
+      }
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const input = e.target.value;
+    setLocation(input);
+    fetchSuggestions(input);
+  };
+
+  const handleSuggestionClick = async (suggestion) => {
+    setLocation(suggestion.description);
+    setSuggestions([]);
+
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?place_id=${
+          suggestion.place_id
+        }&key=${import.meta.env.VITE_GOOGLE_MAPS_API}`
+      );
+      const data = await response.json();
+      const { lat, lng } = data.results[0].geometry.location;
+      setLat(lat);
+      setLng(lng);
+    } catch (error) {
+      console.error("Error fetching location details:", error);
+    }
+  };
+
   return (
     <div className="p-4 sm:p-8 px-4 sm:px-12 ">
-      {/* Profile and icon */}
-
       <div
         className="flex space-x-2 items-center cursor-pointer "
         onClick={() => {
@@ -118,8 +152,8 @@ const AddFacility = () => {
               fontSize="text-base "
               fontFamily="font-inter"
               bold="font-semibold"
-              value={courtName}
-              onChange={(e) => setCourtName(e.target.value)}
+              value={basketCourtName}
+              onChange={(e) => setBasketCourtName(e.target.value)}
             />
 
             <Input
@@ -143,8 +177,21 @@ const AddFacility = () => {
               fontFamily="font-inter"
               bold="font-semibold"
               value={location}
-              onChange={(e) => setLocation(e.target.value)}
+              onChange={handleInputChange}
             />
+            {suggestions.length > 0 && (
+              <ul className="absolute bg-white border rounded-md w-full mt-1 max-h-48 overflow-y-auto">
+                {suggestions.map((suggestion) => (
+                  <li
+                    key={suggestion.place_id}
+                    className="p-2 hover:bg-gray-200 cursor-pointer"
+                    onClick={() => handleSuggestionClick(suggestion)}
+                  >
+                    {suggestion.description}
+                  </li>
+                ))}
+              </ul>
+            )}
 
             <Input
               placeholder="Description"
@@ -166,8 +213,8 @@ const AddFacility = () => {
               fontSize="text-base "
               fontFamily="font-inter"
               bold="font-semibold"
-              value={houseRules}
-              onChange={(e) => setHouseRules(e.target.value)}
+              value={rules}
+              onChange={(e) => setRules(e.target.value)}
             />
           </div>
 
@@ -185,8 +232,8 @@ const AddFacility = () => {
                 fontSize="text-lg"
                 fontFamily="font-inter"
                 bold="font-semibold"
-                value={startingTime}
-                onChange={(e) => setStartingTime(e.target.value)}
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
               />
 
               <StartingAndEndingInput
@@ -197,8 +244,8 @@ const AddFacility = () => {
                 fontSize="text-lg"
                 fontFamily="font-inter"
                 bold="font-semibold"
-                value={closingTime}
-                onChange={(e) => setClosingTime(e.target.value)}
+                value={closeTime}
+                onChange={(e) => setCloseTime(e.target.value)}
               />
             </div>
           </div>
@@ -219,7 +266,7 @@ const AddFacility = () => {
                 bgColor="bg-white"
                 borderColor="border-placeholder-color"
                 textColor="text-black"
-                selected={selectedDays.includes(day)}
+                selected={daysList.includes(day)}
                 onClick={() => toggleDaySelection(day)}
               />
             ))}
@@ -239,8 +286,8 @@ const AddFacility = () => {
                 fontSize="text-base "
                 fontFamily="font-inter"
                 bold="font-semibold"
-                value={pricePerHour}
-                onChange={(e) => setPricePerHour(e.target.value)}
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
               />
             </div>
           </div>
@@ -251,7 +298,7 @@ const AddFacility = () => {
             <p className="font-inter font-semibold text-lg ">Gallery</p>
             <div className=" py-4  rounded-lg">
               <Slider
-                images={images}
+                images={facilityImagesList}
                 handleUpload={handleUpload}
                 handleDelete={handleDelete}
               />

@@ -1,13 +1,168 @@
 import { auth } from "../firebase.config";
 import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   RecaptchaVerifier,
   signInWithPhoneNumber,
-  signInWithEmailLink,
-  sendSignInLinkToEmail,
-  isSignInWithEmailLink,
-  PhoneAuthProvider,
-  signInWithCredential,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  updatePassword,
 } from "firebase/auth";
+import { collection, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../firebase.config";
+
+/**
+ * Update the user's full name
+ * @param {string} uid
+ * @param {string} fullName
+ */
+export const updateUserFullName = async (uid, fullName) => {
+  try {
+    const userDocRef = doc(db, "users", uid);
+    await updateDoc(userDocRef, { fullName });
+    console.log("User full name updated successfully");
+  } catch (error) {
+    console.error("Error updating user full name:", error);
+    throw error;
+  }
+};
+
+/**
+ * Update the user's profile picture
+ * @param {string} uid
+ * @param {string} profilePicture
+ */
+export const updateUserProfilePicture = async (uid, profilePicture) => {
+  try {
+    const userDocRef = doc(db, "users", uid);
+    await updateDoc(userDocRef, { profilePicture });
+    console.log("User profile picture updated successfully");
+  } catch (error) {
+    console.error("Error updating user profile picture:", error);
+    throw error;
+  }
+};
+
+/**
+ * Update the user's address, latitude, and longitude
+ * @param {string} uid -
+ * @param {string} address
+ * @param {number} latitude
+ * @param {number} longitude
+ */
+export const updateUserAddress = async (uid, address, latitude, longitude) => {
+  try {
+    const userDocRef = doc(db, "users", uid);
+    await updateDoc(userDocRef, { address, latitude, longitude });
+    console.log("User address updated successfully");
+  } catch (error) {
+    console.error("Error updating user address:", error);
+    throw error;
+  }
+};
+
+/**
+ * Fetch user details by UID
+ * @param {string} uid
+ * @returns {Promise<Object>}
+ */
+export const getUserDetails = async (uid) => {
+  try {
+    const userDocRef = doc(db, "users", uid);
+    const userDoc = await getDoc(userDocRef);
+
+    if (userDoc.exists()) {
+      return userDoc.data();
+    } else {
+      throw new Error("No such user!");
+    }
+  } catch (error) {
+    console.error("Error fetching user details:", error);
+    throw error;
+  }
+};
+
+/**
+ * Register a user with email and password
+ * @param {string} email
+ * @param {string} password
+ * @param {string} username
+ * @returns {Promise<UserCredential>}
+ */
+
+export const registerUserWithEmailAndPassword = async (
+  email,
+  password,
+  username
+) => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const user = userCredential.user;
+
+    await setDoc(doc(db, "users", user.uid), {
+      email: user.email,
+      fullName: username,
+      uid: user.uid,
+      createdAt: new Date().toISOString(),
+      address: "",
+      fcmToken: "",
+      isActive: true,
+      latitude: null,
+      longitude: null,
+      phoneNumber: "",
+      profilePicture: "",
+      totalRevenue: null,
+      updatedAt: new Date().toISOString(),
+    });
+
+    return userCredential;
+  } catch (error) {
+    console.error("Error creating user with email and password:", error);
+    throw error;
+  }
+};
+
+export const updateUserPassword = async (oldPassword, newPassword) => {
+  try {
+    const user = auth.currentUser;
+    console.log("user", user);
+    if (!user) throw new Error("No user is currently signed in.");
+    console.log("old", oldPassword);
+    console.log("new", newPassword);
+
+    const credential = EmailAuthProvider.credential(user.email, oldPassword);
+    await reauthenticateWithCredential(user, credential);
+
+    await updatePassword(user, newPassword);
+  } catch (error) {
+    console.error("Error updating password:", error);
+    throw error;
+  }
+};
+
+/**
+ * Sign in a user with email and password
+ * @param {string} email
+ * @param {string} password
+ * @returns {Promise<UserCredential>}
+ */
+export const Login = async (email, password) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    return userCredential;
+  } catch (error) {
+    console.error("Error signing in with email and password:", error);
+    throw error;
+  }
+};
 
 // Function to setup Recaptcha
 const setupRecaptcha = () => {
@@ -24,7 +179,6 @@ const setupRecaptcha = () => {
   return recaptchaVerifier;
 };
 
-// Function to send OTP to phone number
 export const sendOtpToPhone = async (phoneNumber) => {
   setupRecaptcha();
   const appVerifier = window.recaptchaVerifier;
@@ -42,7 +196,6 @@ export const sendOtpToPhone = async (phoneNumber) => {
   }
 };
 
-// Function to verify OTP for phone number
 export const verifyPhoneOtp = async (verificationId, otp) => {
   try {
     const credential = auth.PhoneAuthProvider.credential(verificationId, otp);
@@ -51,38 +204,5 @@ export const verifyPhoneOtp = async (verificationId, otp) => {
   } catch (error) {
     console.error("Error during signInWithCredential", error);
     throw error;
-  }
-};
-
-// Function to send OTP to email
-export const sendOtpToEmail = async (email) => {
-  const actionCodeSettings = {
-    // URL to redirect to after email verification
-    url: "http://localhost:5173/otp",
-    handleCodeInApp: true,
-  };
-
-  try {
-    await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-    window.localStorage.setItem("emailForSignIn", email);
-  } catch (error) {
-    console.error("Error during sendSignInLinkToEmail", error);
-    throw error;
-  }
-};
-
-// Function to verify OTP for email
-export const verifyEmailOtp = async (email, emailLink) => {
-  if (isSignInWithEmailLink(auth, emailLink)) {
-    try {
-      const result = await signInWithEmailLink(auth, email, emailLink);
-      window.localStorage.removeItem("emailForSignIn");
-      return result.user;
-    } catch (error) {
-      console.error("Error during signInWithEmailLink", error);
-      throw error;
-    }
-  } else {
-    throw new Error("Invalid email link");
   }
 };

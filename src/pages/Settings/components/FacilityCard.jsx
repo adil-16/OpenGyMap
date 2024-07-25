@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
 import Slider from "./Slider";
+import DeleteAccountModal from "../../../components/popups/SettingsPopups/DeleteAccount";
+import { deleteFacilityFromFirestore } from "../../../firebase/Functions/FacilityFunctions";
 import { HiClock } from "react-icons/hi2";
 
 const FacilityCard = ({
@@ -10,9 +12,22 @@ const FacilityCard = ({
   address,
   hours,
   courtName,
-  onEdit,
+  onDelete,
   time,
+  onEdit,
 }) => {
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const handleDelete = async () => {
+    try {
+      await deleteFacilityFromFirestore(id);
+      onDelete(id);
+      setIsDeleteModalOpen(false);
+    } catch (error) {
+      console.error("Error deleting facility:", error);
+    }
+  };
+
   return (
     <div className=" max-w-full ">
       <div className="relative rounded-lg  h-[100%] overflow-hidden shadow-lg bg-white">
@@ -27,7 +42,10 @@ const FacilityCard = ({
           </button>
         </div>
         <div className="absolute top-2 right-2">
-          <button className="p-2 bg-white rounded-full shadow">
+          <button
+            onClick={() => setIsDeleteModalOpen(true)}
+            className="p-2 bg-white rounded-full shadow"
+          >
             <RiDeleteBinLine className="text-red-500" />
           </button>
         </div>
@@ -53,8 +71,15 @@ const FacilityCard = ({
             </span>
           </div>
           <span className="text-payment-gray text-sm ml-7">{time}</span>
+          <span className="text-payment-gray text-sm ml-7">{time}</span>
         </div>
       </div>
+
+      <DeleteAccountModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onDelete={handleDelete}
+      />
     </div>
   );
 };
