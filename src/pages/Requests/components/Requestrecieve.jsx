@@ -2,13 +2,14 @@ import React from "react";
 import { FaLocationDot } from "react-icons/fa6";
 import Custombutton from "./Custombutton";
 
+import { useNotification } from "../../../Context/NotificationContext/NotificationContext";
+
 const Requestrecieve = () => {
+  // const { notification, setNotifications, readState } = useNotification(); 
   return (
     <div className=" py-4 space-y-3 ">
       <div className=" flex justify-between">
-        <p className="font-poppins text-2xl font-semibold ">
-          Basketball Gym Name
-        </p>
+        <p className="font-poppins text-2xl font-semibold ">Basketball</p>
         <p className="text-custom-gray">25 mins ago</p>
       </div>
 

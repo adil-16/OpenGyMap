@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import SearchBar from "../../components/SeacrhBar/SearchBar";
 import ExploreButton from "../../components/buttons/Verify";
 import CustomDateInput from "../../components/DateAndTime/CustomDateInput";
@@ -26,6 +26,9 @@ const Home = () => {
   const [clickFootball, setClickFootball] = useState(false);
   const [nearbyFacilities, setNearbyFacilities] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
+
+  const [popularPage, setPopularPage] = useState(1);
+  const [nearbyPage, setNearbyPage] = useState(1);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -70,11 +73,13 @@ const Home = () => {
   }, []);
 
   const toogleBasketBall = () => {
-    setClickBasketBall(!clickBasketBall);
+    setClickBasketBall(true);
+    setClickFootball(false);
   };
 
   const toogleFootball = () => {
-    setClickFootball(!clickFootball);
+    setClickFootball(true);
+    setClickBasketBall(false);
   };
 
   const getRandomStatus = () => {
@@ -83,13 +88,26 @@ const Home = () => {
     return statuses[randomIndex];
   };
 
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentItems = popularFacilities.slice(startIndex, endIndex);
-  const nearbyItems = nearbyFacilities.slice(startIndex, endIndex);
+  const startIndexPopular = (popularPage - 1) * ITEMS_PER_PAGE;
+  const endIndexPopular = startIndexPopular + ITEMS_PER_PAGE;
+  const currentPopularItems = popularFacilities.slice(
+    startIndexPopular,
+    endIndexPopular
+  );
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+  const startIndexNearby = (nearbyPage - 1) * ITEMS_PER_PAGE;
+  const endIndexNearby = startIndexNearby + ITEMS_PER_PAGE;
+  const currentNearbyItems = nearbyFacilities.slice(
+    startIndexNearby,
+    endIndexNearby
+  );
+
+  const handlePopularPageChange = (page) => {
+    setPopularPage(page);
+  };
+
+  const handleNearbyPageChange = (page) => {
+    setNearbyPage(page);
   };
 
   const formatTime = (timeString) => {
@@ -189,6 +207,7 @@ const Home = () => {
 
               {clickBasketBall && (
                 <img
+                  d
                   src="/Home/tick.png"
                   className="absolute -top-1  -right-1 w-4 h-4 bg-custom-blue rounded-sm"
                 />
@@ -232,12 +251,12 @@ const Home = () => {
           <SearchButton text="Search" />
         </div>
       </div>
-      <div className="mt-20 flex flex-col items-center">
-        <h1 className="text-custom-black text-4xl font-bold text-center mb-16">
+      <div className="py-10 flex flex-col items-center justify-center">
+        <h1 className="text-custom-black text-4xl font-bold text-center ">
           Popular Basketball Gyms
         </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-8 px-24 ">
-          {currentItems.map((facility) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10  sm:px-0 lg:px-28 py-10">
+          {currentPopularItems.map((facility) => (
             <FacilityCard
               {...facility}
               key={facility.id}
@@ -265,12 +284,12 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="mt-32 mb-64 flex flex-col items-center">
+      <div className="mt-32 mb-64 flex flex-col items-center justify-center">
         <h1 className="text-custom-black text-4xl font-bold text-center mb-16">
           Basketball Gyms Near You
         </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-8 px-24">
-          {nearbyItems.map((facility) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 sm:px-0 lg:px-28  ">
+          {currentNearbyItems.map((facility) => (
             <FacilityCard
               {...facility}
               key={facility.id}
@@ -299,9 +318,9 @@ const Home = () => {
 
         <div className="absolute bottom-0  mb-8 left-0 right-6 sm:right-2 md:right-4 p-4">
           <Pagination
-            items={nearbyItems}
+            items={nearbyFacilities}
             itemsPerPage={ITEMS_PER_PAGE}
-            onPageChange={handlePageChange}
+            onPageChange={handleNearbyPageChange}
           />
         </div>
         <div className="absolute bottom-0  mb-8 right-4 sm:right-10 bg-custom-gradient rounded-full p-4">

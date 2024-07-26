@@ -4,7 +4,7 @@ import notifications from "../../utils/Notificariondata/Notificationdata";
 import { useNotification } from "../../Context/NotificationContext/NotificationContext";
 
 const Notification = () => {
-  const { notifications, clearNotifications, readState } = useNotification();
+  const { notifications, readState, clearNotifications } = useNotification();
 
   return (
     <div className="rounded-2xl shadow-custom-light p-4 w-full max-auto max-w-lg ">

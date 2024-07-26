@@ -25,7 +25,19 @@ const Exploredetails = () => {
   const location = useLocation();
   const facility = location.state?.facility;
 
-  const { addNotification } = useNotification();
+  const { addNotification, removeNotification } = useNotification();
+
+  function calculateCloseTime(selectedTime, hoursToAdd) {
+    const selectedDate = new Date(`1970-01-01T${selectedTime}:00`);
+
+    selectedDate.setHours(selectedDate.getHours() + hoursToAdd);
+
+    const closeTime = selectedDate.toTimeString().slice(0, 5);
+
+    return closeTime;
+  }
+
+  const closeTime = calculateCloseTime(selectedTime, hours);
 
   useEffect(() => {
     if (showReserveAlert) {
@@ -61,20 +73,24 @@ const Exploredetails = () => {
     }
   };
 
+  const handleDecline = (notificationId) => {
+    removeNotification(notificationId);
+
+    console.log(notificationId);
+  };
+
   const handleRequestToHost = () => {
-    console.log(facility.courtName);
-    console.log(selectedDate);
-    console.log(selectedTime);
-    console.log(facility.time);
     setShowReserveALert(false);
+    const notificationId = new Date().getTime();
+
     addNotification({
-      id: 1,
+      id: notificationId,
       type: "Join Session",
       profileImage: "/Request/profileimage.png",
       userName: "Jessica Kawai",
       courtName: facility.courtName,
       date: selectedDate,
-      time: selectedTime,
+      time: `${selectedTime} - ${closeTime}`,
       action: "wants to join the session",
       timeAgo: "2hr ago",
       actions: [
@@ -82,6 +98,7 @@ const Exploredetails = () => {
           type: "Decline",
           style:
             "border-request-button-decline text-request-button-decline bg-request-button-decline",
+          onClick: handleDecline(notificationId),
         },
         {
           type: "Accept",
@@ -91,6 +108,7 @@ const Exploredetails = () => {
       ],
     });
   };
+
   return (
     <div
       className={`   lg:flex-row lg:flex min-h-screen    flex-col p-8

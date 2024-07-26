@@ -16,12 +16,12 @@ const Slider = ({ imageUrls = [] }) => {
         className="relative overflow-x-scroll  scrollbar-hide snap-x snap-mandatory"
         onScroll={handleScroll}
       >
-        <div className="flex sm:h-40 md:h-60 lg:h-64">
+        <div className="flex ">
           {imageUrls.map((slide, index) => (
             <div
               key={index}
               id={`slide-${index}`}
-              className="w-full flex-shrink-0 snap-center"
+              className="w-full flex-shrink-0 snap-center h-44 md:h-56 lg:h-72"
             >
               <img
                 src={slide}
