@@ -1,6 +1,5 @@
 import React from "react";
 import { FaClock } from "react-icons/fa";
-import notifications from "../../utils/Notificariondata/Notificationdata";
 import { useNotification } from "../../Context/NotificationContext/NotificationContext";
 
 const Notification = () => {
