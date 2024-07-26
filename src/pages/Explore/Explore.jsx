@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import SearchBar from "../../components/SeacrhBar/SearchBar";
 import CustomDateInput from "../../components/DateAndTime/CustomDateInput";
 import CustomTimeInput from "../../components/DateAndTime/CustomTimeInput";
@@ -7,8 +7,7 @@ import FormatDays from "../../utils/FormatDays/FormatDays";
 import { FaQuestion } from "react-icons/fa";
 import SearchAlert from "../../components/Alert/SearchAlert";
 import Pagination from "../../components/Pagination/Pagination";
-
-import FacilitiesData from "../../utils/CardsData/CardsData";
+import { fetchFacilitiesForUser } from "../../firebase/Functions/FacilityFunctions";
 import FacilityCard from "../../components/Card/Card";
 
 const ITEMS_PER_PAGE = 6;
@@ -25,6 +24,12 @@ const Explore = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [facilities, setFacilities] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchFacilitiesForUser(setFacilities, setLoading);
+  }, []);
 
   const handleSearchParamsChange = (field, value) => {
     setSearchParams((prevParams) => ({ ...prevParams, [field]: value }));
@@ -45,10 +50,18 @@ const Explore = () => {
   // Paginate filtered cards
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentItems = FacilitiesData.slice(startIndex, endIndex);
+  const currentItems = facilities.slice(startIndex, endIndex);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+  };
+
+  const formatTime = (timeString) => {
+    const date = new Date(timeString);
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   return (
@@ -107,20 +120,26 @@ const Explore = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-8  px-24">
               {currentItems.map((facility) => (
                 <FacilityCard
+                  {...facility}
                   key={facility.id}
                   id={facility.id}
-                  courtName={facility.courtName}
-                  imageUrls={facility.imageUrls}
-                  rate={`${facility.amountPerHour}`}
+                  rules={facility.rules}
+                  description={facility.description}
+                  createdBy={facility.createdBy}
+                  courtName={facility.basketCourtName}
+                  imageUrls={facility.facilityImagesList}
+                  rate={facility.amount}
                   address={facility.location}
                   hours={`${
-                    Array.isArray(facility.selectedDays) &&
-                    facility.selectedDays.length > 0
-                      ? `${FormatDays(facility.selectedDays)} `
+                    Array.isArray(facility.daysList) &&
+                    facility.daysList.length > 0
+                      ? `${FormatDays(facility.daysList)} `
                       : "No availability"
                   }`}
                   time={`
-                  ${facility.startingTime} - ${facility.closingTime}
+                  ${formatTime(facility.startTime)} - ${formatTime(
+                    facility.closeTime
+                  )}
                 `}
                   status={getRandomStatus()}
                 />
@@ -128,7 +147,7 @@ const Explore = () => {
             </div>
 
             <Pagination
-              items={FacilitiesData}
+              items={facilities}
               itemsPerPage={ITEMS_PER_PAGE}
               onPageChange={handlePageChange}
             />

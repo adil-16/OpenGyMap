@@ -3,31 +3,23 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { FaArrowRight } from "react-icons/fa6";
 import { FaArrowLeft } from "react-icons/fa6";
 
-const Slider = () => {
+const Slider = ({ imageUrls }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const slides = [
-    "/Home/games.png",
-    "/Home/games.png",
-    "/docs/images/carousel/carousel-3.svg",
-    "/docs/images/carousel/carousel-4.svg",
-    "/docs/images/carousel/carousel-5.svg",
-  ];
-
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % imageUrls.length);
   };
 
   const handlePrev = () => {
     setCurrentIndex(
-      (prevIndex) => (prevIndex - 1 + slides.length) % slides.length
+      (prevIndex) => (prevIndex - 1 + imageUrls.length) % imageUrls.length
     );
   };
 
   return (
     <div className="relative w-full   ">
       <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
-        {slides.map((slide, index) => (
+        {imageUrls.map((slide, index) => (
           <div
             key={index}
             className={`absolute block w-full h-full transition-opacity duration-700 ease-in-out ${
@@ -44,7 +36,7 @@ const Slider = () => {
       </div>
 
       <div className="absolute z-30 flex items-center -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
-        {slides.map((_, index) => {
+        {imageUrls.map((_, index) => {
           let size;
           if (index === 0) {
             size = 6;
