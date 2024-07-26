@@ -1,24 +1,73 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import SearchBar from "../../components/SeacrhBar/SearchBar";
 import ExploreButton from "../../components/buttons/Verify";
 import CustomDateInput from "../../components/DateAndTime/CustomDateInput";
 import CustomTimeInput from "../../components/DateAndTime/CustomTimeInput";
 import SearchButton from "../../components/buttons/Verify";
-import FacilitiesData from "../../utils/CardsData/CardsData";
 import FacilityCard from "../../components/Card/Card";
 import { FaQuestion } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Pagination from "../../components/Pagination/Pagination";
 import FormatDays from "../../utils/FormatDays/FormatDays";
+import {
+  fetchPopularFacilities,
+  fetchNearbyFacilities,
+} from "../../firebase/Functions/FacilityFunctions";
+
 const ITEMS_PER_PAGE = 6;
 const Home = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState();
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [popularFacilities, setPopularFacilities] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [clickBasketBall, setClickBasketBall] = useState(false);
-
   const [clickFootball, setClickFootball] = useState(false);
+  const [nearbyFacilities, setNearbyFacilities] = useState([]);
+  const [userLocation, setUserLocation] = useState(null);
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (userLocation) {
+      fetchNearbyFacilities(setNearbyFacilities, setLoading, userLocation, 50);
+    }
+  }, [userLocation]);
+
+  useEffect(() => {
+    const getFacilities = async () => {
+      setLoading(true);
+      try {
+        const facilities = await fetchPopularFacilities(
+          setPopularFacilities,
+          setLoading
+        );
+      } catch (err) {
+        setError("Failed to fetch popular facilities");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getFacilities();
+  }, []);
 
   const toogleBasketBall = () => {
     setClickBasketBall(!clickBasketBall);
@@ -36,10 +85,19 @@ const Home = () => {
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentItems = FacilitiesData.slice(startIndex, endIndex);
+  const currentItems = popularFacilities.slice(startIndex, endIndex);
+  const nearbyItems = nearbyFacilities.slice(startIndex, endIndex);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+  };
+
+  const formatTime = (timeString) => {
+    const date = new Date(timeString);
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   return (
@@ -181,20 +239,25 @@ const Home = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-8 px-24 ">
           {currentItems.map((facility) => (
             <FacilityCard
+              {...facility}
               key={facility.id}
               id={facility.id}
-              courtName={facility.courtName}
-              imageUrls={facility.imageUrls}
-              rate={`${facility.amountPerHour}`}
+              rules={facility.rules}
+              description={facility.description}
+              createdBy={facility.createdBy}
+              courtName={facility.basketCourtName}
+              imageUrls={facility.facilityImagesList}
+              rate={facility.amount}
               address={facility.location}
               hours={`${
-                Array.isArray(facility.selectedDays) &&
-                facility.selectedDays.length > 0
-                  ? `${FormatDays(facility.selectedDays)} `
+                Array.isArray(facility.daysList) && facility.daysList.length > 0
+                  ? `${FormatDays(facility.daysList)} `
                   : "No availability"
               }`}
               time={`
-                  ${facility.startingTime} - ${facility.closingTime}
+                  ${formatTime(facility.startTime)} - ${formatTime(
+                facility.closeTime
+              )}
                 `}
               status={getRandomStatus()}
             />
@@ -207,22 +270,27 @@ const Home = () => {
           Basketball Gyms Near You
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-8 px-24">
-          {currentItems.map((facility) => (
+          {nearbyItems.map((facility) => (
             <FacilityCard
+              {...facility}
               key={facility.id}
               id={facility.id}
-              courtName={facility.courtName}
-              imageUrls={facility.imageUrls}
-              rate={`${facility.amountPerHour}`}
+              rules={facility.rules}
+              description={facility.description}
+              createdBy={facility.createdBy}
+              courtName={facility.basketCourtName}
+              imageUrls={facility.facilityImagesList}
+              rate={facility.amount}
               address={facility.location}
               hours={`${
-                Array.isArray(facility.selectedDays) &&
-                facility.selectedDays.length > 0
-                  ? `${FormatDays(facility.selectedDays)} `
+                Array.isArray(facility.daysList) && facility.daysList.length > 0
+                  ? `${FormatDays(facility.daysList)} `
                   : "No availability"
               }`}
               time={`
-                  ${facility.startingTime} - ${facility.closingTime}
+                  ${formatTime(facility.startTime)} - ${formatTime(
+                facility.closeTime
+              )}
                 `}
               status={getRandomStatus()}
             />
@@ -231,7 +299,7 @@ const Home = () => {
 
         <div className="absolute bottom-0  mb-8 left-0 right-6 sm:right-2 md:right-4 p-4">
           <Pagination
-            items={FacilitiesData}
+            items={nearbyItems}
             itemsPerPage={ITEMS_PER_PAGE}
             onPageChange={handlePageChange}
           />

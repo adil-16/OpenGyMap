@@ -5,8 +5,50 @@ import {
   setDoc,
   getDocs,
   deleteDoc,
+  query,
+  where,
 } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
+
+export const fetchPopularFacilities = async (
+  setPopularFacilities,
+  setLoading
+) => {
+  try {
+    setLoading(true);
+    const reviewsQuery = query(
+      collection(db, "reviews"),
+      where("rating", ">=", 4)
+    );
+    const reviewsSnapshot = await getDocs(reviewsQuery);
+    const facilityIds = reviewsSnapshot.docs
+      .map((doc) => doc.data().facilityId)
+      .filter((id) => id);
+
+    if (facilityIds.length === 0) {
+      console.warn("No facility IDs found.");
+      setPopularFacilities([]);
+      return;
+    }
+
+    const facilitiesQuery = query(
+      collection(db, "facilities"),
+      where("facilityId", "in", facilityIds)
+    );
+    const facilitiesSnapshot = await getDocs(facilitiesQuery);
+
+    const facilitiesList = facilitiesSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    setPopularFacilities(facilitiesList);
+  } catch (error) {
+    console.error("Error fetching popular facilities:", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
 export const fetchFacilitiesFromFirestore = async (setData, setLoading) => {
   try {
@@ -106,4 +148,60 @@ export const deleteFacilityFromFirestore = async (facilityId) => {
   } catch (error) {
     console.error("Error deleting facility from Firestore:", error);
   }
+};
+
+/**
+ * Fetch nearby facilities based on the user's location.
+ * @param {Function} setFacilities
+ * @param {Function} setLoading
+ * @param {Object} userLocation
+ * @param {number} radius
+ */
+export const fetchNearbyFacilities = async (
+  setFacilities,
+  setLoading,
+  userLocation,
+  radius
+) => {
+  try {
+    setLoading(true);
+    const querySnapshot = await getDocs(collection(db, "facilities"));
+    const facilitiesList = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    const filteredFacilities = facilitiesList.filter((facility) => {
+      const facilityLocation = {
+        lat: facility.latitude,
+        lng: facility.longitude,
+      };
+      const distance = calculateDistance(userLocation, facilityLocation);
+      return distance <= radius;
+    });
+    console.log(filteredFacilities);
+    setFacilities(filteredFacilities);
+  } catch (error) {
+    console.error("Error fetching nearby facilities:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+const calculateDistance = (location1, location2) => {
+  const rad = (x) => (x * Math.PI) / 180;
+
+  const R = 6371;
+  const dLat = rad(location2.lat - location1.lat);
+  const dLng = rad(location2.lng - location1.lng);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(rad(location1.lat)) *
+      Math.cos(rad(location2.lat)) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = R * c;
+
+  return distance;
 };
