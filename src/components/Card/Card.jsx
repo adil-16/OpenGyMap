@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { RiDeleteBinLine } from "react-icons/ri";
+import React from "react";
 import Slider from "../../pages/Settings/components/Slider";
 import { HiClock } from "react-icons/hi2";
 import { useNavigate } from "react-router-dom";
@@ -11,13 +10,33 @@ const Card = ({
   address,
   hours,
   courtName,
-  onDelete,
   time,
-  onEdit,
   status,
+  rules,
+  createdBy,
+  description,
 }) => {
   const navigate = useNavigate();
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const handleClick = () => {
+    navigate(`/explore/details/${id}`, {
+      state: {
+        facility: {
+          id,
+          courtName,
+          imageUrls,
+          rate,
+          address,
+          hours,
+          time,
+          status,
+          rules,
+          createdBy,
+          description,
+        },
+      },
+    });
+  };
 
   const getStatusStyles = () => {
     if (status === "Open Now") {
@@ -29,25 +48,20 @@ const Card = ({
   };
 
   return (
-    <div
-      className=" max-w-full "
-      onClick={() => navigate(`/explore/details/${id}`, { state: { status } })}
-    >
+    <div className="cursor-pointer max-w-full " onClick={handleClick}>
       <div className="relative rounded-lg  h-[100%] overflow-hidden shadow-lg bg-white">
         <Slider imageUrls={imageUrls} />
 
-    
-          <div
-            className={`absolute top-5 left-3 rounded-full px-6 py-2 ${getStatusStyles()}`}
-          >
-            {status}
-          </div>
-        
+        <div
+          className={`absolute top-5 left-3 rounded-full px-6 py-2 ${getStatusStyles()}`}
+        >
+          {status}
+        </div>
 
         <div className="p-3">
           <h3 className="text-md font-semibold text-custom-black flex justify-between">
             <span className="break-words w-[50%] truncate">{courtName}</span>
-            <span className="break-words w-[30%]">{rate}</span>
+            <span className="break-words w-[20%]">{`$${rate}/hr`}</span>
           </h3>
           <div className="flex items-start pt-3">
             <img

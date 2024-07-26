@@ -15,17 +15,15 @@ import ReservedAlert from "../../components/Alert/ReservedAlert";
 
 const Exploredetails = () => {
   const [hours, setHours] = useState(1);
+  const [selectedTime, setSelectedTime] = useState("09:00");
   const [selectedCourt, setSelectedCourt] = useState("Half Court");
   const [showReserveAlert, setShowReserveALert] = useState(false);
+  const [selectedDate, setSelectedDate] = useState("");
 
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
-  const { status } = location.state || {};
-
-  const cardId = parseInt(id, 10);
-
-  const card = CardsData.find((card) => card.id === cardId);
+  const facility = location.state?.facility;
 
   useEffect(() => {
     if (showReserveAlert) {
@@ -40,8 +38,8 @@ const Exploredetails = () => {
     };
   }, [showReserveAlert]);
 
-  if (!card) {
-    return <p>Card not found!</p>;
+  if (!facility) {
+    return <p>Facility not found!</p>;
   }
 
   const handleMinus = () => {
@@ -53,9 +51,11 @@ const Exploredetails = () => {
   };
 
   const handleCheckAvailability = () => {
-    if (status === "Open Now") {
-      navigate("/payment");
-    } else if (status === "Already Booked") {
+    if (facility.status === "Open Now") {
+      navigate("/payment", {
+        state: { facility, selectedCourt, selectedTime, hours, selectedDate },
+      });
+    } else if (facility.status === "Already Booked") {
       setShowReserveALert(true);
     }
   };
@@ -79,41 +79,37 @@ const Exploredetails = () => {
 
         <div className="py-4 flex gap-4">
           <p className="font-poppins text-2xl font-bold">
-            Basketball Court Name
+            {facility.courtName}
           </p>
 
           <div className="flex gap-2 items-center text-custom-gray">
             <FaClock className="h-4 w-4" />
             <p className="text-sm text-request-button-accepted font-normal">
-              Monday - Friday 09:00 - 23:00
+              {facility.hours} {facility.time}
             </p>
           </div>
         </div>
 
-        <div className="font-inter text-lg font-medium ">Barbarian Gym Pro</div>
+        <div className="font-inter text-lg font-medium ">
+          {facility.gymName || ""}
+        </div>
 
         <div className="flex gap-2 py-2 items-center">
           <FaLocationDot className="text-request-icon border-b-2 flex border-request-icon h-4 w-4" />
 
           <p className="text-custom-gray font-medium font-inter text-sm">
-            Street 123, California, USA
+            {facility.address || ""}
           </p>
         </div>
 
         <div className="py-4 ">
-          <Slider />
+          <Slider imageUrls={facility.imageUrls} />
         </div>
 
         <div className="py-4">
           <p className="font-inter text-2xl font-semibold ">Description</p>
           <p className="font-inter text-base text-custom-gray py-2 ">
-            m ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse a
-            sapien non lorem tempor fringilla quis eget justo. Nullam fringilla
-            orci vel nibh convallis, a bibendum velit bibendum. Proin in magna
-            nibh. Sed metus diam, ornare a ultricies a, auctor facilisis purus.
-            Nullam vel facilisis diam. Duis cursus nibh a pretium pharetra.
-            Maecenas malesuada non tellus bibendum auctor. Nam maximus felis vel
-            tortor varius, quis tempus mauris pharetra.
+            {facility.description || "No Description to show"}
           </p>
         </div>
 
@@ -121,11 +117,9 @@ const Exploredetails = () => {
           <p className="font-inter text-2xl font-semibold ">House Rules</p>
 
           <ul className="list-disc list-inside mt-2 space-y-2">
-            {card.houseRules.map((rule, index) => (
-              <li key={index} className="text-custom-gray font-inter">
-                {rule}
-              </li>
-            ))}
+            <li className="text-custom-gray font-inter">
+              {facility.rules || "No rules to show"}
+            </li>
           </ul>
         </div>
 
@@ -176,7 +170,7 @@ const Exploredetails = () => {
             <p className="text-custom-gray font-inter font-medium text-base">
               price
             </p>
-            <p className="font-inter font-semibold text-xl ">{card.rate}</p>
+            <p className="font-inter font-semibold text-xl ">{facility.rate}</p>
           </div>
           <div className="ml-3 mr-3 border-b border-custom-gray"></div>
 
@@ -188,7 +182,13 @@ const Exploredetails = () => {
             <p className="font-inter text-lg font-semibold ">Starting Time</p>
 
             <div className="flex-col items-end ">
-              <input type="time" placeholder="Time " className="text-center" />
+              <input
+                type="time"
+                placeholder="Time"
+                className="text-center"
+                value={selectedTime}
+                onChange={(e) => setSelectedTime(e.target.value)}
+              />
               <div className="border-b ml-2 mr-2 py-1 border-custom-gray "></div>
             </div>
           </div>
@@ -246,7 +246,7 @@ const Exploredetails = () => {
           </div>
 
           <div className="w-full">
-            <Calenderr />
+            <Calenderr setSelectedDate={setSelectedDate} />
           </div>
 
           <div className="flex justify-center pb-4">

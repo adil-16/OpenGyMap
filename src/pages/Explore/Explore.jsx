@@ -1,13 +1,14 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import SearchBar from "../../components/SeacrhBar/SearchBar";
 import CustomDateInput from "../../components/DateAndTime/CustomDateInput";
 import CustomTimeInput from "../../components/DateAndTime/CustomTimeInput";
 import SearchButton from "../../components/buttons/Verify";
-import CardsData from "../../utils/CardsData/CardsData";
-import Card from "../../components/Card/Card";
+import FormatDays from "../../utils/FormatDays/FormatDays";
 import { FaQuestion } from "react-icons/fa";
 import SearchAlert from "../../components/Alert/SearchAlert";
 import Pagination from "../../components/Pagination/Pagination";
+import { fetchFacilitiesForUser } from "../../firebase/Functions/FacilityFunctions";
+import FacilityCard from "../../components/Card/Card";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -23,20 +24,16 @@ const Explore = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [facilities, setFacilities] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchFacilitiesForUser(setFacilities, setLoading);
+  }, []);
 
   const handleSearchParamsChange = (field, value) => {
     setSearchParams((prevParams) => ({ ...prevParams, [field]: value }));
   };
-
-  const filteredCards = useMemo(() => {
-    const { location, date, time } = searchParams;
-    const filtered = CardsData.filter((card) =>
-      card.address.toLowerCase().includes(location.toLowerCase())
-    );
-
-    setShowALert(filtered.length === 0);
-    return filtered;
-  }, [searchParams]);
 
   const handleSearch = () => {
     handleSearchParamsChange("location", searchQuery);
@@ -53,10 +50,18 @@ const Explore = () => {
   // Paginate filtered cards
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentItems = filteredCards.slice(startIndex, endIndex);
+  const currentItems = facilities.slice(startIndex, endIndex);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+  };
+
+  const formatTime = (timeString) => {
+    const date = new Date(timeString);
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   return (
@@ -113,21 +118,36 @@ const Explore = () => {
           </div>
           <div className="mt-20 flex flex-col items-center">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16">
-              {currentItems.map((card) => (
-                <Card
-                  id={card.id}
-                  key={card.id}
-                  imageUrl={card.imageUrl}
-                  rate={card.rate}
-                  address={card.address}
-                  hours={card.hours}
+              {currentItems.map((facility) => (
+                <FacilityCard
+                  {...facility}
+                  key={facility.id}
+                  id={facility.id}
+                  rules={facility.rules}
+                  description={facility.description}
+                  createdBy={facility.createdBy}
+                  courtName={facility.basketCourtName}
+                  imageUrls={facility.facilityImagesList}
+                  rate={facility.amount}
+                  address={facility.location}
+                  hours={`${
+                    Array.isArray(facility.daysList) &&
+                    facility.daysList.length > 0
+                      ? `${FormatDays(facility.daysList)} `
+                      : "No availability"
+                  }`}
+                  time={`
+                  ${formatTime(facility.startTime)} - ${formatTime(
+                    facility.closeTime
+                  )}
+                `}
                   status={getRandomStatus()}
                 />
               ))}
             </div>
 
             <Pagination
-              items={filteredCards}
+              items={facilities}
               itemsPerPage={ITEMS_PER_PAGE}
               onPageChange={handlePageChange}
             />

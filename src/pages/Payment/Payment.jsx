@@ -8,10 +8,19 @@ import PriceSummary from "./Components/PriceSummary";
 import PaymentOptions from "./Components/PaymentOptions";
 import SuccessPopup from "../../components/popups/PaymentPopups/SuccessPopup";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const Payment = () => {
   const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { facility, selectedCourt, selectedTime, hours, selectedDate } =
+    location.state;
+
+  const serviceFee = 12.14;
+  const rate = facility.rate;
+  const subtotal = hours * rate;
+  const totalAmount = subtotal + serviceFee;
 
   const handlePayClick = () => {
     setShowPopup(true);
@@ -20,6 +29,10 @@ const Payment = () => {
   const handleClosePopup = () => {
     setShowPopup(false);
   };
+
+  if (!facility) {
+    return <p>Facility details not available!</p>;
+  }
 
   return (
     <div className="p-6 md:p-12">
@@ -38,20 +51,28 @@ const Payment = () => {
       </h2>
       <div className="flex flex-col md:flex-row justify-between gap-6">
         <div className="w-full md:w-2/3 bg-white p-6 rounded-lg shadow-lg">
-          <GymDetails />
-          <UserDetails />
+          <GymDetails facility={facility} />
+          <UserDetails facility={facility} />
         </div>
 
         <div className="w-full md:w-1/3 bg-white p-4 rounded-lg shadow-sm flex flex-col justify-between">
-          <BookingSummary />
-          <PriceSummary />
+          <BookingSummary
+            court={selectedCourt}
+            time={selectedTime}
+            hours={hours}
+            date={selectedDate}
+          />
+          <PriceSummary hours={hours} facility={facility} />
           <div className="border-b border-navbar-gray mb-6"></div>
           <PaymentOptions />
         </div>
       </div>
 
       <div className="mt-20 text-right">
-        <PayButton text="Pay $84.14" onClick={handlePayClick} />
+        <PayButton
+          text={`Pay $${totalAmount.toFixed(2)}`}
+          onClick={handlePayClick}
+        />
       </div>
       {showPopup && <SuccessPopup onClose={handleClosePopup} />}
     </div>
