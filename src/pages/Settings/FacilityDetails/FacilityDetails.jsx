@@ -7,7 +7,10 @@ import Slider from "./components/Slider";
 import Button from "../AddFacility/components/Button";
 import { useFacilitiesData } from "../../../Context/FacilitiesDataContext/FacilitiesDataContext";
 import FormatDays from "../../../utils/FormatDays/FormatDays";
-import { addFacilityToFirestore } from "../../../firebase/Functions/FacilityFunctions";
+import {
+  addFacilityToFirestore,
+  updateFacilityInFirestore,
+} from "../../../firebase/Functions/FacilityFunctions";
 
 const formatTime = (timeString) => {
   const date = new Date(timeString);
@@ -35,25 +38,27 @@ const FacilityDetails = () => {
     console.log(facilityToSave);
 
     try {
-      await addFacilityToFirestore(facilityToSave);
+      await addFacilityToFirestore(facilityToSave, facilityData.facilityId);
       navigate("/setting/myfacility");
     } catch (error) {
       console.error("Error saving facility:", error);
     }
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     const updatedFacility = {
       ...facilityData,
       imageUrls: facilityData.images || [],
     };
 
     console.log("Updating facility:", updatedFacility);
-    updateFacility(updatedFacility);
-
-    console.log("data is ", data);
-
-    navigate("/setting/myfacility");
+    try {
+      await updateFacilityInFirestore(facilityData.facilityId, updatedFacility);
+      updateFacility(updatedFacility);
+      navigate("/setting/myfacility");
+    } catch (error) {
+      console.error("Error updating facility:", error);
+    }
   };
 
   return (

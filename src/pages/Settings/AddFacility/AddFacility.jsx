@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { RxArrowLeft } from "react-icons/rx";
-
+import { v4 as uuidv4 } from "uuid";
 import Input from "./components/Input";
 import StartingAndEndingInput from "./components/StartingAndEndingInput";
 import DaySign from "./components/DaySign";
@@ -33,8 +33,6 @@ const AddFacility = () => {
     facilityData?.description || ""
   );
   const [rules, setRules] = useState(facilityData?.rules || "");
-  // const [startTime, setStartTime] = useState(facilityData?.startTime || "");
-  // const [closeTime, setCloseTime] = useState(facilityData?.closeTime || "");
 
   const [startTime, setStartTime] = useState(
     extractTime(facilityData?.startTime)
@@ -54,7 +52,6 @@ const AddFacility = () => {
 
   const [daysList, setDaysList] = useState(facilityData?.daysList || []);
   const isEdit = locationn.state?.isEdit;
-
   const navigate = useNavigate();
 
   const handleUpload = (event) => {
@@ -75,7 +72,8 @@ const AddFacility = () => {
   };
 
   const handleSave = () => {
-    const facilityData = {
+    const facilityId = isEdit ? facilityData.facilityId : uuidv4();
+    const facilityDataToSave = {
       createdBy: uid,
       basketCourtName,
       gymName,
@@ -92,9 +90,12 @@ const AddFacility = () => {
       bookingDateAndTime: [],
       bookingList: [],
       createdAt: new Date().toISOString(),
+      facilityId,
     };
 
-    navigate("/facilitydetails", { state: { facilityData, isEdit } });
+    navigate("/facilitydetails", {
+      state: { facilityData: facilityDataToSave, isEdit },
+    });
   };
 
   const toggleDaySelection = (day) => {
@@ -247,18 +248,6 @@ const AddFacility = () => {
             </p>
 
             <div className="flex py-4 space-x-8">
-              {/* <StartingAndEndingInput
-                placeholder="Starting time "
-                borderColor="border-border-color"
-                placeholderColor="placeholder-placeholder-color"
-                textColor="text-custom-black "
-                fontSize="text-lg"
-                fontFamily="font-inter"
-                bold="font-semibold"
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
-              /> */}
-
               <TimePicker
                 onChange={setStartTime}
                 value={startTime}
@@ -266,7 +255,6 @@ const AddFacility = () => {
                 format="HH:mm"
                 hourPlaceholder="HH"
                 minutePlaceholder="MM"
-                // clockIcon=""
               />
 
               <TimePicker
@@ -276,21 +264,7 @@ const AddFacility = () => {
                 format="HH:mm"
                 hourPlaceholder="HH"
                 minutePlaceholder="MM"
-                // clearIcon={null}
-                // clockIcon={null}
               />
-
-              {/* <StartingAndEndingInput
-                placeholder="Closing time "
-                borderColor="border-border-color"
-                placeholderColor="placeholder-placeholder-color"
-                textColor="text-custom-black "
-                fontSize="text-lg"
-                fontFamily="font-inter"
-                bold="font-semibold"
-                value={closeTime}
-                onChange={(e) => setCloseTime(e.target.value)}
-              /> */}
             </div>
           </div>
 
