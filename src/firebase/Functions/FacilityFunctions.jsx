@@ -57,14 +57,26 @@ export const fetchFacilitiesForUser = async (setFacilities, setLoading) => {
   }
 };
 
+export const updateFacilityInFirestore = async (
+  facilityId,
+  updatedFacilityData
+) => {
+  try {
+    const facilityRef = doc(db, "facilities", facilityId);
+    await setDoc(facilityRef, updatedFacilityData, { merge: true });
+    console.log("Facility updated successfully!");
+  } catch (error) {
+    console.error("Error updating facility:", error);
+  }
+};
+
 /**
  * @param {Object} facilityData
  * @returns {Promise<void>}
  */
 
-export const addFacilityToFirestore = async (facilityData) => {
+export const addFacilityToFirestore = async (facilityData, facilityId) => {
   try {
-    const facilityId = uuidv4();
     const facilityDocRef = doc(collection(db, "facilities"), facilityId);
 
     const updatedFacilityData = {
