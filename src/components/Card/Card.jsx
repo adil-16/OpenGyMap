@@ -15,6 +15,10 @@ const Card = ({
   rules,
   createdBy,
   description,
+  gymName,
+  longitude,
+  latitude,
+  daysList,
 }) => {
   const navigate = useNavigate();
 
@@ -33,6 +37,10 @@ const Card = ({
           rules,
           createdBy,
           description,
+          gymName,
+          longitude,
+          latitude,
+          daysList,
         },
       },
     });
@@ -48,10 +56,7 @@ const Card = ({
   };
 
   return (
-    <div
-      className=" w-[90%] cursor-pointer"
-      onClick={handleClick}
-    >
+    <div className=" w-[90%] cursor-pointer" onClick={handleClick}>
       <div className="relative rounded-lg  h-[100%] overflow-hidden shadow-lg bg-white">
         <Slider imageUrls={imageUrls} />
 

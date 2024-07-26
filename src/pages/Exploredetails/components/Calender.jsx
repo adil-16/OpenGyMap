@@ -16,15 +16,6 @@ const Calender = ({ setSelectedDate }) => {
     setCurrentDate(newDate);
   };
 
-  const handleDateChange = (e) => {
-    setDate(e.value);
-    const formattedDate = e.value.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-    });
-    setSelectedDate(formattedDate);
-  };
-
   const monthNames = [
     "January",
     "February",
@@ -71,7 +62,10 @@ const Calender = ({ setSelectedDate }) => {
       <div className="flex justify-center">
         <Calendar
           value={date}
-          onChange={handleDateChange}
+          onChange={(e) => {
+            setDate(e.value);
+            setSelectedDate(e.value);
+          }}
           inline
           className="custom-calendar"
           dateFormat="dd/mm/yy"

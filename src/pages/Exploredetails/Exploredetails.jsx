@@ -13,6 +13,7 @@ import Custombutton from "./components/Custombutton";
 import Calenderr from "./components/Calender";
 import ReservedAlert from "../../components/Alert/ReservedAlert";
 import { useNotification } from "../../Context/NotificationContext/NotificationContext";
+
 const Exploredetails = () => {
   const [hours, setHours] = useState(1);
   const [selectedTime, setSelectedTime] = useState("09:00");
@@ -62,10 +63,6 @@ const Exploredetails = () => {
   };
 
   const handleRequestToHost = () => {
-    console.log(facility.courtName);
-    console.log(selectedDate);
-    console.log(selectedTime);
-    console.log(facility.time);
     setShowReserveALert(false);
     addNotification({
       id: 1,

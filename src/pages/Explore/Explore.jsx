@@ -142,6 +142,10 @@ const Explore = () => {
                   )}
                 `}
                   status={getRandomStatus()}
+                  gymName={facility.gymName}
+                  longitude={facility.longitude}
+                  latitude={facility.latitude}
+                  daysList={facility.daysList}
                 />
               ))}
             </div>
