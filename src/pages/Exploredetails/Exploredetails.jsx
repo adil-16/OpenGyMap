@@ -12,7 +12,7 @@ import { CiCirclePlus } from "react-icons/ci";
 import Custombutton from "./components/Custombutton";
 import Calenderr from "./components/Calender";
 import ReservedAlert from "../../components/Alert/ReservedAlert";
-
+import { useNotification } from "../../Context/NotificationContext/NotificationContext";
 const Exploredetails = () => {
   const [hours, setHours] = useState(1);
   const [selectedTime, setSelectedTime] = useState("09:00");
@@ -25,6 +25,8 @@ const Exploredetails = () => {
   const location = useLocation();
   const facility = location.state?.facility;
 
+  const { addNotification } = useNotification();
+
   useEffect(() => {
     if (showReserveAlert) {
       document.body.classList.add("overflow-hidden");
@@ -32,7 +34,6 @@ const Exploredetails = () => {
       document.body.classList.remove("overflow-hidden");
     }
 
-    // Clean up on component unmount
     return () => {
       document.body.classList.remove("overflow-hidden");
     };
@@ -60,6 +61,36 @@ const Exploredetails = () => {
     }
   };
 
+  const handleRequestToHost = () => {
+    console.log(facility.courtName);
+    console.log(selectedDate);
+    console.log(selectedTime);
+    console.log(facility.time);
+    setShowReserveALert(false);
+    addNotification({
+      id: 1,
+      type: "Join Session",
+      profileImage: "/Request/profileimage.png",
+      userName: "Jessica Kawai",
+      courtName: facility.courtName,
+      date: selectedDate,
+      time: selectedTime,
+      action: "wants to join the session",
+      timeAgo: "2hr ago",
+      actions: [
+        {
+          type: "Decline",
+          style:
+            "border-request-button-decline text-request-button-decline bg-request-button-decline",
+        },
+        {
+          type: "Accept",
+          style:
+            "border-request-button-accepted text-request-button-accepted bg-request-button-accepted",
+        },
+      ],
+    });
+  };
   return (
     <div
       className={`   lg:flex-row lg:flex min-h-screen    flex-col p-8
@@ -262,7 +293,8 @@ const Exploredetails = () => {
       {showReserveAlert && (
         <div className=" fixed top-0 left-0 w-full h-full flex items-center justify-center z-20 bg-custom-black bg-opacity-50">
           <ReservedAlert
-            onClick={() => {
+            onClick={handleRequestToHost}
+            onClose={() => {
               setShowReserveALert(false);
             }}
           />

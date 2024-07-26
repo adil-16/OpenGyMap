@@ -19,6 +19,7 @@ const StartingAndEndingInput = ({
         onChange={onChange}
         value={value}
         type="time"
+        step="60"
         placeholder={placeholder}
         className={`w-full text-center py-2 border-b ${bold} ${borderColor} ${placeholderColor} ${textColor} ${fontSize} ${fontFamily} focus:outline-none`}
       />

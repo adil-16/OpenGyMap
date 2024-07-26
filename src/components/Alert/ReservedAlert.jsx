@@ -1,12 +1,12 @@
 import React from "react";
 import Crossicon from "../buttons/Crossicon";
 
-const ReservedAlert = ({ onClick }) => {
+const ReservedAlert = ({ onClick, onClose }) => {
   return (
     <div className="p-2 bg-white shadow-lg rounded-lg w-full max-w-md md:w-[75%] lg:w-[50%] xl:w-[25%] h-auto  z-20 mx-auto my-auto">
       <div className="flex justify-between items-center p-5">
         <p className="font-inter font-semibold text-xl">Reserve</p>
-        <Crossicon onClick={onClick} />
+        <Crossicon onClick={onClose} />
       </div>
 
       <div className="flex justify-center">
@@ -38,13 +38,7 @@ const ReservedAlert = ({ onClick }) => {
       </div>
 
       <div className="py-4 rounded-lg bg-custom-gradient flex justify-center mb-6 w-full text-white text-center">
-        <button
-          onClick={() => {
-            console.log("button is clicked");
-          }}
-        >
-          Request host to join
-        </button>
+        <button onClick={onClick}>Request host to join</button>
       </div>
     </div>
   );
