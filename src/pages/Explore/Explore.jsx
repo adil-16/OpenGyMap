@@ -51,7 +51,6 @@ const Explore = () => {
     setCurrentPage(page);
   };
 
-
   return (
     <>
       {showAlert ? (
@@ -105,7 +104,7 @@ const Explore = () => {
             </div>
           </div>
           <div className="mt-20 flex flex-col items-center">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-8  px-24">
               {currentItems.map((facility) => (
                 <FacilityCard
                   key={facility.id}
