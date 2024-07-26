@@ -15,6 +15,10 @@ const Card = ({
   rules,
   createdBy,
   description,
+  gymName,
+  longitude,
+  latitude,
+  daysList,
 }) => {
   const navigate = useNavigate();
 
@@ -33,6 +37,10 @@ const Card = ({
           rules,
           createdBy,
           description,
+          gymName,
+          longitude,
+          latitude,
+          daysList,
         },
       },
     });

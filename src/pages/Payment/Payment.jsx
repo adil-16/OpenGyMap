@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoMdArrowBack } from "react-icons/io";
 import PayButton from "../../components/buttons/Verify";
 import GymDetails from "./Components/GymDetails";
@@ -9,6 +9,32 @@ import PaymentOptions from "./Components/PaymentOptions";
 import SuccessPopup from "../../components/popups/PaymentPopups/SuccessPopup";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { addBooking } from "../../firebase/Functions/BookingFunctions";
+import { getUserDetails } from "../../firebase/Functions/ApiFunctions";
+import { v4 as uuidv4 } from "uuid";
+
+const formatDate = (date) => {
+  if (!(date instanceof Date)) return "";
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
+
+const formatDateTime = (date) => {
+  if (!(date instanceof Date)) return "";
+  return date.toLocaleString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: true,
+    timeZoneName: "short",
+  });
+};
 
 const Payment = () => {
   const [showPopup, setShowPopup] = useState(false);
@@ -16,13 +42,60 @@ const Payment = () => {
   const location = useLocation();
   const { facility, selectedCourt, selectedTime, hours, selectedDate } =
     location.state;
+  const [userDetails, setUserDetails] = useState({
+    fullName: "",
+    phoneNumber: "",
+  });
+  const uid = localStorage.getItem("uid");
 
   const serviceFee = 12.14;
   const rate = facility.rate;
   const subtotal = hours * rate;
   const totalAmount = subtotal + serviceFee;
 
-  const handlePayClick = () => {
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const user = await getUserDetails(uid);
+        setUserDetails({
+          fullName: user.fullName,
+          phoneNumber: user.phoneNumber,
+        });
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+    };
+
+    fetchUserDetails();
+  }, [facility.id]);
+
+  const handlePayClick = async () => {
+    const bookingId = uuidv4();
+    const createdAt = new Date().toISOString();
+
+    const bookingData = {
+      bookingAmount: totalAmount,
+      bookingCourtName: selectedCourt,
+      bookingDate: formatDateTime(new Date(selectedDate)),
+      bookingDays: facility.daysList || [],
+      bookingEndTime: new Date(selectedDate).toISOString(),
+      bookingGymName: facility.gymName,
+      bookingHours: hours,
+      bookingId,
+      createdAt,
+      bookingLocation: facility.address,
+      bookingStartTime: new Date(selectedDate).toISOString(),
+      courtType: selectedCourt,
+      createdBy: uid,
+      creatorName: userDetails.fullName || "",
+      creatorPhone: userDetails.phoneNumber || "",
+      facilityId: facility.id,
+      imagesList: facility.imageUrls,
+      isActive: true,
+      latitude: facility.latitude,
+      longitude: facility.longitude,
+    };
+    await addBooking(bookingData);
     setShowPopup(true);
   };
 
@@ -60,7 +133,7 @@ const Payment = () => {
             court={selectedCourt}
             time={selectedTime}
             hours={hours}
-            date={selectedDate}
+            date={formatDate(new Date(selectedDate))}
           />
           <PriceSummary hours={hours} facility={facility} />
           <div className="border-b border-navbar-gray mb-6"></div>

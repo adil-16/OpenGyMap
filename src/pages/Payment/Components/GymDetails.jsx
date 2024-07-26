@@ -15,9 +15,11 @@ const GymDetails = ({ facility }) => (
         />
         <div className="pl-8">
           <h4 className="font-semibold text-custom-black text-lg">
-            {facility?.basketCourtName || "No Name to show"}
+            {facility?.courtName || "No Name to show"}
           </h4>
-          <p className="font-semibold pt-1">{facility?.gymName}</p>
+          <p className="font-semibold pt-1">
+            {facility?.gymName || "No Gym Name To Show"}
+          </p>
           <div className="flex items-center pt-2">
             <img
               src="/Home/location.png"

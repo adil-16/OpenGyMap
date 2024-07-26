@@ -1,7 +1,57 @@
-import React from "react";
-import bookings from "../../../utils/BookingsData/BookingsData";
+import React, { useState, useEffect } from "react";
+import { getUserBookings } from "../../../firebase/Functions/BookingFunctions";
+
+const getTimeDifference = (date) => {
+  const now = new Date();
+  const bookingDate = new Date(date);
+  const diffInSeconds = Math.floor((now - bookingDate) / 1000);
+
+  if (diffInSeconds < 60) return `${diffInSeconds} s ago`;
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  if (diffInMinutes < 60) return `${diffInMinutes} min ago`;
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) return `${diffInHours} hour ago`;
+  const diffInDays = Math.floor(diffInHours / 24);
+  if (diffInDays < 30) return `${diffInDays} days ago`;
+  const diffInMonths = Math.floor(diffInDays / 30);
+  if (diffInMonths < 12) return `${diffInMonths} month ago`;
+  const diffInYears = Math.floor(diffInMonths / 12);
+  return `${diffInYears} years ago`;
+};
+
+const calculateHours = (start, end) => {
+  const startTime = new Date(start);
+  const endTime = new Date(end);
+  const diffInMilliseconds = endTime - startTime;
+  const diffInHours = diffInMilliseconds / (1000 * 60 * 60);
+  return diffInHours.toFixed(1); // Display hours with one decimal place
+};
+
+const formatTime = (timeString) => {
+  const time = new Date(timeString);
+  const hours = time.getHours().toString().padStart(2, "0");
+  const minutes = time.getMinutes().toString().padStart(2, "0");
+  return `${hours}:${minutes}`;
+};
 
 const MyBookings = () => {
+  const [bookings, setBookings] = useState([]);
+  const uid = localStorage.getItem("uid");
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const userBookings = await getUserBookings(uid);
+        setBookings(userBookings);
+        console.log(bookings);
+      } catch (error) {
+        console.error("Error fetching bookings: ", error);
+      }
+    };
+
+    fetchBookings();
+  }, [uid]);
+
   return (
     <div className="flex flex-col items-start">
       <h1 className="text-2xl font-semibold mb-2 pl-4">
@@ -14,12 +64,17 @@ const MyBookings = () => {
             <div className="flex flex-col mb-4">
               <div className="flex justify-between items-start mb-2">
                 <div className="font-semibold text-lg text-custom-black">
-                  {booking.title}
+                  {booking.bookingGymName}
                 </div>
-                <div className="text-sm text-gray-500">{booking.timestamp}</div>
+                <div className="text-sm text-gray-500">
+                  {" "}
+                  {getTimeDifference(booking.createdAt)}
+                </div>
               </div>
               <div className="text-sm text-custom-black font-semibold mb-1">
-                {booking.time}
+                {formatTime(booking.bookingStartTime)} to{" "}
+                {formatTime(booking.bookingEndTime)} ({booking.bookingHours}{" "}
+                hours)
               </div>
               <div className="text-sm flex items-center text-payment-gray">
                 <img
@@ -27,7 +82,7 @@ const MyBookings = () => {
                   alt="Location Icon"
                   className="w-3 h-4 mr-2"
                 />
-                {booking.location}
+                {booking.bookingLocation}
               </div>
             </div>
             <div className="border-b border-payment-gray py-1 w-full"></div>

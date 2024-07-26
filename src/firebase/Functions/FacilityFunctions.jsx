@@ -179,7 +179,6 @@ export const fetchNearbyFacilities = async (
       const distance = calculateDistance(userLocation, facilityLocation);
       return distance <= radius;
     });
-    console.log(filteredFacilities);
     setFacilities(filteredFacilities);
   } catch (error) {
     console.error("Error fetching nearby facilities:", error);
