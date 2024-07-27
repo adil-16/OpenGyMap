@@ -1,10 +1,12 @@
 import React from "react";
 import Requestcard from "./components/Requestcard";
 import Requestrecieve from "./components/Requestrecieve";
+import { useNotification } from "../../Context/NotificationContext/NotificationContext";
 
 const Requests = () => {
+  const { notifications } = useNotification();
   return (
-    <div className=" p-4  ">
+    <div className=" p-4 mt-4 ">
       <div className="flex justify-center items-center font-poppins font-semibold text-4xl   ">
         <p>Requests</p>
       </div>
@@ -70,12 +72,11 @@ const Requests = () => {
         {/* Second div  */}
         <div className="flex-1 pr-3 py-6 px-2 rounded-lg bg-white drop-shadow-2xlshadow-lg">
           <div className="font-poppins  font-semibold text-xl">
-            Requests Received (2)
+            Requests Received{"  "}
+            {notifications.length > 0 ? `( ${notifications.length} )` : ""}
           </div>
 
           <div className="space-y-6">
-            <Requestrecieve />
-
             <Requestrecieve />
           </div>
         </div>

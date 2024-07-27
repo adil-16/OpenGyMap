@@ -62,8 +62,12 @@ const MyFacility = () => {
           <p className="text-custom-black text-md font-semibold mb-4">
             Facilities
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {loading ? (
+          <div className="grid     grid-cols-1 sm:grid-cols-2 gap-6">
+            {currentItems.length === 0 ? (
+              <div className="  flex items-center justify-center   h-56  ">
+                No, facility found
+              </div>
+            ) : loading ? (
               <div>Loading facilities...</div>
             ) : (
               currentItems.map((facility) => (
@@ -92,14 +96,21 @@ const MyFacility = () => {
             )}
           </div>
 
-          {!loading ? (
-            <Pagination
-              items={facilities}
-              itemsPerPage={ITEMS_PER_PAGE}
-              onPageChange={handlePageChange}
-            />
-          ) : null}
+          {currentItems.length > 0 ? (
+            !loading ? (
+              <div className="   left-0 right-6 sm:right-2 md:right-4 p-4">
+                <Pagination
+                  items={facilities}
+                  itemsPerPage={ITEMS_PER_PAGE}
+                  onPageChange={handlePageChange}
+                />
+              </div>
+            ) : null
+          ) : (
+            ""
+          )}
         </div>
+
         <div className="pl-4">
           <p className="text-custom-black text-md font-semibold mb-4">
             Revenue Generated

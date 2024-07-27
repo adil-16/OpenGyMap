@@ -17,6 +17,8 @@ const Explore = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState("");
   const [showAlert, setShowALert] = useState(false);
+  const [clickBasketBall, setClickBasketBall] = useState(false);
+  const [clickFootball, setClickFootball] = useState(false);
   const [searchParams, setSearchParams] = useState({
     location: "",
     date: null,
@@ -74,6 +76,16 @@ const Explore = () => {
     });
   };
 
+  const toogleBasketBall = () => {
+    setClickBasketBall(true);
+    setClickFootball(false);
+  };
+
+  const toogleFootball = () => {
+    setClickFootball(true);
+    setClickBasketBall(false);
+  };
+
   return (
     <>
       {showAlert ? (
@@ -90,23 +102,43 @@ const Explore = () => {
               />
             </div>
             <div className="flex flex-wrap space-x-4 ml-3 md:ml-0 lg:ml-0 items-center">
-              <div className="relative bg-gray-200 border p-2 border-gray-400 rounded-md flex items-center justify-center">
+              <div
+                className={`relative  border p-2 border-gray-400 rounded-md flex items-center justify-center  ${
+                  clickBasketBall && "bg-gray-200"
+                } `}
+              >
                 <img
                   src="/Home/basketball.png"
+                  onClick={toogleBasketBall}
                   alt="basketball"
-                  className="w-8 h-8"
+                  className="w-8 h-8 cursor-pointer"
                 />
-                <img
-                  src="/Home/tick.png"
-                  className="absolute -top-1 -right-1 w-4 h-4 bg-custom-blue rounded-sm"
-                />
+
+                {clickBasketBall && (
+                  <img
+                    src="/Home/tick.png"
+                    className="absolute -top-1 -right-1 w-4 h-4 bg-custom-blue rounded-sm"
+                  />
+                )}
               </div>
-              <div className="bg-white border p-2 border-gray-400 rounded-md flex items-center justify-center">
+              <div
+                className={` border relative p-2 border-gray-400 rounded-md flex items-center justify-center ${
+                  clickFootball && "bg-gray-200"
+                }`}
+              >
                 <img
+                  onClick={toogleFootball}
                   src="/Home/football.png"
                   alt="football"
-                  className="w-8 h-8"
+                  className="w-8 h-8 cursor-pointer"
                 />
+
+                {clickFootball && (
+                  <img
+                    src="/Home/tick.png"
+                    className="absolute -top-1 -right-1 w-4 h-4 bg-custom-blue rounded-sm"
+                  />
+                )}
               </div>
               <div className="relative">
                 <CustomDateInput
@@ -127,7 +159,7 @@ const Explore = () => {
             </div>
           </div>
           <div className="mt-20 flex flex-col items-center">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-8  px-24">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 sm:px-0 lg:px-28">
               {currentItems.map((facility) => (
                 <FacilityCard
                   {...facility}
@@ -159,14 +191,16 @@ const Explore = () => {
                 />
               ))}
             </div>
-
-            <Pagination
-              items={facilities}
-              itemsPerPage={ITEMS_PER_PAGE}
-              onPageChange={handlePageChange}
-            />
           </div>
+
           <div className="py-24">
+            <div className="absolute bottom-0   left-0 right-6 sm:right-2 md:right-4 p-4">
+              <Pagination
+                items={facilities}
+                itemsPerPage={ITEMS_PER_PAGE}
+                onPageChange={handlePageChange}
+              />
+            </div>
             <div className="absolute bottom-0 mb-8 right-4 sm:right-10 bg-custom-gradient rounded-full p-4">
               <FaQuestion className="text-white w-8 h-8" />
             </div>

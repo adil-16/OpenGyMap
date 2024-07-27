@@ -31,7 +31,11 @@ const Notification = () => {
   };
 
   return (
-    <div className="rounded-2xl shadow-custom-light p-4 w-full max-auto max-w-lg ">
+    <div
+      className={`rounded-2xl shadow-custom-light  p-4 w-full max-auto max-w-lg ${
+        notifications.length > 0 ? "" : "h-96"
+      } `}
+    >
       <div className="flex justify-between gap-4 sm:gap-16 md:gap-40 pr-4 sm:pr-8 md:pr-12 border-b border-b-custom-gray pb-2">
         <p className="font-inter text-lg sm:text-xl font-semibold">
           Notification
@@ -40,6 +44,7 @@ const Notification = () => {
           {notifications.length} New
         </div>
       </div>
+
       {loading ? (
         <div className="flex justify-center items-center h-32">
           <div className="w-16 h-16 border-t-4 border-custom-black border-solid rounded-full animate-spin"></div>
@@ -117,7 +122,7 @@ const Notification = () => {
         </div>
       )}
 
-      <div className="flex justify-center">
+      <div className="flex justify-center flex-end">
         <div className="bg-custom-gray py-2 w-[85%] text-center sm:py-3 rounded-lg text-white text-base font-bold">
           <button onClick={clearNotifications} className="align-top">
             Read All Notifications
