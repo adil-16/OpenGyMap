@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import AuthForm from "../../../components/forms/AuthForm";
 import RequestOtpButton from "../../../components/buttons/RequestOtp";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,8 +6,12 @@ import { AuthContext } from "../../../Context/AuthContext/AuthContext";
 import {
   Login,
   sendOtpToPhone,
+  updateUserFcmToken,
+  getUserDetails,
 } from "../../../firebase/Functions/ApiFunctions";
 import CryptoJS from "crypto-js";
+import { getToken } from "firebase/messaging";
+import { messaging } from "../../../firebase/firebase.config";
 
 const Auth = () => {
   const { email, setEmail, setUid } = useContext(AuthContext);
@@ -15,7 +19,6 @@ const Auth = () => {
   const [selectedCountry, setSelectedCountry] = useState("in");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
-
   const navigate = useNavigate();
 
   const handleButtonClick = (buttonType) => {
@@ -56,9 +59,22 @@ const Auth = () => {
           "your-encryption-key"
         ).toString();
 
-        // Store uid and encrypted password in local storage
         localStorage.setItem("uid", userCredential.user.uid);
         localStorage.setItem("encryptedPassword", encryptedPassword);
+
+        const currentToken = await getToken(messaging, {
+          vapidKey:
+            "BGROC5MGFgK4PPi4M6J_TPYHGBBQf7u8I5nHSSpnz0NWZwdTzM_2DlxDeqE5lyb58tqyOI4BNF-_qT-Comj2gp8",
+        });
+        if (currentToken) {
+          const userDoc = await getUserDetails(userCredential.user.uid);
+          const existingFcmToken = userDoc?.fcmToken;
+
+          if (!existingFcmToken) {
+            await updateUserFcmToken(userCredential.user.uid, currentToken);
+            localStorage.setItem("fcmToken", currentToken);
+          }
+        }
 
         navigate("/homepage");
       }

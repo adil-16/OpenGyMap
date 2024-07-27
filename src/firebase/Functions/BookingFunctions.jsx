@@ -9,6 +9,8 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../firebase.config";
+import { messaging } from "../firebase.config";
+import { v4 as uuidv4 } from "uuid";
 
 export const addBooking = async (bookingData) => {
   try {
@@ -37,6 +39,30 @@ export const addBooking = async (bookingData) => {
         bookingList: updatedBookingList,
       });
       console.log("Facility updated successfully!");
+
+      const notificationData = {
+        userId: bookingData.createdBy,
+        bookingId: bookingData.bookingId,
+        bookingDate: bookingData.bookingDate,
+        bookingStartTime: bookingData.bookingStartTime,
+        bookingEndTime: bookingData.bookingEndTime,
+        bookingStatus: "Confirmed",
+        courtName: bookingData.bookingCourtName,
+        notificationCount: 0,
+        bookingRequestStatus: 0,
+        notificationId: uuidv4(),
+        notificationTime: new Date().toISOString(),
+        requestedFrom: "",
+        requestedTo: "",
+        requestedUserImage: "",
+        requestedUsername: "",
+      };
+
+      await setDoc(
+        doc(db, "notifications", bookingData.bookingId),
+        notificationData
+      );
+      console.log("Notification stored successfully!");
     } else {
       console.log("No such facility!");
     }
