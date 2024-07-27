@@ -9,6 +9,7 @@ import SearchAlert from "../../components/Alert/SearchAlert";
 import Pagination from "../../components/Pagination/Pagination";
 import { fetchFacilitiesForUser } from "../../firebase/Functions/FacilityFunctions";
 import FacilityCard from "../../components/Card/Card";
+const [loading, setLoading] = useState(false);
 
 const ITEMS_PER_PAGE = 6;
 
@@ -28,7 +29,17 @@ const Explore = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchFacilitiesForUser(setFacilities, setLoading);
+    const fetchFacilities = async () => {
+      setLoading(true);
+      try {
+        await fetchFacilitiesForUser(setFacilities, setLoading);
+      } catch (error) {
+        console.error("Error fetching facilities:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchFacilities();
   }, []);
 
   const handleSearchParamsChange = (field, value) => {
@@ -47,7 +58,6 @@ const Explore = () => {
     return statuses[randomIndex];
   };
 
-  // Paginate filtered cards
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentItems = facilities.slice(startIndex, endIndex);
