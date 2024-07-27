@@ -13,6 +13,7 @@ import Custombutton from "./components/Custombutton";
 import Calenderr from "./components/Calender";
 import ReservedAlert from "../../components/Alert/ReservedAlert";
 import { useNotification } from "../../Context/NotificationContext/NotificationContext";
+import { timeAgo } from "../../utils/TimeAgo/timeAgo";
 
 const Exploredetails = () => {
   const [hours, setHours] = useState(1);
@@ -21,12 +22,30 @@ const Exploredetails = () => {
   const [showReserveAlert, setShowReserveALert] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
 
+  const [notificationTimes, setNotificationTimes] = useState([]);
+  const { notifications, addNotification, removeNotification } =
+    useNotification();
+
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
   const facility = location.state?.facility;
 
-  const { addNotification, removeNotification } = useNotification();
+  // Time ago use effeect updates
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setNotificationTimes(
+        notifications.map((notification) => timeAgo(notification.createdAt))
+      );
+    }, 60000);
+
+    setNotificationTimes(
+      notifications.map((notification) => timeAgo(notification.createdAt))
+    );
+
+    return () => clearInterval(intervalId);
+  }, [notifications]);
 
   function calculateCloseTime(selectedTime, hoursToAdd) {
     const selectedDate = new Date(`1970-01-01T${selectedTime}:00`);
@@ -81,33 +100,41 @@ const Exploredetails = () => {
   };
 
   const handleRequestToHost = () => {
+    console.log(facility.address);
     setShowReserveALert(false);
     const notificationId = new Date().getTime();
+    const createdAt = new Date().toISOString();
+    console.log("createdAt", createdAt);
 
-    addNotification({
-      id: notificationId,
-      type: "Join Session",
-      profileImage: "/Request/profileimage.png",
-      userName: "Jessica Kawai",
-      courtName: facility.courtName,
-      date: selectedDate,
-      time: `${selectedTime} - ${closeTime}`,
-      action: "wants to join the session",
-      timeAgo: "2hr ago",
-      actions: [
-        {
-          type: "Decline",
-          style:
-            "border-request-button-decline text-request-button-decline bg-request-button-decline",
-          onClick: handleDecline(notificationId),
-        },
-        {
-          type: "Accept",
-          style:
-            "border-request-button-accepted text-request-button-accepted bg-request-button-accepted",
-        },
-      ],
-    });
+    addNotification([
+      {
+        id: notificationId,
+        type: "Join Session",
+        profileImage: "/Request/profileimage.png",
+        userName: "Jessica Kawai",
+        courtName: facility.courtName,
+        date: selectedDate,
+        time: `${selectedTime} - ${closeTime}`,
+        action: "wants to join the session",
+        createdAt: createdAt,
+        location: facility.address,
+        hours: hours,
+        actions: [
+          {
+            type: "Decline",
+            style:
+              "border-request-button-decline text-request-button-decline bg-request-button-decline",
+            onClick: () => handleDecline(notificationId), 
+          },
+          {
+            type: "Accept",
+            style:
+              "border-request-button-accepted text-request-button-accepted bg-request-button-accepted",
+            onClick: () => handleAccept(notificationId), 
+          },
+        ],
+      },
+    ]);
   };
 
   return (

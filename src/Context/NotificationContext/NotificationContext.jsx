@@ -32,11 +32,23 @@ export const NotificationProvider = ({ children }) => {
   ]);
   const [readState, setReadState] = useState(false);
 
-  const addNotification = (notification) => {
-    console.log("Adding Notification:", notification);
+  // const addNotification = (notification) => {
+  //   console.log("Adding Notification:", notification);
+  //   setNotifications((prevNotifications) => [
+  //     ...prevNotifications,
+  //     notification,
+  //   ]);
+  // };
+  const addNotification = (newNotifications) => {
+    // Ensure newNotifications is an array
+    if (!Array.isArray(newNotifications)) {
+      console.error("Expected newNotifications to be an array");
+      return;
+    }
+
     setNotifications((prevNotifications) => [
       ...prevNotifications,
-      notification,
+      ...newNotifications,
     ]);
   };
 

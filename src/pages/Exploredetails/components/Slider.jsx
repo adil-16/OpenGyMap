@@ -55,8 +55,8 @@ const Slider = ({ imageUrls }) => {
               }`}
               aria-label={`Slide ${index + 1}`}
               style={{
-                width: `${size}px`, // Size of the dot
-                height: `${size}px`, // Maintain a circular shape
+                width: `${size}px`, 
+                height: `${size}px`,
               }}
             ></button>
           );
@@ -67,9 +67,23 @@ const Slider = ({ imageUrls }) => {
         type="button"
         className="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer"
         onClick={handlePrev}
+        disabled={imageUrls.length === 1}
       >
-        <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-gray-800/30 hover:bg-white/50 dark:hover:bg-gray-800/60">
-          <FaArrowLeft className="text-black" aria-hidden="true" />
+        <span
+          className={`inline-flex items-center justify-center w-10 h-10 rounded-full bg-white    ${
+            imageUrls.length > 1 ? "hover:bg-gray-800/100 " : "cursor-default"
+          } 
+          
+                    ${imageUrls.length > 1 ? "hover:text-white " : "text-black"}
+`}
+        >
+          <FaArrowLeft
+            className={`          ${
+              imageUrls.length > 1 ? "hover:text-white " : "text-black"
+            }
+`}
+            aria-hidden="true"
+          />
           <span className="sr-only">Previous</span>
         </span>
       </button>
@@ -77,11 +91,26 @@ const Slider = ({ imageUrls }) => {
       {/* Next Button */}
       <button
         type="button"
-        className="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer"
+        disabled={imageUrls.length === 1}
+        className={`absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer`}
         onClick={handleNext}
       >
-        <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-gray-800/30 hover:bg-white/50 dark:hover:bg-gray-800/60">
-          <FaArrowRight className="text-black" aria-hidden="true" />
+        <span
+          className={`inline-flex items-center justify-center w-10 h-10 rounded-full bg-white  ${
+            imageUrls.length > 1 ? "hover:bg-gray-800/100 " : "cursor-default"
+          }
+
+          ${imageUrls.length > 1 ? "hover:text-white " : "text-black"}
+          
+          
+          `}
+        >
+          <FaArrowRight
+            className={`${
+              imageUrls.length > 1 ? "hover:text-white " : "text-black"
+            }`}
+            aria-hidden="true"
+          />
           <span className="sr-only">Next</span>
         </span>
       </button>
