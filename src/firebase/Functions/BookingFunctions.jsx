@@ -97,3 +97,21 @@ export const getBookingDetails = async (bookingId) => {
     throw new Error("Failed to fetch booking details");
   }
 };
+
+export const getExpiredUserBookings = async (uid) => {
+  try {
+    const bookingsRef = collection(db, "bookings");
+    const q = query(bookingsRef, where("createdBy", "==", uid));
+    const querySnapshot = await getDocs(q);
+    const now = new Date().toISOString();
+    const expiredBookings = querySnapshot.docs
+      .map((doc) => ({ id: doc.id, ...doc.data() }))
+      .filter(
+        (booking) => booking.bookingEndTime < now && booking.isActive !== false
+      );
+    return expiredBookings;
+  } catch (error) {
+    console.error("Error fetching expired user bookings: ", error);
+    throw new Error("Failed to fetch expired user bookings");
+  }
+};
