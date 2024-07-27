@@ -9,7 +9,6 @@ import SearchAlert from "../../components/Alert/SearchAlert";
 import Pagination from "../../components/Pagination/Pagination";
 import { fetchFacilitiesForUser } from "../../firebase/Functions/FacilityFunctions";
 import FacilityCard from "../../components/Card/Card";
-const [loading, setLoading] = useState(false);
 
 const ITEMS_PER_PAGE = 6;
 
