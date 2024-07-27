@@ -86,3 +86,14 @@ export const getUserBookings = async (uid) => {
     throw new Error("Failed to fetch user bookings");
   }
 };
+
+export const getBookingDetails = async (bookingId) => {
+  try {
+    const bookingRef = doc(db, "bookings", bookingId);
+    const bookingDoc = await getDoc(bookingRef);
+    return bookingDoc.data();
+  } catch (error) {
+    console.error("Error fetching booking details: ", error);
+    throw new Error("Failed to fetch booking details");
+  }
+};

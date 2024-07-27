@@ -31,7 +31,6 @@ const MyBookings = () => {
       try {
         const userBookings = await getUserBookings(uid);
         setBookings(userBookings);
-        console.log(bookings);
       } catch (error) {
         console.error("Error fetching bookings: ", error);
       }

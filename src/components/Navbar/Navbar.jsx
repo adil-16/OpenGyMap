@@ -10,8 +10,8 @@ const Navbar = () => {
   const [activeLink, setActiveLink] = useState(window.location.pathname);
   const notificationRef = useRef(null);
   const dropdownRef = useRef(null);
-  const notificationButtonRef = useRef(null);
-  const [profilePicture, setProfilePicture] = useState("/Home/profile.png");
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [loadingProfilePicture, setLoadingProfilePicture] = useState(true);
 
   useEffect(() => {
     const handleLocationChange = () => {
@@ -52,9 +52,11 @@ const Navbar = () => {
         if (uid) {
           const userDetails = await getUserDetails(uid);
           setProfilePicture(userDetails.profilePicture || "/Home/profile.png");
+          setLoadingProfilePicture(false);
         }
       } catch (error) {
         console.error("Error fetching profile picture:", error);
+        setLoadingProfilePicture(false);
       }
     };
 
@@ -173,11 +175,15 @@ const Navbar = () => {
               onClick={toggleDropdown}
             >
               <span className="sr-only">Open user menu</span>
-              <img
-                className="w-12 h-12 rounded-full"
-                src={profilePicture}
-                alt="user photo"
-              />
+              {loadingProfilePicture ? (
+                <div className="w-12 h-12 rounded-full bg-gray-300 animate-pulse"></div>
+              ) : (
+                <img
+                  className="w-12 h-12 rounded-full"
+                  src={profilePicture}
+                  alt="user photo"
+                />
+              )}
             </button>
 
             {dropdownOpen && (

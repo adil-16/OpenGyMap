@@ -80,7 +80,7 @@ const Payment = () => {
 
     const bookingData = {
       bookingAmount: totalAmount,
-      bookingCourtName: selectedCourt,
+      bookingCourtName: facility.courtName,
       bookingDate: formatDateTime(new Date(selectedDate)),
       bookingDays: facility.daysList || [],
       bookingEndTime: endDate.toISOString(),
