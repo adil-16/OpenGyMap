@@ -1,7 +1,7 @@
 import React from "react";
 import Crossicon from "../../buttons/Crossicon";
 
-const DeleteAccountModal = ({ isOpen, onClose, onDelete }) => {
+const DeleteAccountModal = ({ isOpen, onClose, onDelete, text }) => {
   if (!isOpen) return null;
 
   return (
@@ -41,7 +41,7 @@ const DeleteAccountModal = ({ isOpen, onClose, onDelete }) => {
               className="bg-custom-red-gradient  text-white text-xs   rounded-full px-10 py-4 md:py-5 lg:py-6  font-medium sm:px-20"
               onClick={onDelete}
             >
-              Delete
+              {text}
             </button>
           </div>
         </div>

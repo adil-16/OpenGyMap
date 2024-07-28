@@ -4,6 +4,7 @@ import Slider from "./Slider";
 import DeleteAccountModal from "../../../components/popups/SettingsPopups/DeleteAccount";
 import { deleteFacilityFromFirestore } from "../../../firebase/Functions/FacilityFunctions";
 import { HiClock } from "react-icons/hi2";
+import { toast } from "react-toastify";
 
 const FacilityCard = ({
   id,
@@ -17,14 +18,21 @@ const FacilityCard = ({
   onEdit,
 }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
     try {
+      setLoading(true);
       await deleteFacilityFromFirestore(id);
       onDelete(id);
+
       setIsDeleteModalOpen(false);
+      toast.success("Facility deleted Successfully");
     } catch (error) {
       console.error("Error deleting facility:", error);
+      toast.error("Error deleting facility:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -78,6 +86,7 @@ const FacilityCard = ({
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onDelete={handleDelete}
+        text={loading ? <div className="loader"></div> : "Delete"}
       />
     </div>
   );

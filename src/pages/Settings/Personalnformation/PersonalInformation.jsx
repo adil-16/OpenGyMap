@@ -92,6 +92,7 @@ const PersonalInformation = () => {
         "your-encryption-key"
       ).toString();
       localStorage.setItem("encryptedPassword", encryptedNewPassword);
+      toast.success("Password Updated Successfully");
       handleCancelUpdate();
     } catch (error) {
       console.log(`Error changing password: ${error.message}`);
