@@ -14,6 +14,7 @@ import Calenderr from "./components/Calender";
 import ReservedAlert from "../../components/Alert/ReservedAlert";
 import { useNotification } from "../../Context/NotificationContext/NotificationContext";
 import { timeAgo } from "../../utils/TimeAgo/timeAgo";
+import { toast } from "react-toastify";
 
 const Exploredetails = () => {
   const [hours, setHours] = useState(1);
@@ -84,7 +85,9 @@ const Exploredetails = () => {
   };
 
   const handleCheckAvailability = () => {
-    if (facility.status === "Open Now") {
+    if (!selectedDate) {
+      toast.error("Select a Date");
+    } else if (facility.status === "Open Now") {
       navigate("/payment", {
         state: { facility, selectedCourt, selectedTime, hours, selectedDate },
       });
@@ -124,13 +127,13 @@ const Exploredetails = () => {
             type: "Decline",
             style:
               "border-request-button-decline text-request-button-decline bg-request-button-decline",
-            onClick: () => handleDecline(notificationId), 
+            onClick: () => handleDecline(notificationId),
           },
           {
             type: "Accept",
             style:
               "border-request-button-accepted text-request-button-accepted bg-request-button-accepted",
-            onClick: () => handleAccept(notificationId), 
+            onClick: () => handleAccept(notificationId),
           },
         ],
       },
@@ -239,8 +242,6 @@ const Exploredetails = () => {
 
           <div className="font-inter font-semibold text-xl">123 reviews</div>
         </div>
-
-        {/* content */}
 
         <div className="my-24 bg-white shadow-lg rounded-lg">
           <div className="flex justify-between items-center p-3">

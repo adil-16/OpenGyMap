@@ -51,7 +51,11 @@ const AddFacility = () => {
   const uid = localStorage.getItem("uid");
 
   const [daysList, setDaysList] = useState(facilityData?.daysList || []);
+  const [dayError, setDayError] = useState("");
+  const [timeError, setTimeError] = useState("");
+
   const isEdit = locationn.state?.isEdit;
+
   const navigate = useNavigate();
 
   const handleUpload = (event) => {
@@ -71,7 +75,18 @@ const AddFacility = () => {
     );
   };
 
-  const handleSave = () => {
+  const handleSave = async (event) => {
+    event.preventDefault();
+
+    if (daysList.length === 0) {
+      setDayError("No day selected");
+      return;
+    }
+
+    if (!startTime || !closeTime) {
+      setTimeError("Please select both opening and closing times");
+      return;
+    }
     const facilityId = isEdit ? facilityData.facilityId : uuidv4();
     const facilityDataToSave = {
       createdBy: uid,
@@ -104,6 +119,7 @@ const AddFacility = () => {
         ? prevSelectedDays.filter((d) => d !== day)
         : [...prevSelectedDays, day]
     );
+    setDayError("");
   };
 
   const fetchSuggestions = async (input) => {
@@ -163,184 +179,197 @@ const AddFacility = () => {
         </p>
       </div>
 
-      <div className=" flex flex-col lg:flex lg:flex-row py-4">
-        <div className="flex-1 ">
-          <p className="font-inter font-semibold text-lg">Facility details</p>
+      <div className=" ">
+        <form
+          className="flex flex-col lg:flex lg:flex-row py-4 "
+          onSubmit={handleSave}
+        >
+          <div className="flex-1 ">
+            <p className="font-inter font-semibold text-lg">Facility details</p>
 
-          <div className="py-4 space-y-6">
-            <Input
-              placeholder="Basketball Court Name"
-              borderColor="border-border-color"
-              placeholderColor="placeholder-placeholder-color "
-              textColor="text-custom-black "
-              fontSize="text-base "
-              fontFamily="font-inter"
-              bold="font-semibold"
-              value={basketCourtName}
-              onChange={(e) => setBasketCourtName(e.target.value)}
-            />
-
-            <Input
-              placeholder="Gym Name"
-              borderColor="border-border-color"
-              placeholderColor="placeholder-placeholder-color "
-              textColor="text-custom-black "
-              fontSize="text-base "
-              fontFamily="font-inter"
-              bold="font-semibold"
-              value={gymName}
-              onChange={(e) => setGymName(e.target.value)}
-            />
-
-            <Input
-              placeholder="Location"
-              borderColor="border-border-color"
-              placeholderColor="placeholder-placeholder-color "
-              textColor="text-custom-black "
-              fontSize="text-base "
-              fontFamily="font-inter"
-              bold="font-semibold"
-              value={location}
-              onChange={handleInputChange}
-            />
-            {suggestions.length > 0 && (
-              <ul className="absolute bg-white border rounded-md w-full mt-1 max-h-48 overflow-y-auto">
-                {suggestions.map((suggestion) => (
-                  <li
-                    key={suggestion.place_id}
-                    className="p-2 hover:bg-gray-200 cursor-pointer"
-                    onClick={() => handleSuggestionClick(suggestion)}
-                  >
-                    {suggestion.description}
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            <Input
-              placeholder="Description"
-              borderColor="border-border-color"
-              placeholderColor="placeholder-placeholder-color "
-              textColor="text-custom-black "
-              fontSize="text-base "
-              fontFamily="font-inter"
-              bold="font-semibold"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-
-            <Input
-              placeholder="House Rules"
-              borderColor="border-border-color"
-              placeholderColor="placeholder-placeholder-color "
-              textColor="text-custom-black "
-              fontSize="text-base "
-              fontFamily="font-inter"
-              bold="font-semibold"
-              value={rules}
-              onChange={(e) => setRules(e.target.value)}
-            />
-          </div>
-
-          <div className="py-4">
-            <p className="font-inter text-xl font-semibold ">
-              Opening and Closing Time
-            </p>
-
-            <div className="flex py-4 space-x-8">
-              <TimePicker
-                onChange={setStartTime}
-                value={startTime}
-                disableClock={true}
-                format="HH:mm"
-                hourPlaceholder="HH"
-                minutePlaceholder="MM"
-              />
-
-              <TimePicker
-                onChange={setCloseTime}
-                value={closeTime}
-                disableClock={true}
-                format="HH:mm"
-                hourPlaceholder="HH"
-                minutePlaceholder="MM"
-              />
-            </div>
-          </div>
-
-          <div className="flex  space-x-6 p-4">
-            {[
-              "Monday",
-              "Tuesday",
-              "Wednesday",
-              "Thursday",
-              "Friday",
-              "Saturday",
-              "Sunday",
-            ].map((day, index) => (
-              <DaySign
-                key={index}
-                text={day.charAt(0)}
-                bgColor="bg-white"
-                borderColor="border-placeholder-color"
-                textColor="text-black"
-                selected={daysList.includes(day)}
-                onClick={() => toggleDaySelection(day)}
-              />
-            ))}
-          </div>
-
-          <div className="py-4">
-            <p className="font-inter text-xl font-semibold ">
-              Setup Price per hour{" "}
-            </p>
-
-            <div className="py-2">
+            <div className="py-4 space-y-6">
               <Input
-                placeholder="Amount / hr"
+                placeholder="Basketball Court Name"
                 borderColor="border-border-color"
                 placeholderColor="placeholder-placeholder-color "
                 textColor="text-custom-black "
                 fontSize="text-base "
                 fontFamily="font-inter"
                 bold="font-semibold"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                value={basketCourtName}
+                onChange={(e) => setBasketCourtName(e.target.value)}
+                isRequired={true}
               />
+
+              <Input
+                placeholder="Gym Name"
+                borderColor="border-border-color"
+                placeholderColor="placeholder-placeholder-color "
+                textColor="text-custom-black "
+                fontSize="text-base "
+                fontFamily="font-inter"
+                bold="font-semibold"
+                value={gymName}
+                onChange={(e) => setGymName(e.target.value)}
+                isRequired={true}
+              />
+
+              <Input
+                placeholder="Location"
+                borderColor="border-border-color"
+                placeholderColor="placeholder-placeholder-color "
+                textColor="text-custom-black "
+                fontSize="text-base "
+                fontFamily="font-inter"
+                bold="font-semibold"
+                value={location}
+                onChange={handleInputChange}
+                isRequired={true}
+              />
+              {suggestions.length > 0 && (
+                <ul className="absolute bg-white border rounded-md w-full mt-1 max-h-48 overflow-y-auto">
+                  {suggestions.map((suggestion) => (
+                    <li
+                      key={suggestion.place_id}
+                      className="p-2 hover:bg-gray-200 cursor-pointer"
+                      onClick={() => handleSuggestionClick(suggestion)}
+                    >
+                      {suggestion.description}
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <Input
+                placeholder="Description"
+                borderColor="border-border-color"
+                placeholderColor="placeholder-placeholder-color "
+                textColor="text-custom-black "
+                fontSize="text-base "
+                fontFamily="font-inter"
+                bold="font-semibold"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                isRequired={true}
+              />
+
+              <Input
+                placeholder="House Rules"
+                borderColor="border-border-color"
+                placeholderColor="placeholder-placeholder-color "
+                textColor="text-custom-black "
+                fontSize="text-base "
+                fontFamily="font-inter"
+                bold="font-semibold"
+                value={rules}
+                onChange={(e) => setRules(e.target.value)}
+                isRequired={true}
+              />
+            </div>
+
+            <div className="py-4">
+              <p className="font-inter text-xl font-semibold ">
+                Opening and Closing Time
+              </p>
+
+              <div className="flex py-4 space-x-8">
+                <TimePicker
+                  onChange={setStartTime}
+                  value={startTime}
+                  disableClock={true}
+                  format="HH:mm"
+                  hourPlaceholder="HH"
+                  minutePlaceholder="MM"
+                />
+
+                <TimePicker
+                  onChange={setCloseTime}
+                  value={closeTime}
+                  disableClock={true}
+                  format="HH:mm"
+                  hourPlaceholder="HH"
+                  minutePlaceholder="MM"
+                />
+              </div>
+
+              {timeError && <p className="text-red-500 text-sm">{timeError}</p>}
+            </div>
+
+            <div className="flex  space-x-6 p-4">
+              {[
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday",
+              ].map((day, index) => (
+                <DaySign
+                  key={index}
+                  text={day.charAt(0)}
+                  bgColor="bg-white"
+                  borderColor="border-placeholder-color"
+                  textColor="text-black"
+                  selected={daysList.includes(day)}
+                  onClick={() => toggleDaySelection(day)}
+                />
+              ))}
+            </div>
+            {dayError && <p className="text-red-500 text-sm">{dayError}</p>}
+
+            <div className="py-4">
+              <p className="font-inter text-xl font-semibold ">
+                Setup Price per hour{" "}
+              </p>
+
+              <div className="py-2">
+                <Input
+                  placeholder="Amount / hr"
+                  borderColor="border-border-color"
+                  placeholderColor="placeholder-placeholder-color "
+                  textColor="text-custom-black "
+                  fontSize="text-base "
+                  fontFamily="font-inter"
+                  bold="font-semibold"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  isRequired={true}
+                />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="flex-1  ">
-          <div className="">
-            <p className="font-inter font-semibold text-lg ">Gallery</p>
-            <div className=" py-4  rounded-lg">
-              <Slider
-                images={facilityImagesList}
-                handleUpload={handleUpload}
-                handleDelete={handleDelete}
-              />
-            </div>
+          <div className="flex-1  ">
+            <div className="">
+              <p className="font-inter font-semibold text-lg ">Gallery</p>
+              <div className=" py-4  rounded-lg">
+                <Slider
+                  images={facilityImagesList}
+                  handleUpload={handleUpload}
+                  handleDelete={handleDelete}
+                />
+              </div>
 
-            <div className="flex space-x-4 justify-center items-end h-96 ">
-              <Button
-                bgColor="bg-white"
-                text="Cancel"
-                textColor="text-black"
-                onClick={() => {
-                  navigate(-1);
-                }}
-              />
+              <div className="flex space-x-4 justify-center items-end h-96 ">
+                <Button
+                  bgColor="bg-white"
+                  text="Cancel"
+                  textColor="text-black"
+                  onClick={() => {
+                    navigate(-1);
+                  }}
+                />
 
-              <Button
-                onClick={handleSave}
-                bgColor="bg-custom-gradient"
-                text="Save"
-                textColor="text-white"
-              />
+                <Button
+                  bgColor="bg-custom-gradient"
+                  text="Save"
+                  textColor="text-white"
+                />
+              </div>
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

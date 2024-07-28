@@ -9,6 +9,7 @@ import SearchAlert from "../../components/Alert/SearchAlert";
 import Pagination from "../../components/Pagination/Pagination";
 import { fetchFacilitiesForUser } from "../../firebase/Functions/FacilityFunctions";
 import FacilityCard from "../../components/Card/Card";
+import Loader from "../../components/Loader/Loader";
 
 const ITEMS_PER_PAGE = 6;
 
@@ -27,7 +28,7 @@ const Explore = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [facilities, setFacilities] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Set initial loading state to true
 
   useEffect(() => {
     fetchFacilitiesForUser(setFacilities, setLoading);
@@ -149,38 +150,44 @@ const Explore = () => {
             </div>
           </div>
           <div className="mt-20 flex flex-col items-center">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 sm:px-0 lg:px-28">
-              {currentItems.map((facility) => (
-                <FacilityCard
-                  {...facility}
-                  key={facility.id}
-                  id={facility.id}
-                  rules={facility.rules}
-                  description={facility.description}
-                  createdBy={facility.createdBy}
-                  courtName={facility.basketCourtName}
-                  imageUrls={facility.facilityImagesList}
-                  rate={facility.amount}
-                  address={facility.location}
-                  hours={`${
-                    Array.isArray(facility.daysList) &&
-                    facility.daysList.length > 0
-                      ? `${FormatDays(facility.daysList)} `
-                      : "No availability"
-                  }`}
-                  time={`
+            {loading ? (
+              <div className="w-full h-screen flex items-center justify-center">
+                <Loader />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 sm:px-0 lg:px-28">
+                {currentItems.map((facility) => (
+                  <FacilityCard
+                    {...facility}
+                    key={facility.id}
+                    id={facility.id}
+                    rules={facility.rules}
+                    description={facility.description}
+                    createdBy={facility.createdBy}
+                    courtName={facility.basketCourtName}
+                    imageUrls={facility.facilityImagesList}
+                    rate={facility.amount}
+                    address={facility.location}
+                    hours={`${
+                      Array.isArray(facility.daysList) &&
+                      facility.daysList.length > 0
+                        ? `${FormatDays(facility.daysList)} `
+                        : "No availability"
+                    }`}
+                    time={`
                   ${formatTime(facility.startTime)} - ${formatTime(
-                    facility.closeTime
-                  )}
+                      facility.closeTime
+                    )}
                 `}
-                  status={getRandomStatus()}
-                  gymName={facility.gymName}
-                  longitude={facility.longitude}
-                  latitude={facility.latitude}
-                  daysList={facility.daysList}
-                />
-              ))}
-            </div>
+                    status={getRandomStatus()}
+                    gymName={facility.gymName}
+                    longitude={facility.longitude}
+                    latitude={facility.latitude}
+                    daysList={facility.daysList}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="py-24">

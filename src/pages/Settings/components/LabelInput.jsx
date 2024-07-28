@@ -31,7 +31,10 @@ const LabelInput = ({
   };
 
   const handleSaveClick = () => {
-    setIsEditing(false);
+    setTimeout(() => {
+      setIsEditing(false);
+    }, 1000);
+
     setEditingId(null);
     if (onSave) {
       onSave(inputValue);

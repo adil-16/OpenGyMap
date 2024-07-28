@@ -11,11 +11,13 @@ const StartingAndEndingInput = ({
   bold = "font-semibold",
   onChange,
   value,
+  isDisabled
 }) => {
   return (
     <div className="flex flex-col items-start">
       <input
         // onChange={onChange}
+        disabled={isDisabled}
         onChange={onChange}
         value={value}
         type="time"

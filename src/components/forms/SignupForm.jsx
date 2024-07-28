@@ -18,6 +18,7 @@ const SignupForm = ({
   handleConfirmPasswordChange,
   phone,
   handlePhoneChange,
+  isDisabled,
 }) => {
   return (
     <div>
@@ -51,6 +52,7 @@ const SignupForm = ({
             value={username}
             onChange={handleUsernameChange}
             iconSrc="/Auth/username.png"
+            isDisabled={isDisabled}
           />
 
           <div className="flex items-center border-b-2 border-gray-300  mb-4 lg:w-96 md:w-80 sm:64">
@@ -68,14 +70,16 @@ const SignupForm = ({
             value={password}
             onChange={handlePasswordChange}
             iconSrc="/Auth/password.png"
+            isDisabled={isDisabled}
           />
 
           <InputField
             type="password"
             placeholder="Confirm Password"
-            value={password}
-            onChange={handlePasswordChange}
+            value={confirmPassword}
+            onChange={handleConfirmPasswordChange}
             iconSrc="/Auth/password.png"
+            isDisabled={isDisabled}
           />
         </>
       )}
@@ -87,6 +91,7 @@ const SignupForm = ({
             value={username}
             onChange={handleUsernameChange}
             iconSrc="/Auth/username.png"
+            isDisabled={isDisabled}
           />
           <InputField
             type="text"
@@ -94,6 +99,7 @@ const SignupForm = ({
             value={emailId}
             onChange={handleEmailChange}
             iconSrc="/Auth/email.png"
+            isDisabled={isDisabled}
           />
           <InputField
             type="password"
@@ -101,6 +107,7 @@ const SignupForm = ({
             value={password}
             onChange={handlePasswordChange}
             iconSrc="/Auth/password.png"
+            isDisabled={isDisabled}
           />
           <InputField
             type="password"
@@ -108,6 +115,7 @@ const SignupForm = ({
             value={confirmPassword}
             onChange={handleConfirmPasswordChange}
             iconSrc="/Auth/password.png"
+            isDisabled={isDisabled}
           />
         </>
       )}

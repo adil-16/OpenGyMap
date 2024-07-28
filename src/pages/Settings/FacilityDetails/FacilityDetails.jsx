@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { RxArrowLeft } from "react-icons/rx";
 import { FaClock } from "react-icons/fa6";
@@ -11,6 +11,7 @@ import {
   addFacilityToFirestore,
   updateFacilityInFirestore,
 } from "../../../firebase/Functions/FacilityFunctions";
+import { toast } from "react-toastify";
 
 const formatTime = (timeString) => {
   const date = new Date(timeString);
@@ -27,6 +28,7 @@ const FacilityDetails = () => {
 
   const facilityData = location.state?.facilityData;
   const isEdit = location.state?.isEdit;
+  const [loading, setLoading] = useState(false);
 
   if (!facilityData) {
     return <p>No facility data found.</p>;
@@ -38,10 +40,14 @@ const FacilityDetails = () => {
     console.log(facilityToSave);
 
     try {
+      setLoading(true);
       await addFacilityToFirestore(facilityToSave, facilityData.facilityId);
       navigate("/setting/myfacility");
+      toast.success("Facility Added Successfully");
     } catch (error) {
-      console.error("Error saving facility:", error);
+      toast.error("error: ", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -53,11 +59,16 @@ const FacilityDetails = () => {
 
     console.log("Updating facility:", updatedFacility);
     try {
+      setLoading(true);
+
       await updateFacilityInFirestore(facilityData.facilityId, updatedFacility);
       updateFacility(updatedFacility);
       navigate("/setting/myfacility");
+      toast.success("Facility Updated Successfully");
     } catch (error) {
       console.error("Error updating facility:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -151,7 +162,7 @@ const FacilityDetails = () => {
               <Button
                 onClick={handleSave}
                 bgColor="bg-custom-gradient"
-                text="Add"
+                text={loading ? <div className="loader"></div> : "Add"}
                 textColor="text-white"
               />
             )}
@@ -160,7 +171,7 @@ const FacilityDetails = () => {
               <Button
                 onClick={handleUpdate}
                 bgColor="bg-custom-gradient"
-                text="Update"
+                text={loading ? <div className="loader"></div> : "Update"}
                 textColor="text-white"
               />
             )}

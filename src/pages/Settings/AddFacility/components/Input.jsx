@@ -11,15 +11,19 @@ const Input = ({
   type = "text",
   onChange,
   value,
+  isDisabled,
+  isRequired = false,
 }) => {
   return (
     <>
       <div>
         <input
+          disabled={isDisabled}
           onChange={onChange}
           value={value}
           type={type}
           placeholder={placeholder}
+          required={isRequired}
           className={`w-full py-2  ${placeholderColor} ${bold}  ${textColor} ${fontSize} ${fontFamily} focus:outline-none`}
         />
         <div className={` mr-52 border-b ${borderColor}`}></div>

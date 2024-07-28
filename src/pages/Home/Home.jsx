@@ -13,9 +13,12 @@ import {
   fetchPopularFacilities,
   fetchNearbyFacilities,
 } from "../../firebase/Functions/FacilityFunctions";
+import Review from "../../components/Review/Review";
+import Loader from "../../components/Loader/Loader";
 
 const ITEMS_PER_PAGE = 6;
 const Home = () => {
+  const [showReview, setShowReview] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState();
   const [currentPage, setCurrentPage] = useState(1);
@@ -58,10 +61,7 @@ const Home = () => {
     const getFacilities = async () => {
       setLoading(true);
       try {
-        const facilities = await fetchPopularFacilities(
-          setPopularFacilities,
-          setLoading
-        );
+        const facilities = await fetchPopularFacilities(setPopularFacilities);
       } catch (err) {
         setError("Failed to fetch popular facilities");
       } finally {
@@ -255,66 +255,78 @@ const Home = () => {
         <h1 className="text-custom-black text-4xl font-bold text-center ">
           Popular Basketball Gyms
         </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10  sm:px-0 lg:px-28 py-10">
-          {currentPopularItems.map((facility) => (
-            <FacilityCard
-              {...facility}
-              key={facility.id}
-              id={facility.id}
-              rules={facility.rules}
-              description={facility.description}
-              createdBy={facility.createdBy}
-              courtName={facility.basketCourtName}
-              imageUrls={facility.facilityImagesList}
-              rate={facility.amount}
-              address={facility.location}
-              hours={`${
-                Array.isArray(facility.daysList) && facility.daysList.length > 0
-                  ? `${FormatDays(facility.daysList)} `
-                  : "No availability"
-              }`}
-              time={`
+
+        {Loader ? (
+          <Loader />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10  sm:px-0 lg:px-28 py-10">
+            {currentPopularItems.map((facility) => (
+              <FacilityCard
+                {...facility}
+                key={facility.id}
+                id={facility.id}
+                rules={facility.rules}
+                description={facility.description}
+                createdBy={facility.createdBy}
+                courtName={facility.basketCourtName}
+                imageUrls={facility.facilityImagesList}
+                rate={facility.amount}
+                address={facility.location}
+                hours={`${
+                  Array.isArray(facility.daysList) &&
+                  facility.daysList.length > 0
+                    ? `${FormatDays(facility.daysList)} `
+                    : "No availability"
+                }`}
+                time={`
                   ${formatTime(facility.startTime)} - ${formatTime(
-                facility.closeTime
-              )}
+                  facility.closeTime
+                )}
                 `}
-              status={getRandomStatus()}
-            />
-          ))}
-        </div>
+                status={getRandomStatus()}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="mt-32 mb-64 flex flex-col items-center justify-center">
         <h1 className="text-custom-black text-4xl font-bold text-center mb-16">
           Basketball Gyms Near You
         </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 sm:px-0 lg:px-28  ">
-          {currentNearbyItems.map((facility) => (
-            <FacilityCard
-              {...facility}
-              key={facility.id}
-              id={facility.id}
-              rules={facility.rules}
-              description={facility.description}
-              createdBy={facility.createdBy}
-              courtName={facility.basketCourtName}
-              imageUrls={facility.facilityImagesList}
-              rate={facility.amount}
-              address={facility.location}
-              hours={`${
-                Array.isArray(facility.daysList) && facility.daysList.length > 0
-                  ? `${FormatDays(facility.daysList)} `
-                  : "No availability"
-              }`}
-              time={`
+
+        {loading ? (
+          <Loader />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 sm:px-0 lg:px-28  ">
+            {currentNearbyItems.map((facility) => (
+              <FacilityCard
+                {...facility}
+                key={facility.id}
+                id={facility.id}
+                rules={facility.rules}
+                description={facility.description}
+                createdBy={facility.createdBy}
+                courtName={facility.basketCourtName}
+                imageUrls={facility.facilityImagesList}
+                rate={facility.amount}
+                address={facility.location}
+                hours={`${
+                  Array.isArray(facility.daysList) &&
+                  facility.daysList.length > 0
+                    ? `${FormatDays(facility.daysList)} `
+                    : "No availability"
+                }`}
+                time={`
                   ${formatTime(facility.startTime)} - ${formatTime(
-                facility.closeTime
-              )}
+                  facility.closeTime
+                )}
                 `}
-              status={getRandomStatus()}
-            />
-          ))}
-        </div>
+                status={getRandomStatus()}
+              />
+            ))}
+          </div>
+        )}
 
         <div className="absolute bottom-0  mb-8 left-0 right-6 sm:right-2 md:right-4 p-4">
           <Pagination
@@ -323,7 +335,13 @@ const Home = () => {
             onPageChange={handleNearbyPageChange}
           />
         </div>
-        <div className="absolute bottom-0  mb-8 right-4 sm:right-10 bg-custom-gradient rounded-full p-4">
+        {showReview && <Review />}
+        <div
+          onClick={() => {
+            setShowReview(!showReview);
+          }}
+          className="absolute bottom-0  mb-8 right-4 sm:right-10 bg-custom-gradient rounded-full p-4"
+        >
           <FaQuestion className="text-white w-8 h-8" />
         </div>
       </div>

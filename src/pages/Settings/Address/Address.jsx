@@ -4,6 +4,8 @@ import {
   updateUserAddress,
   getUserDetails,
 } from "../../../firebase/Functions/ApiFunctions";
+import Loader from "../../../components/Loader/Loader";
+import { toast } from "react-toastify";
 
 const Address = () => {
   const [location, setLocation] = useState({
@@ -15,6 +17,7 @@ const Address = () => {
   const [placeName, setPlaceName] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestion, setSelectedSuggestion] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -29,7 +32,6 @@ const Address = () => {
               longitude: userDetails.longitude || null,
             });
           } else {
-            // If address is empty, use current location
             getCurrentLocation();
           }
           setLoading(false);
@@ -143,6 +145,8 @@ const Address = () => {
   };
 
   const handleUpdateClick = async () => {
+    setIsUpdating(true);
+
     try {
       const uid = localStorage.getItem("uid");
       if (uid) {
@@ -152,16 +156,23 @@ const Address = () => {
           location.latitude,
           location.longitude
         );
+        toast.success("Address Updated Successfully");
       } else {
         console.log("User ID not found");
       }
     } catch (error) {
       console.log("Error updating address");
+    } finally {
+      setIsUpdating(false);
     }
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-full flex h-screen justify-center items-center">
+        <Loader />
+      </div>
+    );
   }
 
   if (error) {
@@ -211,7 +222,7 @@ const Address = () => {
               onClick={handleUpdateClick}
               className="px-8 py-3 bg-custom-gradient text-white rounded-xl"
             >
-              Update
+              {isUpdating ? <div className="loader"></div> : "Update"}
             </button>
           </div>
         </div>

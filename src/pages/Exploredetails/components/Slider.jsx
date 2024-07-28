@@ -55,7 +55,7 @@ const Slider = ({ imageUrls }) => {
               }`}
               aria-label={`Slide ${index + 1}`}
               style={{
-                width: `${size}px`, 
+                width: `${size}px`,
                 height: `${size}px`,
               }}
             ></button>

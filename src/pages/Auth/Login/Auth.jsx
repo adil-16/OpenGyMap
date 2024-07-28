@@ -8,6 +8,7 @@ import {
   sendOtpToPhone,
 } from "../../../firebase/Functions/ApiFunctions";
 import CryptoJS from "crypto-js";
+import { toast } from "react-toastify";
 
 const Auth = () => {
   const { email, setEmail, setUid } = useContext(AuthContext);
@@ -15,6 +16,7 @@ const Auth = () => {
   const [selectedCountry, setSelectedCountry] = useState("in");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -39,12 +41,16 @@ const Auth = () => {
     setPhone(phone);
   };
 
-  const handleRequestOtp = async () => {
+  const handleRequestOtp = async (event) => {
+    event.preventDefault();
+    setIsLoading(true);
+
     try {
       if (activeButton === "phoneNumber") {
         const verificationId = await sendOtpToPhone(phone);
         localStorage.setItem("verificationId", verificationId);
         navigate("/otp");
+        toast.success("OTP sent successfully");
       } else {
         const userCredential = await Login(email, password);
         console.log("User signed in:", userCredential);
@@ -56,14 +62,16 @@ const Auth = () => {
           "your-encryption-key"
         ).toString();
 
-        // Store uid and encrypted password in local storage
         localStorage.setItem("uid", userCredential.user.uid);
         localStorage.setItem("encryptedPassword", encryptedPassword);
 
         navigate("/homepage");
+        toast.success("Login Successfully");
       }
     } catch (error) {
       console.error("Error during authentication:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -91,19 +99,32 @@ const Auth = () => {
           Login Account
         </h1>
         <p className="mb-6 text-custom-gray">Hello, Welcome Back!</p>
-        <AuthForm
-          activeButton={activeButton}
-          handleButtonClick={handleButtonClick}
-          selectedCountry={selectedCountry}
-          handleCountryChange={handleCountryChange}
-          emailId={email}
-          handleEmailChange={handleEmailChange}
-          password={password}
-          handlePasswordChange={handlePasswordChange}
-          phone={phone}
-          handlePhoneChange={handlePhoneChange}
-        />
-        <RequestOtpButton text="Login" onClick={handleRequestOtp} />
+
+        <form
+          onSubmit={handleRequestOtp}
+          className="flex flex-col items-center w-full"
+        >
+          <AuthForm
+            activeButton={activeButton}
+            handleButtonClick={handleButtonClick}
+            selectedCountry={selectedCountry}
+            handleCountryChange={handleCountryChange}
+            emailId={email}
+            handleEmailChange={handleEmailChange}
+            password={password}
+            handlePasswordChange={handlePasswordChange}
+            phone={phone}
+            handlePhoneChange={handlePhoneChange}
+          />
+
+          <RequestOtpButton
+            className="flex justify-center items-center"
+            text={isLoading ? <p className="loader  ml-24 "></p> : "Login"}
+            // onClick={handleRequestOtp}
+            disabled={isLoading}
+          />
+        </form>
+
         <p className="text-custom-gray mb-16 md:mb-0 lg:mb-0">
           Not Registered yet?{" "}
           <Link to={"/signup"} className="text-custom-blue font-semibold  ">

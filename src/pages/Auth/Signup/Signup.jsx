@@ -6,6 +6,7 @@ import {
   sendOtpToPhone,
   registerUserWithEmailAndPassword,
 } from "../../../firebase/Functions/ApiFunctions";
+import { toast } from "react-toastify";
 
 const Signup = () => {
   const [activeButton, setActiveButton] = useState("phoneNumber");
@@ -15,6 +16,7 @@ const Signup = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [username, setUsername] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleButtonClick = (buttonType) => {
@@ -44,11 +46,15 @@ const Signup = () => {
     setPhone(phone);
   };
 
-  const handleRequestOtp = async () => {
+  const handleRequestOtp = async (event) => {
+    setIsLoading(true);
+    event.preventDefault();
     try {
       if (activeButton === "phoneNumber") {
         const verificationId = await sendOtpToPhone(phone);
         localStorage.setItem("verificationId", verificationId);
+        toast.success("OTP sent successfully");
+
       } else {
         if (password !== confirmPassword) {
           console.error("Passwords do not match");
@@ -57,10 +63,16 @@ const Signup = () => {
         await registerUserWithEmailAndPassword(emailId, password, username);
         console.log(emailId);
         localStorage.setItem("emailForSignIn", emailId);
+        toast.success("Account created successfully");
+
       }
       navigate("/");
     } catch (error) {
       console.error("Error requesting OTP:", error);
+      toast.error("Error requesting OTP: " + error.message);
+
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -88,23 +100,34 @@ const Signup = () => {
           Create an account
         </h1>
         <p className=" text-custom-gray">Hello, Welcome Back!</p>
-        <SignupForm
-          activeButton={activeButton}
-          handleButtonClick={handleButtonClick}
-          selectedCountry={selectedCountry}
-          handleCountryChange={handleCountryChange}
-          emailId={emailId}
-          handleUsernameChange={handleUsernameChange}
-          username={username}
-          handleEmailChange={handleEmailChange}
-          password={password}
-          handlePasswordChange={handlePasswordChange}
-          confirmPassword={confirmPassword}
-          handleConfirmPasswordChange={handleConfirmPasswordChange}
-          phone={phone}
-          handlePhoneChange={handlePhoneChange}
-        />
-        <RequestOtpButton text="Create Account" onClick={handleRequestOtp} />
+
+        <form
+          className="flex flex-col items-center w-full"
+          onSubmit={handleRequestOtp}
+        >
+          <SignupForm
+            activeButton={activeButton}
+            handleButtonClick={handleButtonClick}
+            selectedCountry={selectedCountry}
+            handleCountryChange={handleCountryChange}
+            emailId={emailId}
+            handleUsernameChange={handleUsernameChange}
+            username={username}
+            handleEmailChange={handleEmailChange}
+            password={password}
+            handlePasswordChange={handlePasswordChange}
+            confirmPassword={confirmPassword}
+            handleConfirmPasswordChange={handleConfirmPasswordChange}
+            phone={phone}
+            handlePhoneChange={handlePhoneChange}
+          />
+          <RequestOtpButton
+            text={
+              isLoading ? <p className="loader ml-24"></p> : "Create Account"
+            }
+            disabled={isLoading}
+          />
+        </form>
 
         <Link to="/" className="text-custom-black font-semibold ">
           <span className="mr-2 pb-4">&lt;</span> Return to sign in

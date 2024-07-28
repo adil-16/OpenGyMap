@@ -1,4 +1,3 @@
-// PersonalInformation.jsx
 import React, { useContext, useState, useEffect } from "react";
 import LabelInput from "../components/LabelInput";
 import {
@@ -8,6 +7,8 @@ import {
   updateUserProfilePicture,
 } from "../../../firebase/Functions/ApiFunctions";
 import CryptoJS from "crypto-js";
+import Loader from "../../../components/Loader/Loader";
+import { toast } from "react-toastify";
 
 const PersonalInformation = () => {
   const [userDetails, setUserDetails] = useState({});
@@ -19,6 +20,8 @@ const PersonalInformation = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
   const uid = localStorage.getItem("uid");
 
   useEffect(() => {
@@ -68,14 +71,19 @@ const PersonalInformation = () => {
     console.log("Confirm Password:", confirmPassword);
     try {
       if (!decryptedPassword || !newPassword || !confirmPassword) {
-        console.log("Please fill in all password fields.");
+        console.log("");
+
+        toast.error("Please fill in all password fields.");
         return;
       }
 
       if (newPassword !== confirmPassword) {
         console.log("New password and confirm password do not match.");
+        toast.error("New password and confirm password do not match.");
         return;
       }
+
+      setIsLoading(true);
 
       await updateUserPassword(decryptedPassword, newPassword);
       console.log("Password Changed Successfully!");
@@ -87,21 +95,31 @@ const PersonalInformation = () => {
       handleCancelUpdate();
     } catch (error) {
       console.log(`Error changing password: ${error.message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleUpdateFullName = async (fullName) => {
     try {
+      setIsLoading(true);
       await updateUserFullName(uid, fullName);
       setUserDetails((prevDetails) => ({ ...prevDetails, fullName }));
       console.log("Full name updated successfully");
+      toast.success("Name Updated Successfully");
     } catch (error) {
       console.log(`Error updating full name: ${error.message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-full h-screen flex items-center justify-center -mt-24">
+        <Loader />
+      </div>
+    );
   }
 
   const encryptedPassword = localStorage.getItem("encryptedPassword");
@@ -130,7 +148,9 @@ const PersonalInformation = () => {
                 buttonText="Edit"
                 editingId={editingId}
                 setEditingId={setEditingId}
-                saveButtonText="Save"
+                saveButtonText={
+                  isLoading ? <div className="loader ml-4"></div> : "Save"
+                }
                 type="text"
                 inputId="name"
                 onSave={handleUpdateFullName}
@@ -212,7 +232,11 @@ const PersonalInformation = () => {
                       onClick={handleUpdatePassword}
                       className="bg-custom-gradient text-xs w-24 text-white p-3 text-center rounded-lg"
                     >
-                      Update
+                      {isLoading ? (
+                        <div className="loader ml-5"></div>
+                      ) : (
+                        "Update"
+                      )}
                     </button>
                   </div>
                 </>

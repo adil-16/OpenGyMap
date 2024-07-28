@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useFacilitiesData } from "../../../Context/FacilitiesDataContext/FacilitiesDataContext";
 import Pagination from "../../../components/Pagination/Pagination";
 import { fetchFacilitiesFromFirestore } from "../../../firebase/Functions/FacilityFunctions";
+import Loader from "../../../components/Loader/Loader";
 
 const ITEMS_PER_PAGE = 4;
 
@@ -62,13 +63,16 @@ const MyFacility = () => {
           <p className="text-custom-black text-md font-semibold mb-4">
             Facilities
           </p>
-          <div className="grid     grid-cols-1 sm:grid-cols-2 gap-6">
-            {currentItems.length === 0 ? (
-              <div className="  flex items-center justify-center   h-56  ">
-                No, facility found
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {loading ? (
+              <div className="w-full h-screen flex items-center justify-center ml-16">
+                <Loader />
               </div>
-            ) : loading ? (
-              <div>Loading facilities...</div>
+            ) : currentItems.length === 0 ? (
+              <div className="flex items-center justify-center h-56">
+                No facility found
+              </div>
             ) : (
               currentItems.map((facility) => (
                 <FacilityCard

@@ -14,6 +14,7 @@ const AuthForm = ({
   handlePasswordChange,
   phone,
   handlePhoneChange,
+  isDisabled,
 }) => {
   return (
     <div>
@@ -57,6 +58,7 @@ const AuthForm = ({
             value={emailId}
             onChange={handleEmailChange}
             iconSrc="/Auth/email.png"
+            isDisabled={isDisabled}
           />
           <InputField
             type="password"
