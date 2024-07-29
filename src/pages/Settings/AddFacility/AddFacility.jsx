@@ -237,7 +237,7 @@ const AddFacility = () => {
                 isRequired={true}
               />
               {suggestions.length > 0 && (
-                <ul className="absolute bg-white border rounded-md w-full mt-1 max-h-48 overflow-y-auto">
+                <ul className="absolute bg-white border rounded-md w-1/3 mt-1 max-h-32 overflow-y-auto">
                   {suggestions.map((suggestion) => (
                     <li
                       key={suggestion.place_id}
