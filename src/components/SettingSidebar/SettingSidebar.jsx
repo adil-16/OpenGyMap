@@ -92,6 +92,7 @@ const SettingSidebar = () => {
       </div>
       <DeleteAccountModal
         isOpen={isDeleteModalOpen}
+        text="Delete"
         onClose={() => setIsDeleteModalOpen(false)}
       />
     </div>

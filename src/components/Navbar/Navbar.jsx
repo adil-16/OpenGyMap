@@ -200,7 +200,7 @@ const Navbar = () => {
 
             {dropdownOpen && (
               <div
-                ref={dropdownRef} // Set ref here
+                ref={dropdownRef} //
                 className="absolute right-0 mt-2 w-48 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-white dark:divide-gray-600 z-20"
                 id="user-dropdown"
               >
@@ -233,7 +233,7 @@ const Navbar = () => {
 
       {showNotification && (
         <div
-          ref={notificationRef} // Set ref here
+          ref={notificationRef}
           className="absolute right-10 top-24 z-50 bg-white h-[85%] overflow-auto hide-scrollbar"
         >
           <Notification />
