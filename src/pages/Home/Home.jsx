@@ -16,8 +16,37 @@ import {
 import ReviewPopup from "../../components/popups/ReviewPopup/ReviewPopup";
 import { getExpiredUserBookings } from "../../firebase/Functions/BookingFunctions";
 import Loader from "../../components/Loader/Loader";
+import moment from "moment";
 
 const ITEMS_PER_PAGE = 6;
+function getStatus(facility) {
+  const now = moment();
+  const currentDay = now.format("dddd");
+
+  if (facility.daysList.includes(currentDay)) {
+    const startTime = moment(facility.startTime);
+    const closeTime = moment(facility.closeTime);
+
+    const startTimeToday = now.clone().set({
+      hour: startTime.get("hour"),
+      minute: startTime.get("minute"),
+      second: startTime.get("second"),
+    });
+
+    const closeTimeToday = now.clone().set({
+      hour: closeTime.get("hour"),
+      minute: closeTime.get("minute"),
+      second: closeTime.get("second"),
+    });
+
+    if (now.isBetween(startTimeToday, closeTimeToday)) {
+      return "Open Now";
+    }
+  }
+
+  return "Closed Now";
+}
+
 const Home = () => {
   const [showReview, setShowReview] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -25,6 +54,7 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [popularFacilities, setPopularFacilities] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [popularLoading, setPopularLoading] = useState(false);
   const [error, setError] = useState(null);
   const [clickBasketBall, setClickBasketBall] = useState(false);
   const [clickFootball, setClickFootball] = useState(false);
@@ -79,8 +109,8 @@ const Home = () => {
 
   useEffect(() => {
     const getFacilities = async () => {
-      setLoading(true);
       try {
+        setPopularLoading(true);
         const facilities = await fetchPopularFacilities(
           setPopularFacilities,
           setLoading
@@ -88,7 +118,7 @@ const Home = () => {
       } catch (err) {
         setError("Failed to fetch popular facilities");
       } finally {
-        setLoading(false);
+        setPopularLoading(false);
       }
     };
 
@@ -117,7 +147,6 @@ const Home = () => {
     startIndexPopular,
     endIndexPopular
   );
-
 
   const startIndexNearby = (nearbyPage - 1) * ITEMS_PER_PAGE;
   const endIndexNearby = startIndexNearby + ITEMS_PER_PAGE;
@@ -287,37 +316,40 @@ const Home = () => {
           Popular Basketball Gyms
         </h1>
 
-        {/* {Loader ? (
-          <Loader />
-        ) : ( */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10  sm:px-0 lg:px-28 py-10">
-          {currentPopularItems.map((facility) => (
-            <FacilityCard
-              {...facility}
-              key={facility.id}
-              id={facility.id}
-              rules={facility.rules}
-              description={facility.description}
-              createdBy={facility.createdBy}
-              courtName={facility.basketCourtName}
-              imageUrls={facility.facilityImagesList}
-              rate={facility.amount}
-              address={facility.location}
-              hours={`${
-                Array.isArray(facility.daysList) && facility.daysList.length > 0
-                  ? `${FormatDays(facility.daysList)} `
-                  : "No availability"
-              }`}
-              time={`
+        {popularLoading ? (
+          <div className="mt-36">
+            <Loader />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10  sm:px-0 lg:px-28 py-10">
+            {currentPopularItems.map((facility) => (
+              <FacilityCard
+                {...facility}
+                key={facility.id}
+                id={facility.id}
+                rules={facility.rules}
+                description={facility.description}
+                createdBy={facility.createdBy}
+                courtName={facility.basketCourtName}
+                imageUrls={facility.facilityImagesList}
+                rate={facility.amount}
+                address={facility.location}
+                hours={`${
+                  Array.isArray(facility.daysList) &&
+                  facility.daysList.length > 0
+                    ? `${FormatDays(facility.daysList)} `
+                    : "No availability"
+                }`}
+                time={`
                   ${formatTime(facility.startTime)} - ${formatTime(
-                facility.closeTime
-              )}
+                  facility.closeTime
+                )}
                 `}
-              status={getRandomStatus()}
-            />
-          ))}
-        </div>
-        {/* )} */}
+                status={getStatus(facility)}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="mt-32 mb-64 flex flex-col items-center justify-center">
@@ -352,7 +384,7 @@ const Home = () => {
                   facility.closeTime
                 )}
                 `}
-                status={getRandomStatus()}
+                status={getStatus(facility)}
               />
             ))}
           </div>

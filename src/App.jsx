@@ -8,6 +8,7 @@ import MainLayout from "./layouts/MainLayout/MainLayout";
 import SettingLayout from "./layouts/SettingsLayout/SettingLayout";
 import { AuthProvider } from "./Context/AuthContext/AuthContext";
 import PublicRoutes from "./utils/Routes/PublicRoutes";
+import PrivateRoutes from "./utils/Routes/PrivateRoutes";
 import Auth from "./pages/Auth/Login/Auth";
 import Signup from "./pages/Auth/Signup/Signup";
 import Otp from "./pages/Auth/OtpVerification/Otp";
@@ -23,11 +24,11 @@ import MyBookings from "./pages/Settings/MyBookings/MyBookings";
 import MyFacility from "./pages/Settings/MyFacility/MyFacility";
 import SettingsPayment from "./pages/Settings/Payment/Payment";
 import Address from "./pages/Settings/Address/Address";
-
 import AddFacility from "./pages/Settings/AddFacility/AddFacility";
 import FacilityDetails from "./pages/Settings/FacilityDetails/FacilityDetails";
 import { ImageProvider } from "./Context/ImageContext/ImageContext";
 import { FacilitiesDataProvider } from "./Context/FacilitiesDataContext/FacilitiesDataContext";
+import { UserProfileProvider } from "./Context/UserProfileContext/UserProfileContext";
 
 const router = createBrowserRouter([
   {
@@ -51,23 +52,23 @@ const router = createBrowserRouter([
         children: [
           {
             path: "/homepage",
-            element: <PublicRoutes Component={Home} />,
+            element: <PrivateRoutes Component={Home} />,
           },
           {
             path: "/explore",
-            element: <PublicRoutes Component={Explore} />,
+            element: <PrivateRoutes Component={Explore} />,
           },
           {
             path: "/requests",
-            element: <PublicRoutes Component={Requests} />,
+            element: <PrivateRoutes Component={Requests} />,
           },
           {
             path: "/privacypolicy",
-            element: <PublicRoutes Component={Privacypolicy} />,
+            element: <PrivateRoutes Component={Privacypolicy} />,
           },
           {
             path: "/explore/details/:id",
-            element: <PublicRoutes Component={Exploredetails} />,
+            element: <PrivateRoutes Component={Exploredetails} />,
           },
         ],
       },
@@ -81,31 +82,31 @@ const router = createBrowserRouter([
             children: [
               {
                 path: "",
-                element: <PublicRoutes Component={PersonalInformation} />,
+                element: <PrivateRoutes Component={PersonalInformation} />,
               },
               {
                 path: "mybookings",
-                element: <PublicRoutes Component={MyBookings} />,
+                element: <PrivateRoutes Component={MyBookings} />,
               },
               {
                 path: "myfacility",
-                element: <PublicRoutes Component={MyFacility} />,
+                element: <PrivateRoutes Component={MyFacility} />,
               },
               {
                 path: "payment",
-                element: <PublicRoutes Component={SettingsPayment} />,
+                element: <PrivateRoutes Component={SettingsPayment} />,
               },
               {
                 path: "address",
-                element: <PublicRoutes Component={Address} />,
+                element: <PrivateRoutes Component={Address} />,
               },
               {
                 path: "addfacility",
-                element: <PublicRoutes Component={AddFacility} />,
+                element: <PrivateRoutes Component={AddFacility} />,
               },
               {
                 path: "facilitydetails",
-                element: <PublicRoutes Component={FacilityDetails} />,
+                element: <PrivateRoutes Component={FacilityDetails} />,
               },
             ],
           },
@@ -115,20 +116,20 @@ const router = createBrowserRouter([
       // PAYMENT LAYOUT REMOVE
       {
         path: "/",
-        element: <MainLayout showFooter={false} />, // Exclude Footer for settings
+        element: <MainLayout showFooter={false} />,
         children: [
           {
             path: "payment",
-            element: <PublicRoutes Component={Payment} />,
+            element: <PrivateRoutes Component={Payment} />,
           },
 
           {
             path: "addfacility",
-            element: <PublicRoutes Component={AddFacility} />,
+            element: <PrivateRoutes Component={AddFacility} />,
           },
           {
             path: "facilitydetails",
-            element: <PublicRoutes Component={FacilityDetails} />,
+            element: <PrivateRoutes Component={FacilityDetails} />,
           },
         ],
       },
@@ -145,13 +146,15 @@ const App = () => {
   return (
     <>
       <AuthProvider>
-        <NotificationProvider>
-          <ImageProvider>
-            <FacilitiesDataProvider>
-              <RouterProvider router={router} />
-            </FacilitiesDataProvider>
-          </ImageProvider>
-        </NotificationProvider>
+        <UserProfileProvider>
+          <NotificationProvider>
+            <ImageProvider>
+              <FacilitiesDataProvider>
+                <RouterProvider router={router} />
+              </FacilitiesDataProvider>
+            </ImageProvider>
+          </NotificationProvider>
+        </UserProfileProvider>
       </AuthProvider>
     </>
   );

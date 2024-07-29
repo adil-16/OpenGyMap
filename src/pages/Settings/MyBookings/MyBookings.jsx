@@ -108,7 +108,7 @@ const MyBookings = () => {
       </div>
 
       {bookings.length > 0 && !loading && (
-        <div className="w-full  flex items-end justify-center  mt-6">
+        <div className="w-full h-[60%]  flex items-end justify-center  mt-6">
           <Pagination
             items={bookings}
             itemsPerPage={ITEMS_PER_PAGE}

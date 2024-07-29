@@ -6,6 +6,9 @@ import {
   sendOtpToPhone,
   registerUserWithEmailAndPassword,
 } from "../../../firebase/Functions/ApiFunctions";
+
+import { FirebaseError } from "firebase/app";
+
 import { toast } from "react-toastify";
 
 const Signup = () => {
@@ -54,23 +57,39 @@ const Signup = () => {
         const verificationId = await sendOtpToPhone(phone);
         localStorage.setItem("verificationId", verificationId);
         toast.success("OTP sent successfully");
-
       } else {
         if (password !== confirmPassword) {
           console.error("Passwords do not match");
+          toast.error("Password donot match");
+          setPassword("");
+          setConfirmPassword("");
           return;
         }
         await registerUserWithEmailAndPassword(emailId, password, username);
         console.log(emailId);
         localStorage.setItem("emailForSignIn", emailId);
         toast.success("Account created successfully");
-
       }
       navigate("/");
     } catch (error) {
-      console.error("Error requesting OTP:", error);
-      toast.error("Error requesting OTP: " + error.message);
+      if (error instanceof FirebaseError) {
+        // Handle Firebase errors
+        switch (error.code) {
+          case "auth/email-already-in-use":
+            toast.error("Email already in use");
+            setEmailId("");
 
+            break;
+          case "auth/invalid-email":
+            toast.error("Invalid email format");
+            setEmailId("");
+
+            break;
+          default:
+            toast.error("Error requesting OTP ");
+            break;
+        }
+      }
     } finally {
       setIsLoading(false);
     }

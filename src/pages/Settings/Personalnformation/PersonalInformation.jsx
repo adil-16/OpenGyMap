@@ -10,7 +10,10 @@ import CryptoJS from "crypto-js";
 import Loader from "../../../components/Loader/Loader";
 import { toast } from "react-toastify";
 
+import { useUserProfile } from "../../../Context/UserProfileContext/UserProfileContext";
+
 const PersonalInformation = () => {
+  const { userProfile, setUserProfile } = useUserProfile();
   const [userDetails, setUserDetails] = useState({});
   const [editingId, setEditingId] = useState(null);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
@@ -38,13 +41,19 @@ const PersonalInformation = () => {
     }
   }, [uid]);
 
-  console.log("NEW PASSWORD ", confirmPassword);
+  // console.log("NEW PASSWORD ", confirmPassword);
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
         const imageDataUrl = reader.result;
+
+        setUserProfile((prevProfile) => ({
+          ...prevProfile,
+          profilePicture: imageDataUrl,
+        }));
+
         setImage(imageDataUrl);
         updateUserProfilePicture(uid, imageDataUrl)
           .then(() => {

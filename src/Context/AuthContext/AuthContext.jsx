@@ -1,5 +1,5 @@
-import React, { createContext, useState } from "react";
-
+import React, { createContext, useState, useEffect } from "react";
+import { auth } from "../../firebase/firebase.config";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -7,12 +7,29 @@ export const AuthProvider = ({ children }) => {
   const [email, setEmail] = useState("");
   const [uid, setUid] = useState("");
 
-  const login = () => {
+  useEffect(() => {
+    const storedUid = localStorage.getItem("uid");
+    const encryptedPassword = localStorage.getItem("encryptedPassword");
+
+    if (storedUid && encryptedPassword) {
+      setIsLoggedIn(true);
+      setUid(storedUid);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
+
+  const login = (uid) => {
     setIsLoggedIn(true);
+    setUid(uid);
+    localStorage.setItem("uid", uid);
   };
 
   const logout = () => {
     setIsLoggedIn(false);
+    setUid("");
+    localStorage.removeItem("uid");
+    localStorage.removeItem("encryptedPassword");
   };
 
   return (

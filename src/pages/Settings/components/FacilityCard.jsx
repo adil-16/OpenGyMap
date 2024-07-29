@@ -60,7 +60,7 @@ const FacilityCard = ({
         <div className="p-3">
           <h3 className="text-md font-semibold text-custom-black flex justify-between">
             <span className="break-words w-[50%] truncate">{courtName}</span>
-            <span className="break-words w-[30%]">{rate}</span>
+            <span className="break-words w-[50%]">{rate}</span>
           </h3>
           <div className="flex items-start pt-3">
             <img

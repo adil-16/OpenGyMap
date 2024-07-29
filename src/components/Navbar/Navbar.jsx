@@ -1,10 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { Link } from "react-router-dom";
 import Notification from "../Notification/Notification";
 import { getUserDetails } from "../../firebase/Functions/ApiFunctions";
+import { useUserProfile } from "../../Context/UserProfileContext/UserProfileContext";
+import { AuthContext } from "../../Context/AuthContext/AuthContext";
 
 const Navbar = () => {
+  const { userProfile, setProfilePic } = useUserProfile();
+  const { isLoggedIn, logout } = useContext(AuthContext);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [activeLink, setActiveLink] = useState(window.location.pathname);
@@ -51,7 +55,9 @@ const Navbar = () => {
         const uid = localStorage.getItem("uid");
         if (uid) {
           const userDetails = await getUserDetails(uid);
+
           setProfilePicture(userDetails.profilePicture || "image.avif");
+          setProfilePic(userDetails.profilePicture || "image.avif");
           setLoadingProfilePicture(false);
         }
       } catch (error) {
@@ -80,6 +86,11 @@ const Navbar = () => {
     setDropdownOpen(false);
 
     console.log("activeLink is", path);
+  };
+
+  const handleLogout = () => {
+    logout();
+    setActiveLink("/");
   };
 
   return (
@@ -180,7 +191,8 @@ const Navbar = () => {
               ) : (
                 <img
                   className="w-12 h-12 rounded-full"
-                  src={profilePicture}
+                  src={userProfile.profilePicture || "image.avif"}
+                  // src={profilePicture}
                   alt="user photo"
                 />
               )}
@@ -205,12 +217,12 @@ const Navbar = () => {
                     </Link>
                   </li>
                   <li>
-                    <Link
-                      to="/"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-custom-black dark:hover:text-white"
+                    <button
+                      onClick={handleLogout} // Update this to call handleLogout
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-custom-black dark:hover:text-white w-full text-left"
                     >
                       Sign Out
-                    </Link>
+                    </button>
                   </li>
                 </ul>
               </div>
