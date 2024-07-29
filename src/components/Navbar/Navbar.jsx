@@ -7,7 +7,6 @@ import { useUserProfile } from "../../Context/UserProfileContext/UserProfileCont
 
 const Navbar = () => {
   const { userProfile } = useUserProfile();
-  console.log("hell", userProfile);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [activeLink, setActiveLink] = useState(window.location.pathname);
@@ -54,7 +53,9 @@ const Navbar = () => {
         const uid = localStorage.getItem("uid");
         if (uid) {
           const userDetails = await getUserDetails(uid);
-          setProfilePicture(userDetails.profilePicture || "/Home/profile.png");
+          setProfilePicture(
+            userDetails.profilePicture || "/Profile/profileimage.avif"
+          );
           setLoadingProfilePicture(false);
         }
       } catch (error) {
@@ -183,8 +184,7 @@ const Navbar = () => {
               ) : (
                 <img
                   className="w-12 h-12 rounded-full"
-                  src={userProfile.profilePicture || "/Home/profile.png"} // Use context
-                  // src={profilePicture}
+                  src={userProfile.profilePicture || profilePicture}
                   alt="user photo"
                 />
               )}
@@ -192,7 +192,7 @@ const Navbar = () => {
 
             {dropdownOpen && (
               <div
-                ref={dropdownRef} // Set ref here
+                ref={dropdownRef} //
                 className="absolute right-0 mt-2 w-48 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-white dark:divide-gray-600 z-20"
                 id="user-dropdown"
               >
@@ -225,7 +225,7 @@ const Navbar = () => {
 
       {showNotification && (
         <div
-          ref={notificationRef} // Set ref here
+          ref={notificationRef}
           className="absolute right-10 top-24 z-50 bg-white h-[85%] overflow-auto hide-scrollbar"
         >
           <Notification />
