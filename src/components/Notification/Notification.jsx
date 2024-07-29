@@ -1,33 +1,56 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FaClock } from "react-icons/fa";
-import { useNotification } from "../../Context/NotificationContext/NotificationContext";
+import { getUserNotifications } from "../../firebase/Functions/NotificationFunctions";
 
 const Notification = () => {
-  const { notifications, readState, clearNotifications } = useNotification();
+  const [notifications, setNotifications] = useState([]);
+  const [readState, setReadState] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const uid = localStorage.getItem("uid");
+      if (uid) {
+        try {
+          setLoading(true);
+          const fetchedNotifications = await getUserNotifications(uid);
+          setNotifications(fetchedNotifications);
+        } catch (error) {
+          console.error("Error fetching notifications:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    fetchNotifications();
+  }, []);
+
+  const clearNotifications = () => {
+    setNotifications([]);
+    setReadState(true);
+  };
 
   return (
-    <>
-      <div
-        className={`rounded-2xl shadow-custom-light  p-4 w-full max-auto max-w-lg ${
-          notifications.length > 0 ? "" : "h-96"
-        } `}
-      >
-        <div className="flex justify-between gap-4 sm:gap-16 md:gap-40 pr-4 sm:pr-8 md:pr-12 border-b border-b-custom-gray pb-2">
-          <p className="font-inter text-lg sm:text-xl font-semibold">
-            Notification
-          </p>
-          <div className="border border-request-button-notresponse text-request-button-notresponse bg-request-button-notresponse bg-opacity-20 rounded-full p-1 sm:p-2">
-            {notifications.length} New
-          </div>
+    <div
+      className={`rounded-2xl shadow-custom-light  p-4 w-full max-auto max-w-lg ${
+        notifications.length > 0 ? "" : "h-96"
+      } `}
+    >
+      <div className="flex justify-between gap-4 sm:gap-16 md:gap-40 pr-4 sm:pr-8 md:pr-12 border-b border-b-custom-gray pb-2">
+        <p className="font-inter text-lg sm:text-xl font-semibold">
+          Notification
+        </p>
+        <div className="border border-request-button-notresponse text-request-button-notresponse bg-request-button-notresponse bg-opacity-20 rounded-full p-1 sm:p-2">
+          {notifications.length} New
         </div>
+      </div>
 
-        {notifications.length === 0 && (
-          <div className=" h-full font-inter text-lg font-medium flex justify-center items-center">
-            No new Notifications
-          </div>
-        )}
-
-        {notifications.map((notification) => (
+      {loading ? (
+        <div className="flex justify-center items-center h-32">
+          <div className="w-16 h-16 border-t-4 border-custom-black border-solid rounded-full animate-spin"></div>
+        </div>
+      ) : notifications.length > 0 ? (
+        notifications.map((notification) => (
           <div
             key={notification.id}
             className="flex flex-col md:flex-row py-2 md:py-4"
@@ -43,27 +66,28 @@ const Notification = () => {
               <p className="font-inter font-semibold py-1 sm:py-2 text-lg sm:text-xl">
                 {notification.type}
               </p>
-              {notification.type === "Join Session" && (
-                <p className="text-sm sm:text-base">
-                  {notification.userName} {notification.action}{" "}
-                  <span className="text-lg sm:text-xl font-inter font-semibold">
-                    “{notification.courtName}”
-                  </span>{" "}
-                  at
-                </p>
-              )}
-              {notification.type !== "Join Session" && (
-                <p className="text-sm sm:text-base">
-                  You booked at{" "}
-                  <span className="text-lg sm:text-xl font-inter font-semibold">
-                    “{notification.courtName}”
-                  </span>{" "}
-                  at
-                </p>
-              )}
+              <p className="text-sm sm:text-base">
+                {notification.type === "Join Session" ? (
+                  <>
+                    {notification.userName} {notification.action}{" "}
+                    <span className="text-lg sm:text-xl font-inter font-semibold">
+                      “{notification.courtName}”
+                    </span>{" "}
+                    at
+                  </>
+                ) : (
+                  <>
+                    You booked at{" "}
+                    <span className="text-lg sm:text-xl font-inter font-semibold">
+                      “{notification.courtName}”
+                    </span>{" "}
+                    at
+                  </>
+                )}
+              </p>
               <div className="font-inter flex gap-2 sm:gap-3 text-sm sm:text-base font-semibold py-1 sm:py-2">
                 <FaClock className="h-4 w-4 sm:h-6 sm:w-6" />
-                <p>{notification.date.toLocaleDateString()}</p>
+                <p>{notification.date}</p>
               </div>
               <div className="font-inter flex gap-2 sm:gap-3 text-sm sm:text-base font-semibold py-1 sm:py-2">
                 <FaClock className="h-4 w-4 sm:h-6 sm:w-6 text-custom-blue" />
@@ -87,21 +111,25 @@ const Notification = () => {
             </div>
             <div className="flex-1 py-1 sm:py-2">
               <p className="text-xs sm:text-sm text-custom-gray">
-                {notification.timeAgo}
+                {notification.timestamp}
               </p>
             </div>
           </div>
-        ))}
-      </div>
+        ))
+      ) : (
+        <div className="flex justify-center p-12">
+          <p className="text-bold text-black">No new Notifications</p>
+        </div>
+      )}
 
       <div className="flex justify-center flex-end">
-        <div className="bg-custom-gray py-2 w-[85%] text-center  sm:py-3 rounded-lg  text-white text-base font-bold">
+        <div className="bg-custom-gray py-2 w-[85%] text-center sm:py-3 rounded-lg text-white text-base font-bold">
           <button onClick={clearNotifications} className="align-top">
             Read All Notifications
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

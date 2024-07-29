@@ -12,6 +12,22 @@ import { collection, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase.config";
 
 /**
+ * Update the user's FCM token
+ * @param {string} uid
+ * @param {string} fcmToken
+ */
+export const updateUserFcmToken = async (uid, fcmToken) => {
+  try {
+    const userDocRef = doc(db, "users", uid);
+    await updateDoc(userDocRef, { fcmToken });
+    console.log("User FCM token updated successfully");
+  } catch (error) {
+    console.error("Error updating user FCM token:", error);
+    throw error;
+  }
+};
+
+/**
  * Update the user's full name
  * @param {string} uid
  * @param {string} fullName

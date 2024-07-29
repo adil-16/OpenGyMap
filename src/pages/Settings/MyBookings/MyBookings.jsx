@@ -23,21 +23,9 @@ const getTimeDifference = (date) => {
   return `${diffInYears} years ago`;
 };
 
-const calculateHours = (start, end) => {
-  const startTime = new Date(start);
-  const endTime = new Date(end);
-  const diffInMilliseconds = endTime - startTime;
-  const diffInHours = diffInMilliseconds / (1000 * 60 * 60);
-  return diffInHours.toFixed(1); // Display hours with one decimal place
+const formatTime = (dateTime) => {
+  return dateTime.slice(11, 16);
 };
-
-const formatTime = (timeString) => {
-  const time = new Date(timeString);
-  const hours = time.getHours().toString().padStart(2, "0");
-  const minutes = time.getMinutes().toString().padStart(2, "0");
-  return `${hours}:${minutes}`;
-};
-
 const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -51,7 +39,6 @@ const MyBookings = () => {
         setLoading(true);
         const userBookings = await getUserBookings(uid);
         setBookings(userBookings);
-        console.log(bookings);
       } catch (error) {
         console.error("Error fetching bookings: ", error);
       } finally {

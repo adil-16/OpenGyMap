@@ -42,6 +42,7 @@ const Payment = () => {
   const location = useLocation();
   const { facility, selectedCourt, selectedTime, hours, selectedDate } =
     location.state;
+
   const [userDetails, setUserDetails] = useState({
     fullName: "",
     phoneNumber: "",
@@ -72,19 +73,23 @@ const Payment = () => {
   const handlePayClick = async () => {
     const bookingId = uuidv4();
     const createdAt = new Date().toISOString();
+    const datePart = selectedDate.toISOString().split("T")[0];
+    const startDate = new Date(`${datePart}T${selectedTime}:00.000Z`);
+    const endDate = new Date(startDate);
+    endDate.setHours(startDate.getHours() + hours);
 
     const bookingData = {
       bookingAmount: totalAmount,
-      bookingCourtName: selectedCourt,
+      bookingCourtName: facility.courtName,
       bookingDate: formatDateTime(new Date(selectedDate)),
       bookingDays: facility.daysList || [],
-      bookingEndTime: new Date(selectedDate).toISOString(),
+      bookingEndTime: endDate.toISOString(),
       bookingGymName: facility.gymName,
       bookingHours: hours,
       bookingId,
       createdAt,
       bookingLocation: facility.address,
-      bookingStartTime: new Date(selectedDate).toISOString(),
+      bookingStartTime: startDate.toISOString(),
       courtType: selectedCourt,
       createdBy: uid,
       creatorName: userDetails.fullName || "",

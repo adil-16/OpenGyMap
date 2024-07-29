@@ -24,7 +24,6 @@ const formatTime = (timeString) => {
 const FacilityDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { data, addFacility, updateFacility } = useFacilitiesData();
 
   const facilityData = location.state?.facilityData;
   const isEdit = location.state?.isEdit;
@@ -62,7 +61,6 @@ const FacilityDetails = () => {
       setLoading(true);
 
       await updateFacilityInFirestore(facilityData.facilityId, updatedFacility);
-      updateFacility(updatedFacility);
       navigate("/setting/myfacility");
       toast.success("Facility Updated Successfully");
     } catch (error) {

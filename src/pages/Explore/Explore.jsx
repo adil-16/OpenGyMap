@@ -31,7 +31,17 @@ const Explore = () => {
   const [loading, setLoading] = useState(true); // Set initial loading state to true
 
   useEffect(() => {
-    fetchFacilitiesForUser(setFacilities, setLoading);
+    const fetchFacilities = async () => {
+      setLoading(true);
+      try {
+        await fetchFacilitiesForUser(setFacilities, setLoading);
+      } catch (error) {
+        console.error("Error fetching facilities:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchFacilities();
   }, []);
 
   const handleSearchParamsChange = (field, value) => {
@@ -50,7 +60,6 @@ const Explore = () => {
     return statuses[randomIndex];
   };
 
-  // Paginate filtered cards
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentItems = facilities.slice(startIndex, endIndex);

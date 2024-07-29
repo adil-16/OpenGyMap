@@ -13,7 +13,8 @@ import {
   fetchPopularFacilities,
   fetchNearbyFacilities,
 } from "../../firebase/Functions/FacilityFunctions";
-import Review from "../../components/Review/Review";
+import ReviewPopup from "../../components/popups/ReviewPopup/ReviewPopup";
+import { getExpiredUserBookings } from "../../firebase/Functions/BookingFunctions";
 import Loader from "../../components/Loader/Loader";
 
 const ITEMS_PER_PAGE = 6;
@@ -29,9 +30,28 @@ const Home = () => {
   const [clickFootball, setClickFootball] = useState(false);
   const [nearbyFacilities, setNearbyFacilities] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
-
+  const [showReviewPopup, setShowReviewPopup] = useState(false);
   const [popularPage, setPopularPage] = useState(1);
   const [nearbyPage, setNearbyPage] = useState(1);
+  const [expiredBooking, setExpiredBooking] = useState(null);
+  const uid = localStorage.getItem("uid");
+
+  useEffect(() => {
+    const checkBookings = async () => {
+      if (uid) {
+        const expiredBookings = await getExpiredUserBookings(uid);
+        if (expiredBookings.length > 0) {
+          setExpiredBooking(expiredBookings[0]);
+          setShowReviewPopup(true);
+        }
+      }
+    };
+    checkBookings();
+  }, [uid]);
+
+  const handleClosePopup = () => {
+    setShowReviewPopup(false);
+  };
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -124,6 +144,13 @@ const Home = () => {
 
   return (
     <div className="flex flex-col items-center mt-16 px-4 relative">
+      {showReviewPopup && expiredBooking && (
+        <ReviewPopup
+          onClose={handleClosePopup}
+          bookingId={expiredBooking.id}
+          facilityId={expiredBooking.facilityId}
+        />
+      )}
       <div className="flex flex-col lg:flex-row items-center lg:items-start w-full max-w-screen-2xl">
         <div className="text-center lg:text-left lg:w-1/2 p-4 mt-12">
           <img

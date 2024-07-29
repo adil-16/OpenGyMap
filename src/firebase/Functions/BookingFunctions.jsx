@@ -9,6 +9,8 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../firebase.config";
+import { messaging } from "../firebase.config";
+import { v4 as uuidv4 } from "uuid";
 
 export const addBooking = async (bookingData) => {
   try {
@@ -37,6 +39,30 @@ export const addBooking = async (bookingData) => {
         bookingList: updatedBookingList,
       });
       console.log("Facility updated successfully!");
+
+      const notificationData = {
+        userId: bookingData.createdBy,
+        bookingId: bookingData.bookingId,
+        bookingDate: bookingData.bookingDate,
+        bookingStartTime: bookingData.bookingStartTime,
+        bookingEndTime: bookingData.bookingEndTime,
+        bookingStatus: "Confirmed",
+        courtName: bookingData.bookingCourtName,
+        notificationCount: 0,
+        bookingRequestStatus: 0,
+        notificationId: uuidv4(),
+        notificationTime: new Date().toISOString(),
+        requestedFrom: "",
+        requestedTo: "",
+        requestedUserImage: "",
+        requestedUsername: "",
+      };
+
+      await setDoc(
+        doc(db, "notifications", bookingData.bookingId),
+        notificationData
+      );
+      console.log("Notification stored successfully!");
     } else {
       console.log("No such facility!");
     }
@@ -58,5 +84,34 @@ export const getUserBookings = async (uid) => {
   } catch (error) {
     console.error("Error fetching user bookings: ", error);
     throw new Error("Failed to fetch user bookings");
+  }
+};
+
+export const getBookingDetails = async (bookingId) => {
+  try {
+    const bookingRef = doc(db, "bookings", bookingId);
+    const bookingDoc = await getDoc(bookingRef);
+    return bookingDoc.data();
+  } catch (error) {
+    console.error("Error fetching booking details: ", error);
+    throw new Error("Failed to fetch booking details");
+  }
+};
+
+export const getExpiredUserBookings = async (uid) => {
+  try {
+    const bookingsRef = collection(db, "bookings");
+    const q = query(bookingsRef, where("createdBy", "==", uid));
+    const querySnapshot = await getDocs(q);
+    const now = new Date().toISOString();
+    const expiredBookings = querySnapshot.docs
+      .map((doc) => ({ id: doc.id, ...doc.data() }))
+      .filter(
+        (booking) => booking.bookingEndTime < now && booking.isActive !== false
+      );
+    return expiredBookings;
+  } catch (error) {
+    console.error("Error fetching expired user bookings: ", error);
+    throw new Error("Failed to fetch expired user bookings");
   }
 };
