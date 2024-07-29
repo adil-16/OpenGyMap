@@ -34,17 +34,15 @@ const Otp = () => {
   const handleRequestOtp = async () => {
     try {
       const verificationId = localStorage.getItem("verificationId");
-      const emailForSignIn = localStorage.getItem("emailForSignIn");
       if (verificationId) {
         await verifyPhoneOtp(verificationId, otpString);
-      } else if (emailForSignIn) {
-        const emailLink = window.location.href;
-        // await verifyEmailOtp(emailForSignIn, emailLink);
-        console.log("user", emailForSignIn);
+        navigate("/login");
+      } else {
+        toast.error("Verification ID is missing.");
       }
-      navigate("/homepage");
     } catch (error) {
       console.error("Error verifying OTP:", error);
+      toast.error("Error verifying OTP: " + error.message);
     }
   };
 
