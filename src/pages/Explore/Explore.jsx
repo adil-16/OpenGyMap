@@ -10,8 +10,37 @@ import Pagination from "../../components/Pagination/Pagination";
 import { fetchFacilitiesForUser } from "../../firebase/Functions/FacilityFunctions";
 import FacilityCard from "../../components/Card/Card";
 import Loader from "../../components/Loader/Loader";
+import moment from "moment";
 
 const ITEMS_PER_PAGE = 6;
+
+function getStatus(facility) {
+  const now = moment();
+  const currentDay = now.format("dddd");
+
+  if (facility.daysList.includes(currentDay)) {
+    const startTime = moment(facility.startTime);
+    const closeTime = moment(facility.closeTime);
+
+    const startTimeToday = now.clone().set({
+      hour: startTime.get("hour"),
+      minute: startTime.get("minute"),
+      second: startTime.get("second"),
+    });
+
+    const closeTimeToday = now.clone().set({
+      hour: closeTime.get("hour"),
+      minute: closeTime.get("minute"),
+      second: closeTime.get("second"),
+    });
+
+    if (now.isBetween(startTimeToday, closeTimeToday)) {
+      return "Open Now";
+    }
+  }
+
+  return "Closed Now";
+}
 
 const Explore = () => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -28,7 +57,7 @@ const Explore = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [facilities, setFacilities] = useState([]);
-  const [loading, setLoading] = useState(true); // Set initial loading state to true
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchFacilities = async () => {
@@ -69,11 +98,8 @@ const Explore = () => {
   };
 
   const formatTime = (timeString) => {
-    const date = new Date(timeString);
-    return date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    const date = moment(timeString, moment.ISO_8601);
+    return date.format("hh:mm A");
   };
 
   const toogleBasketBall = () => {
@@ -188,11 +214,12 @@ const Explore = () => {
                       facility.closeTime
                     )}
                 `}
-                    status={getRandomStatus()}
+                    status={getStatus(facility)}
                     gymName={facility.gymName}
                     longitude={facility.longitude}
                     latitude={facility.latitude}
                     daysList={facility.daysList}
+                    bookingDateAndTime={facility.bookingDateAndTime}
                   />
                 ))}
               </div>

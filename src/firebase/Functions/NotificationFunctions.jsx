@@ -2,7 +2,6 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase.config";
 import { getBookingDetails } from "./BookingFunctions";
 
-// Function to get notifications for a specific user
 export const getUserNotifications = async (uid) => {
   try {
     const notificationsRef = collection(db, "notifications");

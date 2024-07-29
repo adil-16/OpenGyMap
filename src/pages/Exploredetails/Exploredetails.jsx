@@ -15,6 +15,27 @@ import ReservedAlert from "../../components/Alert/ReservedAlert";
 import { useNotification } from "../../Context/NotificationContext/NotificationContext";
 import { timeAgo } from "../../utils/TimeAgo/timeAgo";
 import { toast } from "react-toastify";
+import moment from "moment";
+
+const parseBookingDateAndTime = (dateTimeString) => {
+  const [start, end] = dateTimeString.split(" to ");
+  return {
+    start: moment(start, "YYYY-MM-DDTHH:mm:ss"),
+    end: moment(end, "YYYY-MM-DDTHH:mm:ss"),
+  };
+};
+
+const isTimeOverlap = (selectedDate, selectedTime, hours, booking) => {
+  const startTime = moment(
+    `${selectedDate.format("YYYY-MM-DD")}T${selectedTime}`
+  );
+  const endTime = moment(startTime).add(hours, "hours");
+  return (
+    (startTime.isSameOrAfter(booking.start) &&
+      startTime.isBefore(booking.end)) ||
+    (endTime.isAfter(booking.start) && endTime.isSameOrBefore(booking.end))
+  );
+};
 
 const Exploredetails = () => {
   const [hours, setHours] = useState(1);
@@ -22,7 +43,8 @@ const Exploredetails = () => {
   const [selectedCourt, setSelectedCourt] = useState("Half Court");
   const [showReserveAlert, setShowReserveALert] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
-
+  const [formattedDate, setFormattedDate] = useState("");
+  const [formattedTime, setFormattedTime] = useState("");
   const [notificationTimes, setNotificationTimes] = useState([]);
   const { notifications, addNotification, removeNotification } =
     useNotification();
@@ -32,7 +54,12 @@ const Exploredetails = () => {
   const location = useLocation();
   const facility = location.state?.facility;
 
-  // Time ago use effeect updates
+  useEffect(() => {
+    if (selectedDate && selectedTime) {
+      setFormattedDate(moment(selectedDate).format("D MMM"));
+      setFormattedTime(selectedTime);
+    }
+  }, [selectedDate, selectedTime]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -87,12 +114,21 @@ const Exploredetails = () => {
   const handleCheckAvailability = () => {
     if (!selectedDate) {
       toast.error("Select a Date");
-    } else if (facility.status === "Open Now") {
-      navigate("/payment", {
-        state: { facility, selectedCourt, selectedTime, hours, selectedDate },
+    } else {
+      const formattedDate = moment(selectedDate);
+      const isBooked = facility.bookingDateAndTime.some((slot) => {
+        const booking = parseBookingDateAndTime(slot);
+
+        return isTimeOverlap(formattedDate, selectedTime, hours, booking);
       });
-    } else if (facility.status === "Already Booked") {
-      setShowReserveALert(true);
+
+      if (isBooked) {
+        setShowReserveALert(true);
+      } else {
+        navigate("/payment", {
+          state: { facility, selectedCourt, selectedTime, hours, selectedDate },
+        });
+      }
     }
   };
 
@@ -344,6 +380,8 @@ const Exploredetails = () => {
             onClose={() => {
               setShowReserveALert(false);
             }}
+            selectedDate={formattedDate}
+            selectedTime={formattedTime}
           />
         </div>
       )}

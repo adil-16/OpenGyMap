@@ -182,11 +182,16 @@ export const Login = async (email, password) => {
 
 // Function to setup Recaptcha
 const setupRecaptcha = () => {
-  const recaptchaVerifier = new RecaptchaVerifier("recaptcha-container", {
-    size: "invisible",
-    callback: (response) => {},
-    "expired-callback": () => {},
-  });
+  // Initialize RecaptchaVerifier only once
+  const recaptchaVerifier = new RecaptchaVerifier(
+    "recaptcha-container",
+    {
+      size: "invisible",
+      callback: (response) => {},
+      "expired-callback": () => {},
+    },
+    auth
+  );
 
   recaptchaVerifier.render().catch((error) => {
     console.error("Error rendering ReCAPTCHA:", error);
@@ -196,8 +201,8 @@ const setupRecaptcha = () => {
 };
 
 export const sendOtpToPhone = async (phoneNumber) => {
-  setupRecaptcha();
-  const appVerifier = window.recaptchaVerifier;
+  const recaptchaVerifier = setupRecaptcha();
+  const appVerifier = recaptchaVerifier;
 
   try {
     const confirmationResult = await signInWithPhoneNumber(
@@ -207,7 +212,7 @@ export const sendOtpToPhone = async (phoneNumber) => {
     );
     return confirmationResult.verificationId;
   } catch (error) {
-    console.error("Error during signInWithPhoneNumber", error);
+    console.error("Error during signInWithPhoneNumber:", error);
     throw error;
   }
 };

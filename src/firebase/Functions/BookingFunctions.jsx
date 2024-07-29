@@ -9,7 +9,6 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../firebase.config";
-import { messaging } from "../firebase.config";
 import { v4 as uuidv4 } from "uuid";
 
 export const addBooking = async (bookingData) => {

@@ -12,28 +12,16 @@ import { useLocation } from "react-router-dom";
 import { addBooking } from "../../firebase/Functions/BookingFunctions";
 import { getUserDetails } from "../../firebase/Functions/ApiFunctions";
 import { v4 as uuidv4 } from "uuid";
+import moment from "moment";
 
 const formatDate = (date) => {
-  if (!(date instanceof Date)) return "";
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+  if (!moment(date).isValid()) return "";
+  return moment(date).format("MMM D, YYYY");
 };
 
 const formatDateTime = (date) => {
-  if (!(date instanceof Date)) return "";
-  return date.toLocaleString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    second: "numeric",
-    hour12: true,
-    timeZoneName: "short",
-  });
+  if (!moment(date).isValid()) return "";
+  return moment(date).format("MMMM D, YYYY, h:mm:ss A z");
 };
 
 const Payment = () => {
@@ -72,16 +60,20 @@ const Payment = () => {
 
   const handlePayClick = async () => {
     const bookingId = uuidv4();
-    const createdAt = new Date().toISOString();
-    const datePart = selectedDate.toISOString().split("T")[0];
-    const startDate = new Date(`${datePart}T${selectedTime}:00.000Z`);
-    const endDate = new Date(startDate);
-    endDate.setHours(startDate.getHours() + hours);
+    const createdAt = moment().toISOString();
+    const startDate = moment(
+      `${moment(selectedDate).format("YYYY-MM-DD")}T${selectedTime}:00.000Z`
+    );
+    const endDate = moment(startDate).add(hours, "hours");
+
+    console.log(selectedDate);
+    console.log(startDate.format());
+    console.log(endDate.format());
 
     const bookingData = {
       bookingAmount: totalAmount,
       bookingCourtName: facility.courtName,
-      bookingDate: formatDateTime(new Date(selectedDate)),
+      bookingDate: formatDateTime(selectedDate),
       bookingDays: facility.daysList || [],
       bookingEndTime: endDate.toISOString(),
       bookingGymName: facility.gymName,
@@ -138,7 +130,7 @@ const Payment = () => {
             court={selectedCourt}
             time={selectedTime}
             hours={hours}
-            date={formatDate(new Date(selectedDate))}
+            date={formatDate(selectedDate)}
           />
           <PriceSummary hours={hours} facility={facility} />
           <div className="border-b border-navbar-gray mb-6"></div>

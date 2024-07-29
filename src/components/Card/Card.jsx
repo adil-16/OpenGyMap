@@ -19,6 +19,7 @@ const Card = ({
   longitude,
   latitude,
   daysList,
+  bookingDateAndTime,
 }) => {
   const navigate = useNavigate();
 
@@ -41,6 +42,7 @@ const Card = ({
           longitude,
           latitude,
           daysList,
+          bookingDateAndTime,
         },
       },
     });
@@ -49,7 +51,7 @@ const Card = ({
   const getStatusStyles = () => {
     if (status === "Open Now") {
       return "bg-white text-custom-black";
-    } else if (status === "Already Booked") {
+    } else if (status === "Closed Now") {
       return "bg-orange-500 text-white";
     }
     return "";

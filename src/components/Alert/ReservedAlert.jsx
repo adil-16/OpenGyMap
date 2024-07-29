@@ -1,7 +1,7 @@
 import React from "react";
 import Crossicon from "../buttons/Crossicon";
 
-const ReservedAlert = ({ onClick, onClose }) => {
+const ReservedAlert = ({ onClick, onClose, selectedDate, selectedTime }) => {
   return (
     <div className="p-2 bg-white shadow-lg rounded-lg w-full max-w-md md:w-[75%] lg:w-[50%] xl:w-[25%] h-auto  z-20 mx-auto my-auto">
       <div className="flex justify-between items-center p-5">
@@ -24,7 +24,7 @@ const ReservedAlert = ({ onClick, onClose }) => {
           <span className="text-custom-gray font-bold font-inter">Sorry!</span>{" "}
           but the court on{" "}
           <span className="text-custom-gray font-bold font-inter">
-            14 Sept, 12:00
+            {selectedDate}, {selectedTime}
           </span>{" "}
           is already booked. You can either ask the host to join or find
           another.

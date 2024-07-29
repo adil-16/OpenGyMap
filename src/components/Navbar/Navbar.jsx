@@ -51,7 +51,7 @@ const Navbar = () => {
         const uid = localStorage.getItem("uid");
         if (uid) {
           const userDetails = await getUserDetails(uid);
-          setProfilePicture(userDetails.profilePicture || "/Home/profile.png");
+          setProfilePicture(userDetails.profilePicture || "image.avif");
           setLoadingProfilePicture(false);
         }
       } catch (error) {
