@@ -243,11 +243,13 @@ const Explore = () => {
                   )}
                   `}
                   status={getStatus(facility)}
+
                   gymName={facility.gymName}
                   longitude={facility.longitude}
                   latitude={facility.latitude}
                   daysList={facility.daysList}
                   bookingDateAndTime={facility.bookingDateAndTime}
+
                 />
               ))}
             </div>
