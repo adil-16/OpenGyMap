@@ -3,6 +3,7 @@ import AuthForm from "../../../components/forms/AuthForm";
 import RequestOtpButton from "../../../components/buttons/RequestOtp";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../Context/AuthContext/AuthContext";
+import { FirebaseError } from "firebase/app";
 import {
   Login,
   sendOtpToPhone,
@@ -60,7 +61,6 @@ const Auth = () => {
         console.log("User signed in:", userCredential);
         setUid(userCredential.user.uid);
 
-        // Encrypt the password
         const encryptedPassword = CryptoJS.AES.encrypt(
           password,
           "your-encryption-key"
@@ -87,7 +87,19 @@ const Auth = () => {
         toast.success("Login Successfully");
       }
     } catch (error) {
-      console.error("Error during authentication:", error);
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case "auth/invalid-email":
+            toast.error("Invalid email format");
+            setEmail("");
+            break;
+          default:
+            toast.error("Invalid Credentials ");
+            setEmail("");
+            setPassword("");
+            break;
+        }
+      }
     } finally {
       setIsLoading(false);
     }

@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { addBooking } from "../../firebase/Functions/BookingFunctions";
 import { getUserDetails } from "../../firebase/Functions/ApiFunctions";
+
 import { v4 as uuidv4 } from "uuid";
 
 const formatDate = (date) => {
@@ -40,6 +41,7 @@ const Payment = () => {
   const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
   const { facility, selectedCourt, selectedTime, hours, selectedDate } =
     location.state;
 
@@ -71,37 +73,44 @@ const Payment = () => {
   }, [facility.id]);
 
   const handlePayClick = async () => {
-    const bookingId = uuidv4();
-    const createdAt = new Date().toISOString();
-    const datePart = selectedDate.toISOString().split("T")[0];
-    const startDate = new Date(`${datePart}T${selectedTime}:00.000Z`);
-    const endDate = new Date(startDate);
-    endDate.setHours(startDate.getHours() + hours);
+    try {
+      setIsLoading(true);
+      const bookingId = uuidv4();
+      const createdAt = new Date().toISOString();
+      const datePart = selectedDate.toISOString().split("T")[0];
+      const startDate = new Date(`${datePart}T${selectedTime}:00.000Z`);
+      const endDate = new Date(startDate);
+      endDate.setHours(startDate.getHours() + hours);
 
-    const bookingData = {
-      bookingAmount: totalAmount,
-      bookingCourtName: facility.courtName,
-      bookingDate: formatDateTime(new Date(selectedDate)),
-      bookingDays: facility.daysList || [],
-      bookingEndTime: endDate.toISOString(),
-      bookingGymName: facility.gymName,
-      bookingHours: hours,
-      bookingId,
-      createdAt,
-      bookingLocation: facility.address,
-      bookingStartTime: startDate.toISOString(),
-      courtType: selectedCourt,
-      createdBy: uid,
-      creatorName: userDetails.fullName || "",
-      creatorPhone: userDetails.phoneNumber || "",
-      facilityId: facility.id,
-      imagesList: facility.imageUrls,
-      isActive: true,
-      latitude: facility.latitude,
-      longitude: facility.longitude,
-    };
-    await addBooking(bookingData);
-    setShowPopup(true);
+      const bookingData = {
+        bookingAmount: totalAmount,
+        bookingCourtName: facility.courtName,
+        bookingDate: formatDateTime(new Date(selectedDate)),
+        bookingDays: facility.daysList || [],
+        bookingEndTime: endDate.toISOString(),
+        bookingGymName: facility.gymName,
+        bookingHours: hours,
+        bookingId,
+        createdAt,
+        bookingLocation: facility.address,
+        bookingStartTime: startDate.toISOString(),
+        courtType: selectedCourt,
+        createdBy: uid,
+        creatorName: userDetails.fullName || "",
+        creatorPhone: userDetails.phoneNumber || "",
+        facilityId: facility.id,
+        imagesList: facility.imageUrls,
+        isActive: true,
+        latitude: facility.latitude,
+        longitude: facility.longitude,
+      };
+      await addBooking(bookingData);
+      setShowPopup(true);
+    } catch (error) {
+      console.error("Error occurred during booking:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleClosePopup = () => {
@@ -148,7 +157,13 @@ const Payment = () => {
 
       <div className="mt-20 text-right">
         <PayButton
-          text={`Pay $${totalAmount.toFixed(2)}`}
+          text={
+            isLoading ? (
+              <div className="loader ml-24"></div>
+            ) : (
+              `Pay $${totalAmount.toFixed(2)}`
+            )
+          }
           onClick={handlePayClick}
         />
       </div>

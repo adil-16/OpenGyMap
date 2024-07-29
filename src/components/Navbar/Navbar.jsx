@@ -3,8 +3,11 @@ import { IoMdNotificationsOutline } from "react-icons/io";
 import { Link } from "react-router-dom";
 import Notification from "../Notification/Notification";
 import { getUserDetails } from "../../firebase/Functions/ApiFunctions";
+import { useUserProfile } from "../../Context/UserProfileContext/UserProfileContext";
 
 const Navbar = () => {
+  const { userProfile } = useUserProfile();
+  console.log("hell", userProfile);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [activeLink, setActiveLink] = useState(window.location.pathname);
@@ -180,7 +183,8 @@ const Navbar = () => {
               ) : (
                 <img
                   className="w-12 h-12 rounded-full"
-                  src={profilePicture}
+                  src={userProfile.profilePicture || "/Home/profile.png"} // Use context
+                  // src={profilePicture}
                   alt="user photo"
                 />
               )}

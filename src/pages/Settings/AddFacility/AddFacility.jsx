@@ -8,6 +8,7 @@ import Slider from "./components/Slider";
 import { useNavigate, useLocation } from "react-router-dom";
 import Button from "./components/Button";
 import TimePicker from "react-time-picker";
+import { toast } from "react-toastify";
 
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
@@ -53,6 +54,7 @@ const AddFacility = () => {
   const [daysList, setDaysList] = useState(facilityData?.daysList || []);
   const [dayError, setDayError] = useState("");
   const [timeError, setTimeError] = useState("");
+  const [imageError, setImageError] = useState("");
 
   const isEdit = locationn.state?.isEdit;
 
@@ -77,6 +79,9 @@ const AddFacility = () => {
 
   const handleSave = async (event) => {
     event.preventDefault();
+    setDayError("");
+    setTimeError("");
+    setImageError("");
 
     if (daysList.length === 0) {
       setDayError("No day selected");
@@ -85,6 +90,11 @@ const AddFacility = () => {
 
     if (!startTime || !closeTime) {
       setTimeError("Please select both opening and closing times");
+      return;
+    }
+
+    if (facilityImagesList.length === 0) {
+      setImageError("Select atleast one image");
       return;
     }
     const facilityId = isEdit ? facilityData.facilityId : uuidv4();
@@ -343,6 +353,11 @@ const AddFacility = () => {
           <div className="flex-1  ">
             <div className="">
               <p className="font-inter font-semibold text-lg ">Gallery</p>
+              {imageError && (
+                <p className="text-red-600 font-inter font-medium py-2">
+                  {imageError}
+                </p>
+              )}
               <div className=" py-4  rounded-lg">
                 <Slider
                   images={facilityImagesList}

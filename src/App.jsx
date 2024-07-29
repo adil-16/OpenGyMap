@@ -23,11 +23,11 @@ import MyBookings from "./pages/Settings/MyBookings/MyBookings";
 import MyFacility from "./pages/Settings/MyFacility/MyFacility";
 import SettingsPayment from "./pages/Settings/Payment/Payment";
 import Address from "./pages/Settings/Address/Address";
-
 import AddFacility from "./pages/Settings/AddFacility/AddFacility";
 import FacilityDetails from "./pages/Settings/FacilityDetails/FacilityDetails";
 import { ImageProvider } from "./Context/ImageContext/ImageContext";
 import { FacilitiesDataProvider } from "./Context/FacilitiesDataContext/FacilitiesDataContext";
+import { UserProfileProvider } from "./Context/UserProfileContext/UserProfileContext";
 
 const router = createBrowserRouter([
   {
@@ -145,13 +145,15 @@ const App = () => {
   return (
     <>
       <AuthProvider>
-        <NotificationProvider>
-          <ImageProvider>
-            <FacilitiesDataProvider>
-              <RouterProvider router={router} />
-            </FacilitiesDataProvider>
-          </ImageProvider>
-        </NotificationProvider>
+        <UserProfileProvider>
+          <NotificationProvider>
+            <ImageProvider>
+              <FacilitiesDataProvider>
+                <RouterProvider router={router} />
+              </FacilitiesDataProvider>
+            </ImageProvider>
+          </NotificationProvider>
+        </UserProfileProvider>
       </AuthProvider>
     </>
   );

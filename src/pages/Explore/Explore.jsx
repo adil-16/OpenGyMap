@@ -19,16 +19,18 @@ const Explore = () => {
   const [showAlert, setShowALert] = useState(false);
   const [clickBasketBall, setClickBasketBall] = useState(false);
   const [clickFootball, setClickFootball] = useState(false);
+  const [filteredFacilities, setFilteredFacilities] = useState([]);
+
   const [searchParams, setSearchParams] = useState({
+    courtName: "",
+    gymName: "",
     location: "",
-    date: null,
-    time: "",
   });
 
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [facilities, setFacilities] = useState([]);
-  const [loading, setLoading] = useState(true); // Set initial loading state to true
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchFacilities = async () => {
@@ -48,11 +50,38 @@ const Explore = () => {
     setSearchParams((prevParams) => ({ ...prevParams, [field]: value }));
   };
 
-  const handleSearch = () => {
-    handleSearchParamsChange("location", searchQuery);
-    handleSearchParamsChange("date", selectedDate);
-    handleSearchParamsChange("time", selectedTime);
+  const handleSearchBarChange = (e) => {
+    const newValue = e.target.value;
+    setSearchQuery(newValue);
+    handleSearchParamsChange("location", newValue);
   };
+
+  useEffect(() => {
+    const filterFacilities = () => {
+      const { location, courtName, gymName } = searchParams;
+
+      const lowercasedLocation = location.toLowerCase();
+      const lowercasedCourtName = courtName.toLowerCase();
+      const lowercasedGymName = gymName.toLowerCase();
+
+      const filtered = facilities.filter((facility) => {
+        return (
+          (lowercasedLocation === "" ||
+            facility.location.toLowerCase().includes(lowercasedLocation)) &&
+          (lowercasedCourtName === "" ||
+            facility.basketCourtName
+              .toLowerCase()
+              .includes(lowercasedCourtName)) &&
+          (lowercasedGymName === "" ||
+            facility.gymName.toLowerCase().includes(lowercasedGymName))
+        );
+      });
+
+      setFilteredFacilities(filtered);
+    };
+
+    filterFacilities();
+  }, [searchParams, facilities]);
 
   const getRandomStatus = () => {
     const statuses = ["Open Now", "Already Booked"];
@@ -62,7 +91,7 @@ const Explore = () => {
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentItems = facilities.slice(startIndex, endIndex);
+  const currentItems = filteredFacilities.slice(startIndex, endIndex);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -96,10 +125,7 @@ const Explore = () => {
         <div className="mt-10 px-4 md:px-8 lg:px-16 relative">
           <div className="flex flex-wrap items-center justify-between gap-6">
             <div className="w-full md:flex-grow md:w-3/5 lg:w-2/5">
-              <SearchBar
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+              <SearchBar value={searchQuery} onChange={handleSearchBarChange} />
             </div>
             <div className="flex flex-wrap space-x-4 ml-3 md:ml-0 lg:ml-0 items-center">
               <div
@@ -155,7 +181,7 @@ const Explore = () => {
               <button className="bg-navbar-gray rounded-full w-28 h-10 text-custom-blue border border-custom-blue">
                 Near Me
               </button>
-              <SearchButton text="Search " onClick={handleSearch} />
+              <SearchButton text="Search " />
             </div>
           </div>
           <div className="mt-20 flex flex-col items-center">
