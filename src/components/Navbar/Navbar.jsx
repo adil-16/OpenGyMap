@@ -5,8 +5,10 @@ import Notification from "../Notification/Notification";
 import { getUserDetails } from "../../firebase/Functions/ApiFunctions";
 import { useUserProfile } from "../../Context/UserProfileContext/UserProfileContext";
 import { AuthContext } from "../../Context/AuthContext/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const { userProfile, setProfilePic } = useUserProfile();
   const { isLoggedIn, logout } = useContext(AuthContext);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -91,6 +93,7 @@ const Navbar = () => {
   const handleLogout = () => {
     logout();
     setActiveLink("/");
+    navigate("/");
   };
 
   return (
@@ -218,7 +221,7 @@ const Navbar = () => {
                   </li>
                   <li>
                     <button
-                      onClick={handleLogout} // Update this to call handleLogout
+                      onClick={handleLogout}
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-custom-black dark:hover:text-white w-full text-left"
                     >
                       Sign Out

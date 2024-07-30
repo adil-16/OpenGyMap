@@ -1,12 +1,6 @@
 import React, { useState } from "react";
 
-const StarRating = () => {
-  const [rating, setRating] = useState(0);
-
-  const handleRating = (rate) => {
-    setRating(rate);
-  };
-
+const StarRating = ({ rating, handleRating, value, onChange }) => {
   return (
     <div className="flex flex-col items-center">
       <div className="flex">
@@ -21,12 +15,6 @@ const StarRating = () => {
                   ? "text-custom-gradient"
                   : "text-white star-border"
               }
-
-
-
-          
-              
-              
               `}
               onClick={() => handleRating(index)}
             >
@@ -40,11 +28,13 @@ const StarRating = () => {
         <span className="font-inter font-semibold  text-3xl">.0</span>
       </p>
 
-      <div className="w-full p-4 h-40 v">
-        <input
-          placeholder="Your message"
-          className="w-full border border-nav-gray rounded-2xl h-full "
-        />
+      <div className="w-full p-4 h-40 ">
+        <textarea
+          className="w-full border border-nav-gray p-3 rounded-2xl h-full "
+          onChange={onChange}
+          value={value}
+          placeholder="Your Message..."
+        ></textarea>
       </div>
     </div>
   );

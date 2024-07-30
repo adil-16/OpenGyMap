@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { FaStar } from "react-icons/fa";
+import Crossicon from "../../buttons/Crossicon";
+import StarRating from "./components/StarRating";
 import { addReview } from "../../../firebase/Functions/ReviewsFunctions";
-import { getUserDetails } from "../../../firebase/Functions/ApiFunctions";
 
-const ReviewPopup = ({ onClose, bookingId, facilityId }) => {
+const ReviewPopup = ({ handleClose, bookingId, facilityId }) => {
   const [rating, setRating] = useState(4);
   const [message, setMessage] = useState("");
   const uid = localStorage.getItem("uid");
@@ -18,54 +18,41 @@ const ReviewPopup = ({ onClose, bookingId, facilityId }) => {
         reviewText: message,
       };
       await addReview(reviewData);
-      onClose();
+      handleClose();
     } catch (error) {
       console.error("Error submitting review: ", error);
     }
   };
 
+  const handleRating = (rate) => {
+    setRating(rate);
+  };
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg w-full max-w-md">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Rating</h2>
-          <button onClick={onClose} className="text-2xl text-gray-700">
-            ×
-          </button>
-        </div>
-        <div className="mb-4">
-          <div className="flex space-x-1">
-            {[...Array(5)].map((_, index) => (
-              <FaStar
-                key={index}
-                className={`cursor-pointer text-2xl ${
-                  index < rating ? "text-yellow-400" : "text-gray-300"
-                }`}
-                onClick={() => setRating(index + 1)}
-              />
-            ))}
-          </div>
-          <div className="text-lg font-medium mt-2">{rating}.0</div>
-        </div>
-        <textarea
-          className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+    <div className="    h-auto  rounded-lg   ">
+      <div className="flex justify-between p-4">
+        <p className="font-inter font-semibold text-custom-black text-xl">
+          Review
+        </p>
+        <Crossicon onClick={handleClose} />
+      </div>
+      <div className=" w-full   border-b border-nav-gray"></div>
+
+      <div className="py-4 ">
+        <StarRating
+          rating={rating}
+          handleRating={handleRating}
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Your Message"
-        ></textarea>
-        <div className="flex justify-end mt-4">
-          <button
-            onClick={onClose}
-            className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md mr-2"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSubmit}
-            className="bg-blue-500 text-white px-4 py-2 rounded-md"
-          >
-            Submit
-          </button>
+          onChange={(e) => {
+            setMessage(e.target.value);
+          }}
+        />
+      </div>
+      <div className="flex   space-x-4 justify-center">
+        <div className=" border border-nav-gray p-4 mb-2 px-12 rounded-full ">
+          <button onClick={handleClose}>Cancel</button>
+        </div>
+        <div className="border border-nav-gray bg-custom-gradient text-white p-4 mb-2 px-12 rounded-full">
+          <button onClick={handleSubmit}>Submit</button>
         </div>
       </div>
     </div>

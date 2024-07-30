@@ -32,7 +32,7 @@ const Payment = () => {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const { facility, selectedCourt, selectedTime, hours, selectedDate } =
-    location.state;
+    location.state; 
 
   const [userDetails, setUserDetails] = useState({
     fullName: "",

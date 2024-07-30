@@ -1,4 +1,12 @@
-import { doc, setDoc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { db } from "../firebase.config";
 import { v4 as uuidv4 } from "uuid";
 import { getUserDetails } from "./ApiFunctions";
@@ -32,4 +40,24 @@ export const addReview = async (reviewData) => {
     console.error("Error adding review or updating booking: ", error);
     throw new Error("Failed to add review or update booking");
   }
+};
+
+export const getReviewsByFacilityId = async (facilityId) => {
+  try {
+    const reviewsCollection = collection(db, "reviews");
+
+    const q = query(reviewsCollection, where("facilityId", "==", facilityId));
+
+    const querySnapshot = await getDocs(q);
+    console.log("zaki");
+
+    const reviews = querySnapshot.docs.map((doc) => ({
+      reviewId: doc.id,
+      ...doc.data(),
+    }));
+
+    console.log("reviews are", reviews);
+
+    return reviews;
+  } catch (error) {}
 };
