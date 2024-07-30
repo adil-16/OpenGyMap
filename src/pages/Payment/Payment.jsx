@@ -69,7 +69,6 @@ const Payment = () => {
         `${moment(selectedDate).format("YYYY-MM-DD")}T${selectedTime}:00.000Z`
       );
       const endDate = moment(startDate).add(hours, "hours");
-      endDate.setHours(startDate.getHours() + hours);
 
       const bookingData = {
         bookingAmount: totalAmount,
