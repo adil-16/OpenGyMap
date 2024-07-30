@@ -7,10 +7,10 @@ export const AuthProvider = ({ children }) => {
   const [uid, setUid] = useState("");
 
   useEffect(() => {
+    const storedIsLoggedIn = localStorage.getItem("isLoggedIn") === "true";
     const storedUid = localStorage.getItem("uid");
-    const encryptedPassword = localStorage.getItem("encryptedPassword");
 
-    if (storedUid && encryptedPassword) {
+    if (storedIsLoggedIn && storedUid) {
       setIsLoggedIn(true);
       setUid(storedUid);
     } else {
@@ -21,12 +21,15 @@ export const AuthProvider = ({ children }) => {
   const login = (uid) => {
     setIsLoggedIn(true);
     setUid(uid);
+    localStorage.setItem("isLoggedIn", "true");
     localStorage.setItem("uid", uid);
   };
 
   const logout = () => {
     setIsLoggedIn(false);
     setUid("");
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("fcmToken");
     localStorage.removeItem("uid");
     localStorage.removeItem("encryptedPassword");
   };

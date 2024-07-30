@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosArrowForward } from "react-icons/io";
 import DeleteAccountModal from "../popups/SettingsPopups/DeleteAccount";
+import { AuthContext } from "../../Context/AuthContext/AuthContext";
 
 const SettingSidebar = () => {
+  const { isLoggedIn, logout } = useContext(AuthContext);
   const [activeLink, setActiveLink] = useState(window.location.pathname);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -11,6 +13,11 @@ const SettingSidebar = () => {
 
   const handleLinkClick = (path) => {
     setActiveLink(path);
+  };
+  const handleLogout = () => {
+    logout();
+    setActiveLink("/");
+    navigate("/");
   };
 
   return (
@@ -55,9 +62,7 @@ const SettingSidebar = () => {
 
         <div
           className="flex justify-between items-center cursor-pointer lg:hidden lg:py- py-0"
-          onClick={() => {
-            navigate("/");
-          }}
+          onClick={handleLogout}
         >
           <p className="text-custom-black font-inter text-base font-medium p-3 whitespace-nowrap">
             Logout
@@ -80,9 +85,7 @@ const SettingSidebar = () => {
 
         <div
           className="flex justify-between ml-3 items-center cursor-pointer py-3"
-          onClick={() => {
-            navigate("/");
-          }}
+          onClick={handleLogout}
         >
           <p className="text-custom-black font-inter text-base font-medium">
             Logout
