@@ -107,6 +107,11 @@ const Explore = () => {
       });
 
       setFilteredFacilities(filtered);
+      if (filtered.length === 0) {
+        setShowALert(true);
+      } else {
+        setShowALert(false);
+      }
     };
 
     filterFacilities();
@@ -140,132 +145,132 @@ const Explore = () => {
     setClickFootball(true);
     setClickBasketBall(false);
   };
-
   return (
     <>
-      {showAlert ? (
-        <div className="w-full max-w-screen-lg h-96 py-8 mx-auto">
-          <SearchAlert />
-        </div>
-      ) : (
-        <div className="mt-10 px-4 md:px-8 lg:px-16 relative">
-          <div className="flex flex-wrap items-center justify-between gap-6">
-            <div className="w-full md:flex-grow md:w-3/5 lg:w-2/5">
-              <SearchBar value={searchQuery} onChange={handleSearchBarChange} />
+      <div className="mt-10 px-4 md:px-8 lg:px-16 relative">
+        <div className="flex flex-wrap items-center justify-between gap-6">
+          <div className="w-full md:flex-grow md:w-3/5 lg:w-2/5">
+            <SearchBar value={searchQuery} onChange={handleSearchBarChange} />
+          </div>
+          <div className="flex flex-wrap space-x-4 ml-3 md:ml-0 lg:ml-0 items-center">
+            <div
+              className={`relative border p-2 border-gray-400 rounded-md flex items-center justify-center ${
+                clickBasketBall && "bg-gray-200"
+              }`}
+            >
+              <img
+                src="/Home/basketball.png"
+                onClick={toogleBasketBall}
+                alt="basketball"
+                className="w-8 h-8 cursor-pointer"
+              />
+              {clickBasketBall && (
+                <img
+                  src="/Home/tick.png"
+                  className="absolute -top-1 -right-1 w-4 h-4 bg-custom-blue rounded-sm"
+                />
+              )}
             </div>
-            <div className="flex flex-wrap space-x-4 ml-3 md:ml-0 lg:ml-0 items-center">
-              <div
-                className={`relative  border p-2 border-gray-400 rounded-md flex items-center justify-center  ${
-                  clickBasketBall && "bg-gray-200"
-                } `}
-              >
+            <div
+              className={`border relative p-2 border-gray-400 rounded-md flex items-center justify-center ${
+                clickFootball && "bg-gray-200"
+              }`}
+            >
+              <img
+                onClick={toogleFootball}
+                src="/Home/football.png"
+                alt="football"
+                className="w-8 h-8 cursor-pointer"
+              />
+              {clickFootball && (
                 <img
-                  src="/Home/basketball.png"
-                  onClick={toogleBasketBall}
-                  alt="basketball"
-                  className="w-8 h-8 cursor-pointer"
+                  src="/Home/tick.png"
+                  className="absolute -top-1 -right-1 w-4 h-4 bg-custom-blue rounded-sm"
                 />
-
-                {clickBasketBall && (
-                  <img
-                    src="/Home/tick.png"
-                    className="absolute -top-1 -right-1 w-4 h-4 bg-custom-blue rounded-sm"
-                  />
-                )}
-              </div>
-              <div
-                className={` border relative p-2 border-gray-400 rounded-md flex items-center justify-center ${
-                  clickFootball && "bg-gray-200"
-                }`}
-              >
-                <img
-                  onClick={toogleFootball}
-                  src="/Home/football.png"
-                  alt="football"
-                  className="w-8 h-8 cursor-pointer"
-                />
-
-                {clickFootball && (
-                  <img
-                    src="/Home/tick.png"
-                    className="absolute -top-1 -right-1 w-4 h-4 bg-custom-blue rounded-sm"
-                  />
-                )}
-              </div>
-              <div className="relative">
-                <CustomDateInput
-                  selectedDate={selectedDate}
-                  onChange={(date) => setSelectedDate(date)}
-                />
-              </div>
-              <CustomTimeInput
-                selectedTime={selectedTime}
-                onChange={(e) => setSelectedTime(e.target.value)}
+              )}
+            </div>
+            <div className="relative">
+              <CustomDateInput
+                selectedDate={selectedDate}
+                onChange={(date) => setSelectedDate(date)}
               />
             </div>
-            <div className="flex space-x-4 items-center">
-              <button className="bg-navbar-gray rounded-full w-28 h-10 text-custom-blue border border-custom-blue">
-                Near Me
-              </button>
-              <SearchButton text="Search " />
-            </div>
+            <CustomTimeInput
+              selectedTime={selectedTime}
+              onChange={(e) => setSelectedTime(e.target.value)}
+            />
           </div>
-          <div className="mt-20 flex flex-col items-center">
-            {loading ? (
-              <div className="w-full h-screen flex items-center justify-center">
-                <Loader />
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 sm:px-0 lg:px-28">
-                {currentItems.map((facility) => (
-                  <FacilityCard
-                    {...facility}
-                    key={facility.id}
-                    id={facility.id}
-                    rules={facility.rules}
-                    description={facility.description}
-                    createdBy={facility.createdBy}
-                    courtName={facility.basketCourtName}
-                    imageUrls={facility.facilityImagesList}
-                    rate={facility.amount}
-                    address={facility.location}
-                    hours={`${
-                      Array.isArray(facility.daysList) &&
-                      facility.daysList.length > 0
-                        ? `${FormatDays(facility.daysList)} `
-                        : "No availability"
-                    }`}
-                    time={`
-                  ${formatTime(facility.startTime)} - ${formatTime(
-                      facility.closeTime
-                    )}
-                `}
-                    status={getStatus(facility)}
-                    gymName={facility.gymName}
-                    longitude={facility.longitude}
-                    latitude={facility.latitude}
-                    daysList={facility.daysList}
-                    bookingDateAndTime={facility.bookingDateAndTime}
-                  />
-                ))}
-              </div>
-            )}
+          <div className="flex space-x-4 items-center">
+            <button className="bg-navbar-gray rounded-full w-28 h-10 text-custom-blue border border-custom-blue">
+              Near Me
+            </button>
+            <SearchButton text="Search " />
           </div>
+        </div>
 
-          <div className="py-24">
-            <div className="absolute bottom-0   left-0 right-6 sm:right-2 md:right-4 p-4">
+        <div className="mt-20 flex flex-col items-center">
+          {loading ? (
+            <div className="w-full h-screen flex items-center justify-center">
+              <Loader />
+            </div>
+          ) : showAlert ? (
+            <div className="w-full max-w-screen-lg h-96 py-8 mx-auto">
+              <SearchAlert />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 sm:px-0 lg:px-28">
+              {currentItems.map((facility) => (
+                <FacilityCard
+                  {...facility}
+                  key={facility.id}
+                  id={facility.id}
+                  rules={facility.rules}
+                  description={facility.description}
+                  createdBy={facility.createdBy}
+                  courtName={facility.basketCourtName}
+                  imageUrls={facility.facilityImagesList}
+                  rate={facility.amount}
+                  address={facility.location}
+                  hours={`${
+                    Array.isArray(facility.daysList) &&
+                    facility.daysList.length > 0
+                      ? `${FormatDays(facility.daysList)} `
+                      : "No availability"
+                  }`}
+                  time={`
+                    ${formatTime(facility.startTime)} - ${formatTime(
+                    facility.closeTime
+                  )}
+                  `}
+                  status={getStatus(facility)}
+
+                  gymName={facility.gymName}
+                  longitude={facility.longitude}
+                  latitude={facility.latitude}
+                  daysList={facility.daysList}
+                  bookingDateAndTime={facility.bookingDateAndTime}
+
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="py-24">
+          {filteredFacilities.length > 0 && (
+            <div className="absolute bottom-0 left-0 right-6 sm:right-2 md:right-4 p-4">
               <Pagination
-                items={facilities}
+                items={filteredFacilities}
                 itemsPerPage={ITEMS_PER_PAGE}
                 onPageChange={handlePageChange}
               />
             </div>
-            <div className="absolute bottom-0 mb-8 right-4 sm:right-10 bg-custom-gradient rounded-full p-4">
-              <FaQuestion className="text-white w-8 h-8" />
-            </div>
+          )}
+          <div className="absolute bottom-0 mb-8 right-4 sm:right-10 bg-custom-gradient rounded-full p-4">
+            <FaQuestion className="text-white w-8 h-8" />
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 };

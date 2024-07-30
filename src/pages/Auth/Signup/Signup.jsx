@@ -54,6 +54,13 @@ const Signup = () => {
     event.preventDefault();
     try {
       if (activeButton === "phoneNumber") {
+        if (password !== confirmPassword) {
+          console.error("Passwords do not match");
+          toast.error("Password donot match");
+          setPassword("");
+          setConfirmPassword("");
+          return;
+        }
         const verificationId = await sendOtpToPhone(phone);
         localStorage.setItem("verificationId", verificationId);
         toast.success("OTP sent successfully");
@@ -73,7 +80,6 @@ const Signup = () => {
       navigate("/");
     } catch (error) {
       if (error instanceof FirebaseError) {
-        // Handle Firebase errors
         switch (error.code) {
           case "auth/email-already-in-use":
             toast.error("Email already in use");

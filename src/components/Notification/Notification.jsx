@@ -32,7 +32,7 @@ const Notification = () => {
 
   return (
     <div
-      className={`rounded-2xl shadow-custom-light  p-4 w-full max-auto max-w-lg ${
+      className={`rounded-xl shadow-2xl   p-4 w-full max-auto max-w-lg ${
         notifications.length > 0 ? "" : "h-96"
       } `}
     >
@@ -121,10 +121,9 @@ const Notification = () => {
           <p className="text-bold text-black">No new Notifications</p>
         </div>
       )}
-
-      <div className="flex justify-center flex-end">
-        <div className="bg-custom-gray py-2 w-[85%] text-center sm:py-3 rounded-lg text-white text-base font-bold">
-          <button onClick={clearNotifications} className="align-top">
+      <div className="flex justify-center  items-end ">
+        <div className="bg-custom-gray py-2  w-[85%] text-center  sm:py-3 rounded-lg text-white text-base font-bold">
+          <button onClick={clearNotifications} className="  ">
             Read All Notifications
           </button>
         </div>

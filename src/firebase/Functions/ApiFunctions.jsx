@@ -99,7 +99,6 @@ export const getUserDetails = async (uid) => {
 };
 
 /**
- * Register a user with email and password
  * @param {string} email
  * @param {string} password
  * @param {string} username
