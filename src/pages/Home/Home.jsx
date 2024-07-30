@@ -162,13 +162,20 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col items-center mt-16 px-4 relative">
+    <div className={`flex flex-col items-center mt-16 px-4 relative  `}>
+   
+
       {showReviewPopup && expiredBooking && (
-        <ReviewPopup
-          onClose={handleClosePopup}
-          bookingId={expiredBooking.id}
-          facilityId={expiredBooking.facilityId}
-        />
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black opacity-50"></div>
+          <div className="relative z-10 bg-white p-8 rounded-lg shadow-lg">
+            <ReviewPopup
+              handleClose={handleClosePopup}
+              bookingId={expiredBooking.id}
+              facilityId={expiredBooking.facilityId}
+            />
+          </div>
+        </div>
       )}
       <div className="flex flex-col lg:flex-row items-center lg:items-start w-full max-w-screen-2xl">
         <div className="text-center lg:text-left lg:w-1/2 p-4 mt-12">
@@ -387,13 +394,7 @@ const Home = () => {
             onPageChange={handleNearbyPageChange}
           />
         </div>
-        {showReview && <Review />}
-        <div
-          onClick={() => {
-            setShowReview(!showReview);
-          }}
-          className="absolute bottom-0  mb-8 right-4 sm:right-10 bg-custom-gradient rounded-full p-4"
-        >
+        <div className="absolute bottom-0  mb-8 right-4 sm:right-10 bg-custom-gradient rounded-full p-4">
           <FaQuestion className="text-white w-8 h-8" />
         </div>
       </div>

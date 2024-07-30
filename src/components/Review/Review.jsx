@@ -1,11 +1,14 @@
 import React from "react";
 import Crossicon from "../buttons/Crossicon";
-import StarRating from "./components/StarRating";
+import StarRating from "../popups/ReviewPopup/components/StarRating";
 
-const Review = () => {
+const ReviewPopup = () => {
   const handleClose = () => {
     console.log("handle cross icon is Click");
   };
+
+
+  
   return (
     <div className=" bg-white shadow-lg w-[25%] h-auto  rounded-lg">
       <div className="flex justify-between p-4">
@@ -17,10 +20,15 @@ const Review = () => {
       <div className=" w-full   border-b border-nav-gray"></div>
 
       <div className="py-4 ">
-        <StarRating/>
+        <StarRating  />
+      </div>
+
+      <div>
+        <button>Cancel</button>
+        <button>Add</button>
       </div>
     </div>
   );
 };
 
-export default Review;
+export default ReviewPopup;

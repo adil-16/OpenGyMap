@@ -49,6 +49,7 @@ const Explore = () => {
   const [clickBasketBall, setClickBasketBall] = useState(false);
   const [clickFootball, setClickFootball] = useState(false);
   const [filteredFacilities, setFilteredFacilities] = useState([]);
+  const [searchPerformed, setSearchPerformed] = useState(false);
 
   const [searchParams, setSearchParams] = useState({
     courtName: "",
@@ -80,6 +81,7 @@ const Explore = () => {
   };
 
   const handleSearchBarChange = (e) => {
+    setSearchPerformed(true);
     const newValue = e.target.value;
     setSearchQuery(newValue);
     handleSearchParamsChange("location", newValue);
@@ -213,7 +215,7 @@ const Explore = () => {
             <div className="w-full h-screen flex items-center justify-center">
               <Loader />
             </div>
-          ) : showAlert ? (
+          ) : showAlert && !loading && searchPerformed ? (
             <div className="w-full max-w-screen-lg h-96 py-8 mx-auto">
               <SearchAlert />
             </div>

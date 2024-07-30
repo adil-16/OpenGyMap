@@ -32,8 +32,8 @@ const Notification = () => {
 
   return (
     <div
-      className={`rounded-xl shadow-2xl   p-4 w-full max-auto max-w-lg ${
-        notifications.length > 0 ? "" : "h-96"
+      className={` shadow-2xl rounded-lg bg-white   p-4 w-full max-auto max-w-lg ${
+        notifications.length > 0 ? "h-full" : "h-96"
       } `}
     >
       <div className="flex justify-between gap-4 sm:gap-16 md:gap-40 pr-4 sm:pr-8 md:pr-12 border-b border-b-custom-gray pb-2">
@@ -46,24 +46,24 @@ const Notification = () => {
       </div>
 
       {loading ? (
-        <div className="flex justify-center items-center h-32">
-          <div className="w-16 h-16 border-t-4 border-custom-black border-solid rounded-full animate-spin"></div>
+        <div className="flex justify-center  items-center h-32">
+          <div className="w-16 h-16 border-t-4  bg-white border-custom-black border-solid rounded-full animate-spin"></div>
         </div>
       ) : notifications.length > 0 ? (
         notifications.map((notification) => (
           <div
             key={notification.id}
-            className="flex flex-col md:flex-row py-2 md:py-4"
+            className="flex flex-col bg-white md:flex-row py-2 md:py-4"
           >
             <div className="flex-1 py-1 sm:py-3">
               <img
-                className="h-6 w-6 sm:h-8 sm:w-8"
+                className="h-6 w-6 sm:h-8 my-3 sm:w-8"
                 src={notification.profileImage}
                 alt="Profile"
               />
             </div>
             <div className="flex-[7] py-1 sm:py-2">
-              <p className="font-inter font-semibold py-1 sm:py-2 text-lg sm:text-xl">
+              <p className="font-inter ml-2  font-semibold py-1 sm:py-2 text-lg sm:text-xl">
                 {notification.type}
               </p>
               <p className="text-sm sm:text-base">
@@ -109,8 +109,8 @@ const Notification = () => {
                 </div>
               )}
             </div>
-            <div className="flex-1 py-1 sm:py-2">
-              <p className="text-xs sm:text-sm text-custom-gray">
+            <div className="flex-1 py-1  sm:py-2">
+              <p className="text-xs sm:text-sm w-20 my-5 text-custom-gray">
                 {notification.timestamp}
               </p>
             </div>
@@ -121,8 +121,14 @@ const Notification = () => {
           <p className="text-bold text-black">No new Notifications</p>
         </div>
       )}
-      <div className="flex justify-center  items-end ">
-        <div className="bg-custom-gray py-2  w-[85%] text-center  sm:py-3 rounded-lg text-white text-base font-bold">
+      <div
+        className={`flex justify-center  items-end   ${
+          notifications.length > 0 ? "" : "h-48"
+        } `}
+      >
+        <div
+          className={`bg-custom-gray  mb-2  w-[85%] text-center  sm:py-3 rounded-lg text-white text-base font-bold  `}
+        >
           <button onClick={clearNotifications} className="  ">
             Read All Notifications
           </button>

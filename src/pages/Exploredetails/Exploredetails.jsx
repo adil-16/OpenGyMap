@@ -15,6 +15,10 @@ import ReservedAlert from "../../components/Alert/ReservedAlert";
 import { useNotification } from "../../Context/NotificationContext/NotificationContext";
 import { timeAgo } from "../../utils/TimeAgo/timeAgo";
 import { toast } from "react-toastify";
+
+// import { timeAgo } from "../../utils/TimeAgo/timeAgo";
+
+import { getReviewsByFacilityId } from "../../firebase/Functions/ReviewsFunctions";
 import moment from "moment";
 import { createNotificationForRequest } from "../../firebase/Functions/NotificationFunctions";
 
@@ -47,6 +51,8 @@ const Exploredetails = () => {
   const [formattedDate, setFormattedDate] = useState("");
   const [formattedTime, setFormattedTime] = useState("");
   const [notificationTimes, setNotificationTimes] = useState([]);
+
+  const [reviews, setReviews] = useState([]);
   const { notifications, addNotification, removeNotification } =
     useNotification();
   const [userDetails, setUserDetails] = useState({
@@ -74,6 +80,12 @@ const Exploredetails = () => {
 
     fetchUserDetails();
   }, [facility.id]);
+
+  useEffect(() => {
+    if (facility.id) {
+      const data = getReviewsByFacilityId(facility.id).then(setReviews);
+    }
+  }, []);
 
   useEffect(() => {
     if (selectedDate && selectedTime) {
@@ -119,10 +131,6 @@ const Exploredetails = () => {
       document.body.classList.remove("overflow-hidden");
     };
   }, [showReserveAlert]);
-
-  if (!facility) {
-    return <p>Facility not found!</p>;
-  }
 
   const handleMinus = () => {
     setHours((prevHours) => Math.max(prevHours - 1, 1));
@@ -287,16 +295,24 @@ const Exploredetails = () => {
 
           <div className="font-inter font-semibold text-xl">215 reviews</div>
         </div>
-
-        {/* Review Card */}
-
         <div className=" sm:grid sm:grid-cols-1 flex-grow w-full  md:grid md:grid-cols-2 lg:grid lg:grid-cols-3 gap-2  overflow-auto ">
-          <Reviewcard />
-          <Reviewcard />
-          <Reviewcard />
-          <Reviewcard />
-          <Reviewcard />
-          <Reviewcard />
+          {reviews.length > 0 ? (
+            reviews.map((review) => (
+              <>
+                <Reviewcard
+                  key={facility.id}
+                  userName={review.userName}
+                  userLocation={review.userLocation}
+                  timestamp={timeAgo(review.timestamp)}
+                  rating={review.rating}
+                  userImageUrl={review.userImageUrl}
+                  description={review.reviewText}
+                />
+              </>
+            ))
+          ) : (
+            <p className="text-center text-gray-500">No reviews available</p>
+          )}
         </div>
 
         <div className="flex justify-center py-6 cursor-pointer">

@@ -46,7 +46,6 @@ const router = createBrowserRouter([
         path: "/otp",
         element: <PublicRoutes Component={Otp} />,
       },
-      // Use MainLayout for layouts with Navbar and Footer
       {
         element: <MainLayout />,
         children: [
