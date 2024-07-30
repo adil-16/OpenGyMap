@@ -2,33 +2,33 @@ import React, { useState, useEffect } from "react";
 import { FaClock } from "react-icons/fa";
 import { getUserNotifications } from "../../firebase/Functions/NotificationFunctions";
 
-const Notification = () => {
-  const [notifications, setNotifications] = useState([]);
-  const [readState, setReadState] = useState(false);
-  const [loading, setLoading] = useState(true);
+const Notification = ({ notifications, clearNotifications,loading }) => {
+  // const [notifications, setNotifications] = useState([]);
+  // const [readState, setReadState] = useState(false);
+  // const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      const uid = localStorage.getItem("uid");
-      if (uid) {
-        try {
-          setLoading(true);
-          const fetchedNotifications = await getUserNotifications(uid);
-          setNotifications(fetchedNotifications);
-        } catch (error) {
-          console.error("Error fetching notifications:", error);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-    fetchNotifications();
-  }, []);
+  // useEffect(() => {
+  //   const fetchNotifications = async () => {
+  //     const uid = localStorage.getItem("uid");
+  //     if (uid) {
+  //       try {
+  //         setLoading(true);
+  //         const fetchedNotifications = await getUserNotifications(uid);
+  //         setNotifications(fetchedNotifications);
+  //       } catch (error) {
+  //         console.error("Error fetching notifications:", error);
+  //       } finally {
+  //         setLoading(false);
+  //       }
+  //     }
+  //   };
+  //   fetchNotifications();
+  // }, []);
 
-  const clearNotifications = () => {
-    setNotifications([]);
-    setReadState(true);
-  };
+  // const clearNotifications = () => {
+  //   setNotifications([]);
+  //   setReadState(true);
+  // };
 
   return (
     <div

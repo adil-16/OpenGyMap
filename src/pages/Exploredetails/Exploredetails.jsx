@@ -15,9 +15,6 @@ import ReservedAlert from "../../components/Alert/ReservedAlert";
 import { useNotification } from "../../Context/NotificationContext/NotificationContext";
 import { timeAgo } from "../../utils/TimeAgo/timeAgo";
 import { toast } from "react-toastify";
-
-// import { timeAgo } from "../../utils/TimeAgo/timeAgo";
-
 import { getReviewsByFacilityId } from "../../firebase/Functions/ReviewsFunctions";
 import moment from "moment";
 import { createNotificationForRequest } from "../../firebase/Functions/NotificationFunctions";

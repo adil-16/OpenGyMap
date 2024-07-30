@@ -65,7 +65,7 @@ const Slider = ({ imageUrls }) => {
 
       <button
         type="button"
-        className="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer"
+        className={`absolute top-0 left-0 flex items-center justify-center h-full px-4 cursor-pointer`}
         onClick={handlePrev}
         disabled={imageUrls.length === 1}
       >

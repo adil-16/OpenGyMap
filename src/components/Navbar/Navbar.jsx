@@ -6,11 +6,15 @@ import { getUserDetails } from "../../firebase/Functions/ApiFunctions";
 import { useUserProfile } from "../../Context/UserProfileContext/UserProfileContext";
 import { AuthContext } from "../../Context/AuthContext/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { getUserNotifications } from "../../firebase/Functions/NotificationFunctions";
+import { useNotification } from "../../Context/NotificationContext/NotificationContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { userProfile, setProfilePic } = useUserProfile();
   const { isLoggedIn, logout } = useContext(AuthContext);
+  const { notifications, setNotifications } = useNotification();
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [activeLink, setActiveLink] = useState(window.location.pathname);
@@ -18,6 +22,33 @@ const Navbar = () => {
   const dropdownRef = useRef(null);
   const [profilePicture, setProfilePicture] = useState(null);
   const [loadingProfilePicture, setLoadingProfilePicture] = useState(true);
+
+  // const [notifications, setNotifications] = useState([]);
+  const [readState, setReadState] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const uid = localStorage.getItem("uid");
+      if (uid) {
+        try {
+          setLoading(true);
+          const fetchedNotifications = await getUserNotifications(uid);
+          setNotifications(fetchedNotifications);
+        } catch (error) {
+          console.error("Error fetching notifications:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    fetchNotifications();
+  }, []);
+
+  const clearNotifications = () => {
+    setNotifications([]);
+    setReadState(true);
+  };
 
   useEffect(() => {
     const handleLocationChange = () => {
@@ -177,7 +208,10 @@ const Navbar = () => {
               className="w-8 h-8 cursor-pointer"
               onClick={toggleNotification}
             />
-            <span className="absolute top-0 right-0 w-2 h-2 bg-custom-blue rounded-full"></span>
+
+            {notifications.length > 0 && (
+              <span className="absolute top-0 right-0 w-2 h-2 bg-custom-blue rounded-full"></span>
+            )}
           </div>
 
           <div className="relative">
@@ -195,7 +229,6 @@ const Navbar = () => {
                 <img
                   className="w-12 h-12 rounded-full"
                   src={userProfile.profilePicture || "image.avif"}
-                  // src={profilePicture}
                   alt="user photo"
                 />
               )}
@@ -239,7 +272,11 @@ const Navbar = () => {
           ref={notificationRef}
           className="absolute right-10 top-24 z-50 bg-white h-[85%] overflow-auto hide-scrollbar"
         >
-          <Notification />
+          <Notification
+            notifications={notifications}
+            clearNotifications={clearNotifications}
+            loading={loading}
+          />
         </div>
       )}
     </nav>

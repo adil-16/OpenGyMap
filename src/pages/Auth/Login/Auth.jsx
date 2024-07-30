@@ -132,7 +132,6 @@ const Auth = () => {
         <p className="mb-6 text-custom-gray">Hello, Welcome Back!</p>
 
         <form
-          onSubmit={handleRequestOtp}
           className="flex flex-col items-center w-full"
         >
           <AuthForm
@@ -151,7 +150,7 @@ const Auth = () => {
           <RequestOtpButton
             className="flex justify-center items-center"
             text={isLoading ? <p className="loader  ml-24 "></p> : "Login"}
-            // onClick={handleRequestOtp}
+            onClick={handleRequestOtp}
             disabled={isLoading}
           />
         </form>

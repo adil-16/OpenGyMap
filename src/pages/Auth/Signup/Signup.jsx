@@ -20,7 +20,14 @@ const Signup = () => {
   const [phone, setPhone] = useState("");
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
+
+  const isPasswordValid = (password) => {
+    // Check if password contains at least one character
+    const regex = /[a-zA-Z]/;
+    return regex.test(password);
+  };
 
   const handleButtonClick = (buttonType) => {
     setActiveButton(buttonType);
@@ -28,7 +35,6 @@ const Signup = () => {
 
   const handleCountryChange = (countryCode) => {
     setSelectedCountry(countryCode);
-    console.log("country code", countryCode);
   };
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -52,26 +58,26 @@ const Signup = () => {
   const handleRequestOtp = async (event) => {
     setIsLoading(true);
     event.preventDefault();
+
     try {
+      if (!isPasswordValid(password)) {
+        toast.error("Password must contain at least one letter");
+        setIsLoading(false);
+        return;
+      }
+      if (password !== confirmPassword) {
+        setPassword("");
+        setConfirmPassword("");
+        console.error("Passwords do not match");
+        toast.error("Password donot match");
+
+        return;
+      }
       if (activeButton === "phoneNumber") {
-        if (password !== confirmPassword) {
-          console.error("Passwords do not match");
-          toast.error("Password donot match");
-          setPassword("");
-          setConfirmPassword("");
-          return;
-        }
         const verificationId = await sendOtpToPhone(phone);
         localStorage.setItem("verificationId", verificationId);
         toast.success("OTP sent successfully");
       } else {
-        if (password !== confirmPassword) {
-          console.error("Passwords do not match");
-          toast.error("Password donot match");
-          setPassword("");
-          setConfirmPassword("");
-          return;
-        }
         await registerUserWithEmailAndPassword(emailId, password, username);
         console.log(emailId);
         localStorage.setItem("emailForSignIn", emailId);
@@ -126,10 +132,7 @@ const Signup = () => {
         </h1>
         <p className=" text-custom-gray">Hello, Welcome Back!</p>
 
-        <form
-          className="flex flex-col items-center w-full"
-          onSubmit={handleRequestOtp}
-        >
+        <form className="flex flex-col items-center w-full">
           <SignupForm
             activeButton={activeButton}
             handleButtonClick={handleButtonClick}
@@ -150,6 +153,7 @@ const Signup = () => {
             text={
               isLoading ? <p className="loader ml-24"></p> : "Create Account"
             }
+            onClick={handleRequestOtp}
             disabled={isLoading}
           />
         </form>
