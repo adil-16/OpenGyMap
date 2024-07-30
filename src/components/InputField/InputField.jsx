@@ -21,7 +21,7 @@ const InputField = ({
         value={value}
         disabled={isDisabled}
         className={`appearance-none bg-transparent border-none w-full text-gray-700 py-1 px-2 leading-tight focus:outline-none  ${
-          type === "password" ? "px-5" : "px-2"
+          type === "password" ? "mx-2" : "px-2"
         }`}
       />
     </div>
