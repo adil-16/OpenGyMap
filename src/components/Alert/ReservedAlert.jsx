@@ -1,7 +1,13 @@
 import React from "react";
 import Crossicon from "../buttons/Crossicon";
+import { useNavigate } from "react-router-dom";
 
 const ReservedAlert = ({ onClick, onClose, selectedDate, selectedTime }) => {
+  const navigate = useNavigate();
+
+  const handleFindAnotherClick = () => {
+    navigate("/explore");
+  };
   return (
     <div className="p-2 bg-white shadow-lg rounded-lg w-full max-w-md md:w-[75%] lg:w-[50%] xl:w-[25%] h-auto  z-20 mx-auto my-auto">
       <div className="flex justify-between items-center p-5">
@@ -32,7 +38,10 @@ const ReservedAlert = ({ onClick, onClose, selectedDate, selectedTime }) => {
       </div>
 
       <div className="py-4 flex justify-center">
-        <button className="text-custom-black underline font-bold">
+        <button
+          onClick={handleFindAnotherClick}
+          className="text-custom-black underline font-bold"
+        >
           Find Another
         </button>
       </div>

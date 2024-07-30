@@ -135,12 +135,6 @@ const Home = () => {
     setClickBasketBall(false);
   };
 
-  const getRandomStatus = () => {
-    const statuses = ["Open Now", "Already Booked"];
-    const randomIndex = Math.floor(Math.random() * statuses.length);
-    return statuses[randomIndex];
-  };
-
   const startIndexPopular = (popularPage - 1) * ITEMS_PER_PAGE;
   const endIndexPopular = startIndexPopular + ITEMS_PER_PAGE;
   const currentPopularItems = popularFacilities.slice(
@@ -154,10 +148,6 @@ const Home = () => {
     startIndexNearby,
     endIndexNearby
   );
-
-  const handlePopularPageChange = (page) => {
-    setPopularPage(page);
-  };
 
   const handleNearbyPageChange = (page) => {
     setNearbyPage(page);

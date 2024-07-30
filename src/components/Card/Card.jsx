@@ -20,6 +20,7 @@ const Card = ({
   latitude,
   daysList,
   bookingDateAndTime,
+  bookingList,
 }) => {
   const navigate = useNavigate();
 
@@ -43,6 +44,7 @@ const Card = ({
           latitude,
           daysList,
           bookingDateAndTime,
+          bookingList,
         },
       },
     });

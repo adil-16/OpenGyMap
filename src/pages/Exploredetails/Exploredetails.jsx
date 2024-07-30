@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import CardsData from "../../utils/CardsData/CardsData";
+import { getUserDetails } from "../../firebase/Functions/ApiFunctions";
 import { IoMdArrowBack } from "react-icons/io";
 import { FaLocationDot } from "react-icons/fa6";
 import { FaClock } from "react-icons/fa";
@@ -16,6 +16,7 @@ import { useNotification } from "../../Context/NotificationContext/NotificationC
 import { timeAgo } from "../../utils/TimeAgo/timeAgo";
 import { toast } from "react-toastify";
 import moment from "moment";
+import { createNotificationForRequest } from "../../firebase/Functions/NotificationFunctions";
 
 const parseBookingDateAndTime = (dateTimeString) => {
   const [start, end] = dateTimeString.split(" to ");
@@ -48,11 +49,31 @@ const Exploredetails = () => {
   const [notificationTimes, setNotificationTimes] = useState([]);
   const { notifications, addNotification, removeNotification } =
     useNotification();
-
+  const [userDetails, setUserDetails] = useState({
+    fullName: "",
+    profilePicture: "",
+  });
+  const uid = localStorage.getItem("uid");
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
   const facility = location.state?.facility;
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const user = await getUserDetails(uid);
+        setUserDetails({
+          fullName: user.fullName || "",
+          profilePicture: user.profilePicture || "",
+        });
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+    };
+
+    fetchUserDetails();
+  }, [facility.id]);
 
   useEffect(() => {
     if (selectedDate && selectedTime) {
@@ -138,42 +159,59 @@ const Exploredetails = () => {
     console.log(notificationId);
   };
 
-  const handleRequestToHost = () => {
-    console.log(facility.address);
-    setShowReserveALert(false);
-    const notificationId = new Date().getTime();
-    const createdAt = new Date().toISOString();
-    console.log("createdAt", createdAt);
+  const handleRequestToHost = async () => {
+    try {
+      setShowReserveALert(false);
+      const notificationId = new Date().getTime();
+      const createdAt = new Date().toISOString();
+      await createNotificationForRequest({
+        createdBy: facility.createdBy,
+        bookingId: facility.bookingId,
+        bookingDate: selectedDate,
+        bookingStartTime: selectedTime,
+        bookingEndTime: closeTime,
+        bookingCourtName: selectedCourt,
+        bookingStatus: "Requested",
+        notificationCount: 0,
+        requestedFrom: uid,
+        requestedTo: facility.createdBy,
+        requestedUserImage: userDetails.profilePicture,
+        reqyestedUsername: userDetails.fullName,
+        userId: "",
+      });
 
-    addNotification([
-      {
-        id: notificationId,
-        type: "Join Session",
-        profileImage: "/Request/profileimage.png",
-        userName: "Jessica Kawai",
-        courtName: facility.courtName,
-        date: selectedDate,
-        time: `${selectedTime} - ${closeTime}`,
-        action: "wants to join the session",
-        createdAt: createdAt,
-        location: facility.address,
-        hours: hours,
-        actions: [
-          {
-            type: "Decline",
-            style:
-              "border-request-button-decline text-request-button-decline bg-request-button-decline",
-            onClick: () => handleDecline(notificationId),
-          },
-          {
-            type: "Accept",
-            style:
-              "border-request-button-accepted text-request-button-accepted bg-request-button-accepted",
-            onClick: () => handleAccept(notificationId),
-          },
-        ],
-      },
-    ]);
+      addNotification([
+        {
+          id: notificationId,
+          type: "Join Session",
+          profileImage: "/Request/profileimage.png",
+          userName: "Jessica Kawai",
+          courtName: facility.courtName,
+          date: selectedDate,
+          time: `${selectedTime} - ${closeTime}`,
+          action: "wants to join the session",
+          createdAt: createdAt,
+          location: facility.address,
+          hours: hours,
+          actions: [
+            {
+              type: "Decline",
+              style:
+                "border-request-button-decline text-request-button-decline bg-request-button-decline",
+              onClick: () => handleDecline(notificationId),
+            },
+            {
+              type: "Accept",
+              style:
+                "border-request-button-accepted text-request-button-accepted bg-request-button-accepted",
+              onClick: () => handleAccept(notificationId),
+            },
+          ],
+        },
+      ]);
+    } catch (error) {
+      console.error("Error handling request to host: ", error);
+    }
   };
 
   return (

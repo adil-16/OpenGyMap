@@ -1,6 +1,7 @@
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase.config";
 import { getBookingDetails } from "./BookingFunctions";
+import { v4 as uuidv4 } from "uuid";
 
 export const getUserNotifications = async (uid) => {
   try {
@@ -65,4 +66,18 @@ const formatDate = (dateStr) => {
   }
   const options = { day: "2-digit", month: "long", year: "numeric" };
   return date.toLocaleDateString("en-GB", options);
+};
+
+export const createNotificationForRequest = async (bookingData) => {
+  try {
+    const notificationId = uuidv4();
+    const notificationRef = collection(db, "notifications");
+
+    await addDoc(notificationRef, bookingData);
+
+    console.log("Notification created successfully");
+  } catch (error) {
+    console.error("Error creating notification: ", error);
+    throw new Error("Failed to create notification");
+  }
 };
