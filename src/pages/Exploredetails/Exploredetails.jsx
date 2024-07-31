@@ -58,6 +58,7 @@ const Exploredetails = () => {
     profilePicture: "",
   });
   const [bookingCreatedBy, setBookingCreatyBy] = useState("");
+  const [foundBookingId, setFoundBookingId] = useState("");
   const uid = localStorage.getItem("uid");
   const navigate = useNavigate();
   const { id } = useParams();
@@ -157,18 +158,18 @@ const Exploredetails = () => {
         return isTimeOverlap(formattedDate, selectedTime, hours, booking);
       });
       try {
-        const createdBy = await findBookingByDateTime(
+        const bookingData = await findBookingByDateTime(
           selectedStartTime,
           selectedEndTime,
           facility.bookingDateAndTime,
           facility.bookingList
         );
 
-        if (createdBy === uid) {
+        if (bookingData?.createdBy === uid) {
           toast.error(
             "You already have a booking at the selected date and time!"
           );
-        } else if (createdBy === null) {
+        } else if (bookingData === null) {
           navigate("/payment", {
             state: {
               facility,
@@ -179,7 +180,8 @@ const Exploredetails = () => {
             },
           });
         } else {
-          setBookingCreatyBy(createdBy);
+          setBookingCreatyBy(bookingData.createdBy);
+          setFoundBookingId(bookingData?.bookingId);
           if (isBooked) {
             setShowReserveALert(true);
           } else {
@@ -205,22 +207,32 @@ const Exploredetails = () => {
   };
 
   const handleRequestToHost = async () => {
+    const formattedDate = moment(selectedDate).format("YYYY-MM-DD");
+    const startDateTime = moment(
+      `${formattedDate} ${selectedTime}`,
+      "YYYY-MM-DD HH:mm"
+    ).toISOString();
+    const endDateTime = moment(
+      `${formattedDate} ${closeTime}`,
+      "YYYY-MM-DD HH:mm"
+    ).toISOString();
+
     try {
       setShowReserveALert(false);
       const notificationId = new Date().getTime();
       const createdAt = new Date().toISOString();
       const notificationData = {
-        bookingId: facility.bookingId,
+        bookingId: foundBookingId,
         bookingDate: selectedDate,
-        bookingStartTime: selectedTime,
-        bookingEndTime: closeTime,
-        bookingCourtName: selectedCourt,
+        bookingStartTime: startDateTime,
+        bookingEndTime: endDateTime,
+        courtName: facility.courtName,
         bookingStatus: "Requested",
         notificationCount: 0,
         requestedFrom: uid,
         requestedTo: bookingCreatedBy,
         requestedUserImage: userDetails.profilePicture,
-        reqyestedUsername: userDetails.fullName,
+        requestedUsername: userDetails.fullName,
         userId: "",
       };
       await createNotificationForRequest(notificationData);

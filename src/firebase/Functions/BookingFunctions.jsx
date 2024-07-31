@@ -151,8 +151,7 @@ export const findBookingByDateTime = async (
 
       if (bookingDoc.exists()) {
         const bookingData = bookingDoc.data();
-        console.log(bookingData.createdBy);
-        return bookingData.createdBy;
+        return { bookingId, createdBy: bookingData.createdBy };
       } else {
         console.log("Booking not found.");
         return null;
