@@ -10,6 +10,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase.config";
 import { v4 as uuidv4 } from "uuid";
+import moment from "moment";
 
 export const addBooking = async (bookingData) => {
   try {
@@ -113,4 +114,63 @@ export const getExpiredUserBookings = async (uid) => {
     console.error("Error fetching expired user bookings: ", error);
     throw new Error("Failed to fetch expired user bookings");
   }
+};
+
+export const findBookingByDateTime = async (
+  selectedStartTime,
+  selectedEndTime,
+  bookingDateAndTime,
+  bookingList
+) => {
+  try {
+    if (
+      !moment.isMoment(selectedStartTime) ||
+      !moment.isMoment(selectedEndTime)
+    ) {
+      throw new Error("Invalid start or end time");
+    }
+
+    let foundIndex = -1;
+    for (let i = 0; i < bookingDateAndTime.length; i++) {
+      const { start, end } = parseBookingDateAndTime(bookingDateAndTime[i]);
+
+      if (
+        selectedStartTime.isSameOrAfter(start) &&
+        selectedEndTime.isSameOrBefore(end)
+      ) {
+        foundIndex = i;
+        break;
+      }
+    }
+
+    if (foundIndex !== -1) {
+      const bookingId = bookingList[foundIndex];
+
+      const bookingRef = doc(db, "bookings", bookingId);
+      const bookingDoc = await getDoc(bookingRef);
+
+      if (bookingDoc.exists()) {
+        const bookingData = bookingDoc.data();
+        console.log(bookingData.createdBy);
+        return bookingData.createdBy;
+      } else {
+        console.log("Booking not found.");
+        return null;
+      }
+    } else {
+      console.log("No matching booking time found.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error finding booking by date and time: ", error);
+    return null;
+  }
+};
+
+const parseBookingDateAndTime = (dateTimeString) => {
+  const [start, end] = dateTimeString.split(" to ");
+  return {
+    start: moment(start, "YYYY-MM-DDTHH:mm:ss"),
+    end: moment(end, "YYYY-MM-DDTHH:mm:ss"),
+  };
 };

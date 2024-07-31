@@ -49,14 +49,10 @@ export const getReviewsByFacilityId = async (facilityId) => {
     const q = query(reviewsCollection, where("facilityId", "==", facilityId));
 
     const querySnapshot = await getDocs(q);
-    console.log("zaki");
-
     const reviews = querySnapshot.docs.map((doc) => ({
       reviewId: doc.id,
       ...doc.data(),
     }));
-
-    console.log("reviews are", reviews);
 
     return reviews;
   } catch (error) {}

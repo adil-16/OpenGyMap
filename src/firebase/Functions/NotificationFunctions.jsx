@@ -1,4 +1,11 @@
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  doc,
+  setDoc,
+} from "firebase/firestore";
 import { db } from "../firebase.config";
 import { getBookingDetails } from "./BookingFunctions";
 import { v4 as uuidv4 } from "uuid";
@@ -68,12 +75,22 @@ const formatDate = (dateStr) => {
   return date.toLocaleDateString("en-GB", options);
 };
 
-export const createNotificationForRequest = async (bookingData) => {
+export const createNotificationForRequest = async (notificationData) => {
   try {
     const notificationId = uuidv4();
-    const notificationRef = collection(db, "notifications");
+    const notificationTime = new Date().toISOString();
+    const notificationRef = doc(
+      collection(db, "notifications"),
+      notificationId
+    );
+    const updatedNotificationData = {
+      ...notificationData,
+      bookingRequestStatus: 1,
+      notificationId: notificationId,
+      notificationTime: notificationTime,
+    };
 
-    await addDoc(notificationRef, bookingData);
+    await setDoc(notificationRef, updatedNotificationData);
 
     console.log("Notification created successfully");
   } catch (error) {

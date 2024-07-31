@@ -15,12 +15,10 @@ import ReservedAlert from "../../components/Alert/ReservedAlert";
 import { useNotification } from "../../Context/NotificationContext/NotificationContext";
 import { timeAgo } from "../../utils/TimeAgo/timeAgo";
 import { toast } from "react-toastify";
-
-// import { timeAgo } from "../../utils/TimeAgo/timeAgo";
-
 import { getReviewsByFacilityId } from "../../firebase/Functions/ReviewsFunctions";
 import moment from "moment";
 import { createNotificationForRequest } from "../../firebase/Functions/NotificationFunctions";
+import { findBookingByDateTime } from "../../firebase/Functions/BookingFunctions";
 
 const parseBookingDateAndTime = (dateTimeString) => {
   const [start, end] = dateTimeString.split(" to ");
@@ -29,7 +27,6 @@ const parseBookingDateAndTime = (dateTimeString) => {
     end: moment(end, "YYYY-MM-DDTHH:mm:ss"),
   };
 };
-
 const isTimeOverlap = (selectedDate, selectedTime, hours, booking) => {
   const startTime = moment(
     `${selectedDate.format("YYYY-MM-DD")}T${selectedTime}`
@@ -51,7 +48,8 @@ const Exploredetails = () => {
   const [formattedDate, setFormattedDate] = useState("");
   const [formattedTime, setFormattedTime] = useState("");
   const [notificationTimes, setNotificationTimes] = useState([]);
-
+  const [selectedStartTime, setSelectedStartTime] = useState("");
+  const [selectedEndTime, setSelectedEndTime] = useState("");
   const [reviews, setReviews] = useState([]);
   const { notifications, addNotification, removeNotification } =
     useNotification();
@@ -59,6 +57,7 @@ const Exploredetails = () => {
     fullName: "",
     profilePicture: "",
   });
+  const [bookingCreatedBy, setBookingCreatyBy] = useState("");
   const uid = localStorage.getItem("uid");
   const navigate = useNavigate();
   const { id } = useParams();
@@ -89,6 +88,13 @@ const Exploredetails = () => {
 
   useEffect(() => {
     if (selectedDate && selectedTime) {
+      const formattedDate = moment(selectedDate);
+      const startTime = moment(
+        `${formattedDate.format("YYYY-MM-DD")}T${selectedTime}`
+      );
+      const endTime = moment(startTime).add(hours, "hours");
+      setSelectedStartTime(startTime);
+      setSelectedEndTime(endTime);
       setFormattedDate(moment(selectedDate).format("D MMM"));
       setFormattedTime(selectedTime);
     }
@@ -140,7 +146,7 @@ const Exploredetails = () => {
     setHours((prevHours) => prevHours + 1);
   };
 
-  const handleCheckAvailability = () => {
+  const handleCheckAvailability = async () => {
     if (!selectedDate) {
       toast.error("Select a Date");
     } else {
@@ -150,21 +156,52 @@ const Exploredetails = () => {
 
         return isTimeOverlap(formattedDate, selectedTime, hours, booking);
       });
+      try {
+        const createdBy = await findBookingByDateTime(
+          selectedStartTime,
+          selectedEndTime,
+          facility.bookingDateAndTime,
+          facility.bookingList
+        );
 
-      if (isBooked) {
-        setShowReserveALert(true);
-      } else {
-        navigate("/payment", {
-          state: { facility, selectedCourt, selectedTime, hours, selectedDate },
-        });
+        if (createdBy === uid) {
+          toast.error(
+            "You already have a booking at the selected date and time!"
+          );
+        } else if (createdBy === null) {
+          navigate("/payment", {
+            state: {
+              facility,
+              selectedCourt,
+              selectedTime,
+              hours,
+              selectedDate,
+            },
+          });
+        } else {
+          setBookingCreatyBy(createdBy);
+          if (isBooked) {
+            setShowReserveALert(true);
+          } else {
+            navigate("/payment", {
+              state: {
+                facility,
+                selectedCourt,
+                selectedTime,
+                hours,
+                selectedDate,
+              },
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Error checking availability: ", error);
       }
     }
   };
 
   const handleDecline = (notificationId) => {
     removeNotification(notificationId);
-
-    console.log(notificationId);
   };
 
   const handleRequestToHost = async () => {
@@ -172,8 +209,7 @@ const Exploredetails = () => {
       setShowReserveALert(false);
       const notificationId = new Date().getTime();
       const createdAt = new Date().toISOString();
-      await createNotificationForRequest({
-        createdBy: facility.createdBy,
+      const notificationData = {
         bookingId: facility.bookingId,
         bookingDate: selectedDate,
         bookingStartTime: selectedTime,
@@ -182,11 +218,12 @@ const Exploredetails = () => {
         bookingStatus: "Requested",
         notificationCount: 0,
         requestedFrom: uid,
-        requestedTo: facility.createdBy,
+        requestedTo: bookingCreatedBy,
         requestedUserImage: userDetails.profilePicture,
         reqyestedUsername: userDetails.fullName,
         userId: "",
-      });
+      };
+      await createNotificationForRequest(notificationData);
 
       addNotification([
         {
